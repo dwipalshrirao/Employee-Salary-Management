@@ -100,3 +100,5 @@ Add a row whenever the built UI differs from the Stitch screen or the spec.
 | 2026-11-03 | App shell | User menu secondary line shows the signed-in email instead of `HR Manager`. | The auth API returns no role field; the name remains the primary label. |
 | 2026-11-04 | `03 Employees` | Filters apply immediately; Stitch's `Apply filters` button is omitted. | Spec 04 sec 6.4 defines immediate server-side filtering and does not include an apply step. |
 | 2026-11-04 | `03 Employees` | Filter fields use MUI outlined labels and the DataGrid footer instead of Stitch's custom label/table chrome. | MUI and MUI X DataGrid are required by the spec; spacing and hierarchy follow the screen. |
+| 2026-11-04 | `04 Employee detail` | Deactivate/Reactivate actions and the analytics team summary are deferred; Edit links to the future form page. | Current slice covers detail, local currency, direct reports and salary history only. |
+| 2026-11-04 | `04 Employee detail` | Direct reports are in a separate card; Reporting shows only the manager link. | Clarified requirement: direct reports deserve their own section. |
