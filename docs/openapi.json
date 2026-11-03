@@ -215,6 +215,40 @@
                         "description": ""
                     }
                 }
+            },
+            "post": {
+                "operationId": "employees-create",
+                "description": "Create an employee and its initial hire history row.",
+                "tags": [
+                    "employees"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EmployeeCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmployeeDetail"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
             }
         },
         "/api/employees/{id}": {
@@ -513,6 +547,66 @@
                 "required": [
                     "code",
                     "name"
+                ]
+            },
+            "EmployeeCreate": {
+                "type": "object",
+                "description": "Reject unknown input fields instead of silently ignoring them.",
+                "properties": {
+                    "full_name": {
+                        "type": "string",
+                        "maxLength": 120
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 254
+                    },
+                    "department_id": {
+                        "type": "integer"
+                    },
+                    "job_title_id": {
+                        "type": "integer"
+                    },
+                    "country_code": {
+                        "type": "string"
+                    },
+                    "manager_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "hire_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "base_salary_cents": {
+                        "type": "integer",
+                        "maximum": 1000000000,
+                        "minimum": 1
+                    },
+                    "bonus_cents": {
+                        "type": "integer",
+                        "maximum": 1000000000,
+                        "minimum": 0,
+                        "default": 0
+                    },
+                    "allowances_cents": {
+                        "type": "integer",
+                        "maximum": 1000000000,
+                        "minimum": 0,
+                        "default": 0
+                    }
+                },
+                "required": [
+                    "base_salary_cents",
+                    "country_code",
+                    "department_id",
+                    "email",
+                    "full_name",
+                    "hire_date",
+                    "job_title_id"
                 ]
             },
             "EmployeeDepartment": {

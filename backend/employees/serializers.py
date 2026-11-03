@@ -3,8 +3,13 @@
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
-from common.serializers import PageQuerySerializer
+from catalog.models import Country, Department, JobTitle
+from common.clock import get_clock
+from common.serializers import PageQuerySerializer, StrictSerializer
 from employees.local_currency import local_amounts
+from employees.models import Employee
+
+MAX_AMOUNT_CENTS = 1_000_000_000
 
 SORT_BY_CHOICES = (
     "full_name",
@@ -145,3 +150,46 @@ class SalaryHistoryItemSerializer(serializers.Serializer):
                 + row.prev_allowances_cents
             ),
         }
+
+
+class EmployeeCreateSerializer(StrictSerializer):
+    full_name = serializers.CharField(max_length=120)
+    email = serializers.EmailField(max_length=254)
+    department_id = serializers.PrimaryKeyRelatedField(
+        queryset=Department.objects.all(),
+        source="department",
+    )
+    job_title_id = serializers.PrimaryKeyRelatedField(
+        queryset=JobTitle.objects.all(),
+        source="job_title",
+    )
+    country_code = serializers.PrimaryKeyRelatedField(
+        queryset=Country.objects.all(),
+        source="country",
+    )
+    manager_id = serializers.PrimaryKeyRelatedField(
+        queryset=Employee.objects.all(),
+        source="manager",
+        allow_null=True,
+        required=False,
+    )
+    hire_date = serializers.DateField()
+    base_salary_cents = serializers.IntegerField(
+        min_value=1,
+        max_value=MAX_AMOUNT_CENTS,
+    )
+    bonus_cents = serializers.IntegerField(
+        min_value=0,
+        max_value=MAX_AMOUNT_CENTS,
+        default=0,
+    )
+    allowances_cents = serializers.IntegerField(
+        min_value=0,
+        max_value=MAX_AMOUNT_CENTS,
+        default=0,
+    )
+
+    def validate_hire_date(self, value):
+        if value > get_clock().today():
+            raise serializers.ValidationError("Hire date cannot be in the future.")
+        return value

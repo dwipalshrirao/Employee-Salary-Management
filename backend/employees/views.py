@@ -2,6 +2,7 @@
 
 from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
+from rest_framework.status import HTTP_201_CREATED
 from rest_framework.views import APIView
 
 from common.serializers import PageQuerySerializer
@@ -12,11 +13,13 @@ from employees.selectors import (
     list_employees,
 )
 from employees.serializers import (
+    EmployeeCreateSerializer,
     EmployeeDetailSerializer,
     EmployeeListQuerySerializer,
     EmployeeListResponseSerializer,
     SalaryHistoryItemSerializer,
 )
+from employees.services.employees import create_employee
 
 
 class EmployeeListView(APIView):
@@ -33,6 +36,22 @@ class EmployeeListView(APIView):
         query.is_valid(raise_exception=True)
         result = list_employees(**query.validated_data)
         return Response(EmployeeListResponseSerializer(result).data)
+
+    @extend_schema(
+        operation_id="employees-create",
+        tags=["employees"],
+        description="Create an employee and its initial hire history row.",
+        request=EmployeeCreateSerializer,
+        responses={201: EmployeeDetailSerializer},
+    )
+    def post(self, request, format=None):
+        serializer = EmployeeCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        employee = create_employee(serializer.validated_data)
+        return Response(
+            EmployeeDetailSerializer(employee).data,
+            status=HTTP_201_CREATED,
+        )
 
 
 class EmployeeDetailView(APIView):
