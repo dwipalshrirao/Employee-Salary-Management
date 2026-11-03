@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 
 import ProtectedRoute from "./auth/ProtectedRoute";
 import AppShell from "./components/AppShell";
+import EmployeesPage from "./pages/EmployeesPage";
 import LoginPage from "./pages/LoginPage";
 import PlaceholderPage from "./pages/PlaceholderPage";
 
@@ -12,7 +13,7 @@ export default function AppRoutes() {
       <Route element={<ProtectedRoute />}>
         <Route element={<AppShell />}>
           <Route index element={<PlaceholderPage title="Dashboard" />} />
-          <Route path="employees" element={<PlaceholderPage title="Employees" />} />
+          <Route path="employees" element={<EmployeesPage />} />
           <Route path="employees/new" element={<PlaceholderPage title="Add employee" />} />
           <Route path="employees/:id" element={<PlaceholderPage title="Employee detail" />} />
           <Route path="employees/:id/edit" element={<PlaceholderPage title="Edit employee" />} />

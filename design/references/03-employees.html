@@ -1,0 +1,495 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_standard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"surface-white":"#FFFFFF","on-background":"#111c2a","success":"#2E7D32","chart-band-3":"#8FB0FA","on-primary-fixed":"#001552","chart-band-7":"#1B3A8F","primary-fixed-dim":"#b7c4ff","on-secondary-fixed":"#00201d","on-error":"#ffffff","inverse-surface":"#26313f","on-surface-variant":"#434655","primary-tint":"#E8EEFC","surface-container-low":"#eff4ff","primary-container":"#1e4ed8","surface-dim":"#d0dbed","text-ash":"#9AA3B2","primary":"#0037b1","primary-fixed":"#dce1ff","on-primary":"#ffffff","on-secondary-fixed-variant":"#00504a","secondary-fixed-dim":"#80d5cb","surface-container-high":"#dee9fc","secondary-container":"#99efe5","on-primary-container":"#cad3ff","on-tertiary-container":"#ffcaae","table-header-fog":"#F1F4F9","surface-container-highest":"#d8e3f6","background-cloud":"#F6F7F9","text-ink":"#1A2230","text-slate":"#5B6676","on-tertiary":"#ffffff","warning":"#B45309","primary-dark":"#173DAE","on-surface":"#111c2a","status-inactive-bg":"#EEF0F4","chart-band-2":"#B7CEFF","surface-container-lowest":"#ffffff","secondary":"#006a63","outline-variant":"#c4c5d7","on-tertiary-fixed-variant":"#763300","on-primary-fixed-variant":"#0038b6","status-active-bg":"#E6F4EA","surface":"#f8f9ff","background":"#f8f9ff","outline":"#747686","on-tertiary-fixed":"#331200","chart-band-6":"#2A52BD","on-error-container":"#93000a","surface-bright":"#f8f9ff","surface-variant":"#d8e3f6","chart-band-1":"#DBE7FF","inverse-primary":"#b7c4ff","error":"#C62828","tertiary-fixed":"#ffdbca","tertiary-fixed-dim":"#ffb68e","secondary-fixed":"#9cf2e8","border-line":"#E3E7EE","tertiary-container":"#984300","error-container":"#ffdad6","surface-tint":"#2251da","tertiary":"#733100","chart-band-5":"#3F6DE0","on-secondary-container":"#006f67","on-secondary":"#ffffff","chart-band-4":"#6590F2","inverse-on-surface":"#eaf1ff","surface-container":"#e5eeff"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"gutter-sm":"1rem","space-md":"1rem","space-xl":"1.5rem","space-sm":"0.5rem","margin":"1.5rem","space-xs":"0.25rem","space-lg":"1.25rem","gutter":"1.5rem"},"fontFamily":{"headline-md":["Inter"],"caption":["Inter"],"headline-lg":["Inter"],"headline-sm":["Inter"],"kpi-value":["Inter"],"body-strong":["Inter"],"body-default":["Inter"]},"fontSize":{"headline-md":["20px",{"lineHeight":"28px","fontWeight":"600"}],"caption":["12px",{"lineHeight":"16px","fontWeight":"400"}],"headline-lg":["28px",{"lineHeight":"36px","fontWeight":"600"}],"headline-sm":["16px",{"lineHeight":"24px","fontWeight":"600"}],"kpi-value":["32px",{"lineHeight":"40px","fontWeight":"600"}],"body-strong":["14px",{"lineHeight":"20px","fontWeight":"600"}],"body-default":["14px",{"lineHeight":"20px","fontWeight":"400"}]}}}}</script></head><body class="bg-background-cloud font-body-default text-body-default text-text-ink min-h-screen"><header class="fixed top-0 left-0 right-0 z-50 bg-surface-white border-b border-border-line"><div class="max-w-[1280px] mx-auto px-margin h-16 flex items-center justify-between"><div class="flex items-center gap-space-xl"><span class="font-headline-sm text-headline-sm text-text-ink tracking-tight select-none">ACME Salary Management</span><nav class="flex items-center gap-space-lg" data-active-classes="text-primary-container font-body-strong border-b-2 border-primary-container"><a class="font-body-default text-body-default text-text-slate hover:text-text-ink h-16 flex items-center transition-colors" data-path="dashboard" href="#">Dashboard</a><a class="font-body-strong text-body-strong text-primary-container border-b-2 border-primary-container h-16 flex items-center transition-colors" data-path="employees" href="#">Employees</a><a class="font-body-default text-body-default text-text-slate hover:text-text-ink h-16 flex items-center transition-colors" data-path="history" href="#">History</a><a class="font-body-default text-body-default text-text-slate hover:text-text-ink h-16 flex items-center transition-colors" data-path="bulk-update" href="#">Bulk update</a></nav></div><div class="relative"><details class="group"><summary class="flex items-center gap-space-sm cursor-pointer select-none list-none outline-none py-space-xs"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><span class="font-body-strong text-body-strong text-text-ink">Sarah Jenkins</span><span class="material-symbols-outlined text-text-slate text-[20px] transition-transform duration-200 group-open:rotate-180">expand_more</span></summary><div class="absolute right-0 mt-space-xs w-48 bg-surface-white border border-border-line rounded-lg shadow-[0_8px_24px_rgba(26,34,48,0.12)] py-space-xs z-50"><div class="px-space-md py-space-xs border-b border-border-line"><div class="font-body-strong text-body-strong text-text-ink">Sarah Jenkins</div><div class="font-caption text-caption text-text-slate">HR Manager</div></div><a class="flex items-center gap-space-sm px-space-md py-space-sm font-body-default text-body-default text-error hover:bg-background-cloud transition-colors" href="#"><span class="material-symbols-outlined text-[18px]">logout</span><span class="">Log out</span></a></div></details></div></div></header><main class="w-full pt-16 bg-background-cloud min-h-[calc(100vh-64px)]"><div class="flex flex-col w-full">
+<!-- Interactive View State Controller & Shell Active Nav Syncer -->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Synchronize shell active nav state for Employees tab
+      const navLinks = document.querySelectorAll('header nav a');
+      navLinks.forEach(link => {
+        if (link.getAttribute('data-path') === 'employees') {
+          link.className = 'font-body-strong text-body-strong text-primary-container border-b-2 border-primary-container h-16 flex items-center transition-colors';
+        } else {
+          link.className = 'font-body-default text-body-default text-text-slate hover:text-text-ink h-16 flex items-center transition-colors';
+        }
+      });
+    });
+
+    function setViewState(state) {
+      const views = ['default', 'loading', 'empty', 'error'];
+      views.forEach(v => {
+        const el = document.getElementById(`view-${v}`);
+        const tab = document.getElementById(`tab-${v}`);
+        if (el) el.classList.add('hidden');
+        if (tab) {
+          tab.classList.remove('bg-surface-white', 'text-text-ink', 'shadow-[0_1px_3px_rgba(26,34,48,0.08)]');
+          tab.classList.add('text-text-slate');
+        }
+      });
+
+      const activeEl = document.getElementById(`view-${state}`);
+      const activeTab = document.getElementById(`tab-${state}`);
+      if (activeEl) activeEl.classList.remove('hidden');
+      if (activeTab) {
+        activeTab.classList.add('bg-surface-white', 'text-text-ink', 'shadow-[0_1px_3px_rgba(26,34,48,0.08)]');
+        activeTab.classList.remove('text-text-slate');
+      }
+    }
+
+    function resetFilters() {
+      const search = document.getElementById('search-input');
+      const country = document.getElementById('filter-country');
+      const dept = document.getElementById('filter-dept');
+      const title = document.getElementById('filter-title');
+      const manager = document.getElementById('filter-manager');
+      const status = document.getElementById('filter-status');
+      if (search) search.value = '';
+      if (country) country.value = 'all';
+      if (dept) dept.value = 'all';
+      if (title) title.value = 'all';
+      if (manager) manager.value = '';
+      if (status) status.value = 'active';
+      setViewState('default');
+    }
+  </script>
+<div class="max-w-[1280px] w-full mx-auto px-margin py-space-xl flex flex-col gap-space-xl">
+<!-- Design Review State Switcher Toolbar -->
+<div class="flex items-center justify-between pb-space-xs border-b border-border-line">
+<div class="flex items-center gap-space-xs p-0.5 bg-table-header-fog border border-border-line rounded-lg">
+<button class="px-space-md py-1.5 rounded text-caption font-body-strong bg-surface-white text-text-ink shadow-[0_1px_3px_rgba(26,34,48,0.08)] transition-all" id="tab-default" onclick="setViewState('default')">
+          Default Table View (10 Employees)
+        </button>
+<button class="px-space-md py-1.5 rounded text-caption font-body-strong text-text-slate hover:text-text-ink transition-all" id="tab-loading" onclick="setViewState('loading')">
+          Loading State (Skeleton Rows)
+        </button>
+<button class="px-space-md py-1.5 rounded text-caption font-body-strong text-text-slate hover:text-text-ink transition-all" id="tab-empty" onclick="setViewState('empty')">
+          Empty State (No Matches)
+        </button>
+<button class="px-space-md py-1.5 rounded text-caption font-body-strong text-text-slate hover:text-text-ink transition-all" id="tab-error" onclick="setViewState('error')">
+          Error State (Retry Alert)
+        </button>
+</div>
+<div class="font-caption text-caption text-text-slate flex items-center gap-1.5 select-none">
+<span class="w-2 h-2 rounded-full bg-success"></span>
+        Institutional Dataset • Live Sync
+      </div>
+</div>
+<!-- Page Header -->
+<div class="flex flex-row items-center justify-between">
+<div class="flex items-baseline gap-space-md">
+<h1 class="font-headline-lg text-headline-lg text-text-ink tracking-tight">Employees</h1>
+<span class="font-caption text-caption text-text-slate tabular-nums">9,700 employees</span>
+</div>
+<button class="h-10 px-space-lg bg-primary-container hover:bg-primary-dark text-on-primary font-body-strong text-body-strong rounded-[6px] transition-colors flex items-center gap-2 shadow-none select-none">
+<span class="material-symbols-outlined text-[18px]">add</span>
+<span class="">Add employee</span>
+</button>
+</div>
+<!-- Filter Bar Card -->
+<div class="bg-surface-white border border-border-line rounded-lg p-space-md">
+<div class="grid grid-cols-12 gap-space-md items-end">
+<!-- Search Field -->
+<div class="col-span-3 flex flex-col gap-1">
+<label class="font-caption text-caption text-text-slate font-medium">Search</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-text-ash text-[20px] pointer-events-none">search</span>
+<input class="w-full h-10 pl-10 pr-3 bg-surface-white border border-border-line rounded-lg font-body-default text-body-default text-text-ink placeholder:text-text-ash focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" id="search-input" placeholder="Search name or email" type="text">
+</div>
+</div>
+<!-- Country Select -->
+<div class="col-span-2 flex flex-col gap-1">
+<label class="font-caption text-caption text-text-slate font-medium">Country</label>
+<div class="relative flex items-center">
+<select class="w-full h-10 px-3 bg-surface-white border border-border-line rounded-lg font-body-default text-body-default text-text-ink focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors appearance-none cursor-pointer" id="filter-country">
+<option value="all">All countries</option>
+<option value="United States">United States</option>
+<option value="India">India</option>
+<option value="Germany">Germany</option>
+<option value="Singapore">Singapore</option>
+<option value="United Kingdom">United Kingdom</option>
+<option value="Canada">Canada</option>
+</select>
+<span class="material-symbols-outlined absolute right-2.5 text-text-slate text-[20px] pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Department Select -->
+<div class="col-span-2 flex flex-col gap-1">
+<label class="font-caption text-caption text-text-slate font-medium">Department</label>
+<div class="relative flex items-center">
+<select class="w-full h-10 px-3 bg-surface-white border border-border-line rounded-lg font-body-default text-body-default text-text-ink focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors appearance-none cursor-pointer" id="filter-dept">
+<option value="all">All departments</option>
+<option value="Engineering">Engineering</option>
+<option value="Sales">Sales</option>
+<option value="Product">Product</option>
+<option value="Finance">Finance</option>
+<option value="Marketing">Marketing</option>
+<option value="HR">HR</option>
+<option value="Operations">Operations</option>
+<option value="Customer Support">Customer Support</option>
+</select>
+<span class="material-symbols-outlined absolute right-2.5 text-text-slate text-[20px] pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Job Title Select -->
+<div class="col-span-2 flex flex-col gap-1">
+<label class="font-caption text-caption text-text-slate font-medium">Job title</label>
+<div class="relative flex items-center">
+<select class="w-full h-10 px-3 bg-surface-white border border-border-line rounded-lg font-body-default text-body-default text-text-ink focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors appearance-none cursor-pointer" id="filter-title">
+<option value="all">All job titles</option>
+<option value="Senior Software Engineer">Senior Software Engineer</option>
+<option value="Account Executive">Account Executive</option>
+<option value="Staff Solutions Architect">Staff Solutions Architect</option>
+<option value="Senior Strategic Sales Lead">Senior Strategic Sales Lead</option>
+<option value="Principal Product Specialist">Principal Product Specialist</option>
+<option value="Lead Security Engineer">Lead Security Engineer</option>
+<option value="Corporate Controller">Corporate Controller</option>
+<option value="Engineering Manager">Engineering Manager</option>
+<option value="Customer Success Specialist">Customer Success Specialist</option>
+<option value="Financial Analyst">Financial Analyst</option>
+</select>
+<span class="material-symbols-outlined absolute right-2.5 text-text-slate text-[20px] pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Manager Autocomplete -->
+<div class="col-span-2 flex flex-col gap-1">
+<label class="font-caption text-caption text-text-slate font-medium">Manager</label>
+<div class="relative flex items-center">
+<input class="w-full h-10 px-3 bg-surface-white border border-border-line rounded-lg font-body-default text-body-default text-text-ink placeholder:text-text-ash focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" id="filter-manager" placeholder="Select manager..." type="text">
+<span class="material-symbols-outlined absolute right-2.5 text-text-ash text-[18px] pointer-events-none">person_search</span>
+</div>
+</div>
+<!-- Status Filter & Clear -->
+<div class="col-span-1 flex flex-col gap-1">
+<label class="font-caption text-caption text-text-slate font-medium">Status</label>
+<div class="relative flex items-center">
+<select class="w-full h-10 px-2 bg-surface-white border border-border-line rounded-lg font-body-default text-body-default text-text-ink focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors appearance-none cursor-pointer" id="filter-status">
+<option selected="" value="active">Active</option>
+<option value="inactive">Inactive</option>
+<option value="all">All</option>
+</select>
+<span class="material-symbols-outlined absolute right-1.5 text-text-slate text-[18px] pointer-events-none">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Action Footer within Filter card -->
+<div class="mt-space-md pt-3 border-t border-border-line flex items-center justify-between"><span class="font-caption text-caption text-text-slate">Filtered by institutional status: <strong class="text-text-ink font-medium">Active</strong></span><div class="flex items-center gap-space-md"><button class="h-8 px-space-md bg-primary-container hover:bg-primary-dark text-on-primary font-body-strong text-caption rounded-[6px] transition-colors inline-flex items-center gap-1.5 select-none shadow-none" onclick="setViewState('default')"><span class="material-symbols-outlined text-[16px]">filter_list</span><span class="">Apply filters</span></button><button class="font-body-strong text-body-strong text-primary-container hover:text-primary-dark transition-colors inline-flex items-center gap-1 select-none" onclick="resetFilters()"><span class="material-symbols-outlined text-[16px]">restart_alt</span><span class="">Clear filters</span></button></div></div>
+</div>
+<!-- STATE 1: Default Data Table View -->
+<div class="bg-surface-white border border-border-line rounded-lg overflow-hidden flex flex-col" id="view-default">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse min-w-[1180px]">
+<!-- Table Header (Fog #F1F4F9, 44px, 600 weight) -->
+<thead>
+<tr class="bg-table-header-fog h-11 border-b border-border-line select-none font-body-strong text-caption text-text-slate">
+<th class="px-3 cursor-pointer hover:text-text-ink" scope="col">
+<div class="flex items-center gap-1">
+<span class="">Name</span>
+<span class="material-symbols-outlined text-[16px]">arrow_downward</span>
+</div>
+</th>
+<th class="px-3 cursor-pointer hover:text-text-ink" scope="col">
+<div class="flex items-center gap-1">
+<span class="">Email</span>
+<span class="material-symbols-outlined text-[16px] opacity-40">unfold_more</span>
+</div>
+</th>
+<th class="px-3 cursor-pointer hover:text-text-ink" scope="col">
+<div class="flex items-center gap-1">
+<span class="">Department</span>
+<span class="material-symbols-outlined text-[16px] opacity-40">unfold_more</span>
+</div>
+</th>
+<th class="px-3 cursor-pointer hover:text-text-ink" scope="col">
+<div class="flex items-center gap-1">
+<span class="">Job title</span>
+<span class="material-symbols-outlined text-[16px] opacity-40">unfold_more</span>
+</div>
+</th>
+<th class="px-3 cursor-pointer hover:text-text-ink" scope="col">
+<div class="flex items-center gap-1">
+<span class="">Country</span>
+<span class="material-symbols-outlined text-[16px] opacity-40">unfold_more</span>
+</div>
+</th>
+<th class="px-3 cursor-pointer hover:text-text-ink" scope="col">
+<div class="flex items-center gap-1">
+<span class="">Manager</span>
+<span class="material-symbols-outlined text-[16px] opacity-40">unfold_more</span>
+</div>
+</th>
+<th class="px-3 cursor-pointer hover:text-text-ink" scope="col">
+<div class="flex items-center gap-1">
+<span class="">Hire date</span>
+<span class="material-symbols-outlined text-[16px] opacity-40">unfold_more</span>
+</div>
+</th>
+<th class="px-3 text-right cursor-pointer hover:text-text-ink" scope="col">
+<div class="flex items-center justify-end gap-1">
+<span class="">Base salary</span>
+<span class="material-symbols-outlined text-[16px] opacity-40">unfold_more</span>
+</div>
+</th>
+<th class="px-3 text-right cursor-pointer hover:text-text-ink" scope="col">
+<div class="flex items-center justify-end gap-1">
+<span class="">Total compensation</span>
+<span class="material-symbols-outlined text-[16px] opacity-40">unfold_more</span>
+</div>
+</th>
+<th class="px-3 text-center" scope="col">Status</th>
+</tr>
+</thead>
+<!-- Table Rows (44px height, 12px horizontal padding, hover: #F8FAFD) -->
+<tbody class="divide-y divide-border-line font-body-default text-body-default">
+<!-- Row 1: Asha Patel -->
+<tr class="h-11 hover:bg-[#F8FAFD] transition-colors">
+<td class="px-3 font-body-strong text-body-strong text-text-ink whitespace-nowrap">Asha Patel</td>
+<td class="px-3 text-text-slate whitespace-nowrap">asha.patel@acme.corp</td>
+<td class="px-3 text-text-ink whitespace-nowrap">Engineering</td>
+<td class="px-3 text-text-ink whitespace-nowrap">Senior Software Engineer</td>
+<td class="px-3 text-text-ink whitespace-nowrap">India</td>
+<td class="px-3 text-text-slate whitespace-nowrap">Ravi Shah</td>
+<td class="px-3 text-text-slate whitespace-nowrap">Jan 15, 2021</td>
+<td class="px-3 text-right font-body-strong text-body-strong text-text-ink tabular-nums whitespace-nowrap">$45,000</td>
+<td class="px-3 text-right font-body-strong text-body-strong text-text-ink tabular-nums whitespace-nowrap">$51,300</td>
+<td class="px-3 text-center whitespace-nowrap">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-caption font-body-strong bg-status-active-bg text-success">Active</span>
+</td>
+</tr>
+<!-- Row 2: Michael Chen -->
+<tr class="h-11 hover:bg-[#F8FAFD] transition-colors">
+<td class="px-3 font-body-strong text-body-strong text-text-ink whitespace-nowrap">Michael Chen</td>
+<td class="px-3 text-text-slate whitespace-nowrap">michael.chen@acme.corp</td>
+<td class="px-3 text-text-ink whitespace-nowrap">Sales</td>
+<td class="px-3 text-text-ink whitespace-nowrap">Account Executive</td>
+<td class="px-3 text-text-ink whitespace-nowrap">United States</td>
+<td class="px-3 text-text-slate whitespace-nowrap">Laura Vance</td>
+<td class="px-3 text-text-slate whitespace-nowrap">Mar 22, 2019</td>
+<td class="px-3 text-right font-body-strong text-body-strong text-text-ink tabular-nums whitespace-nowrap">$95,000</td>
+<td class="px-3 text-right font-body-strong text-body-strong text-text-ink tabular-nums whitespace-nowrap">$182,500</td>
+<td class="px-3 text-center whitespace-nowrap">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-caption font-body-strong bg-status-active-bg text-success">Active</span>
+</td>
+</tr>
+<!-- Row 3: Priya Nair -->
+<tr class="h-11 hover:bg-[#F8FAFD] transition-colors">
+<td class="px-3 font-body-strong text-body-strong text-text-ink whitespace-nowrap">Priya Nair</td>
+<td class="px-3 text-text-slate whitespace-nowrap">priya.nair@acme.corp</td>
+<td class="px-3 text-text-ink whitespace-nowrap">Engineering</td>
+<td class="px-3 text-text-ink whitespace-nowrap">Staff Solutions Architect</td>
+<td class="px-3 text-text-ink whitespace-nowrap">India</td>
+<td class="px-3 text-text-slate whitespace-nowrap">Ravi Shah</td>
+<td class="px-3 text-text-slate whitespace-nowrap">Jul 10, 2018</td>
+<td class="px-3 text-right font-body-strong text-body-strong text-text-ink tabular-nums whitespace-nowrap">$72,000</td>
+<td class="px-3 text-right font-body-strong text-body-strong text-text-ink tabular-nums whitespace-nowrap">$86,400</td>
+<td class="px-3 text-center whitespace-nowrap">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-caption font-body-strong bg-status-active-bg text-success">Active</span>
+</td>
+</tr>
+<!-- Row 4: Lukas Meyer -->
+<tr class="h-11 hover:bg-[#F8FAFD] transition-colors">
+<td class="px-3 font-body-strong text-body-strong text-text-ink whitespace-nowrap">Lukas Meyer</td>
+<td class="px-3 text-text-slate whitespace-nowrap">lukas.meyer@acme.corp</td>
+<td class="px-3 text-text-ink whitespace-nowrap">Finance</td>
+<td class="px-3 text-text-ink whitespace-nowrap">Senior Strategic Sales Lead</td>
+<td class="px-3 text-text-ink whitespace-nowrap">Germany</td>
+<td class="px-3 text-text-slate whitespace-nowrap">Elena Rostova</td>
+<td class="px-3 text-text-slate whitespace-nowrap">Nov 04, 2020</td>
+<td class="px-3 text-right font-body-strong text-body-strong text-text-ink tabular-nums whitespace-nowrap">$110,000</td>
+<td class="px-3 text-right font-body-strong text-body-strong text-text-ink tabular-nums whitespace-nowrap">$135,000</td>
+<td class="px-3 text-center whitespace-nowrap">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-caption font-body-strong bg-status-active-bg text-success">Active</span>
+</td>
+</tr>
+<!-- Row 5: Sophie Turner -->
+<tr class="h-11 hover:bg-[#F8FAFD] transition-colors">
+<td class="px-3 font-body-strong text-body-strong text-text-ink whitespace-nowrap">Sophie Turner</td>
+<td class="px-3 text-text-slate whitespace-nowrap">sophie.turner@acme.corp</td>
+<td class="px-3 text-text-ink whitespace-nowrap">Product</td>
+<td class="px-3 text-text-ink whitespace-nowrap">Principal Product Specialist</td>
+<td class="px-3 text-text-ink whitespace-nowrap">United Kingdom</td>
+<td class="px-3 text-text-slate whitespace-nowrap">David Sterling</td>
+<td class="px-3 text-text-slate whitespace-nowrap">Feb 18, 2017</td>
+<td class="px-3 text-right font-body-strong text-body-strong text-text-ink tabular-nums whitespace-nowrap">$124,000</td>
+<td class="px-3 text-right font-body-strong text-body-strong text-text-ink tabular-nums whitespace-nowrap">$148,800</td>
+<td class="px-3 text-center whitespace-nowrap">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-caption font-body-strong bg-status-active-bg text-success">Active</span>
+</td>
+</tr>
+<!-- Row 6: Wei Tan -->
+<tr class="h-11 hover:bg-[#F8FAFD] transition-colors">
+<td class="px-3 font-body-strong text-body-strong text-text-ink whitespace-nowrap">Wei Tan</td>
+<td class="px-3 text-text-slate whitespace-nowrap">wei.tan@acme.corp</td>
+<td class="px-3 text-text-ink whitespace-nowrap">Engineering</td>
+<td class="px-3 text-text-ink whitespace-nowrap">Lead Security Engineer</td>
+<td class="px-3 text-text-ink whitespace-nowrap">Singapore</td>
+<td class="px-3 text-text-slate whitespace-nowrap">Kenneth Lee</td>
+<td class="px-3 text-text-slate whitespace-nowrap">Aug 30, 2019</td>
+<td class="px-3 text-right font-body-strong text-body-strong text-text-ink tabular-nums whitespace-nowrap">$138,000</td>
+<td class="px-3 text-right font-body-strong text-body-strong text-text-ink tabular-nums whitespace-nowrap">$165,600</td>
+<td class="px-3 text-center whitespace-nowrap">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-caption font-body-strong bg-status-active-bg text-success">Active</span>
+</td>
+</tr>
+<!-- Row 7: Emma Wilson -->
+<tr class="h-11 hover:bg-[#F8FAFD] transition-colors">
+<td class="px-3 font-body-strong text-body-strong text-text-ink whitespace-nowrap">Emma Wilson</td>
+<td class="px-3 text-text-slate whitespace-nowrap">emma.wilson@acme.corp</td>
+<td class="px-3 text-text-ink whitespace-nowrap">Operations</td>
+<td class="px-3 text-text-ink whitespace-nowrap">Corporate Controller</td>
+<td class="px-3 text-text-ink whitespace-nowrap">Canada</td>
+<td class="px-3 text-text-slate whitespace-nowrap">Marc Dubois</td>
+<td class="px-3 text-text-slate whitespace-nowrap">Sep 12, 2016</td>
+<td class="px-3 text-right font-body-strong text-body-strong text-text-ink tabular-nums whitespace-nowrap">$112,000</td>
+<td class="px-3 text-right font-body-strong text-body-strong text-text-ink tabular-nums whitespace-nowrap">$128,000</td>
+<td class="px-3 text-center whitespace-nowrap">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-caption font-body-strong bg-status-active-bg text-success">Active</span>
+</td>
+</tr>
+<!-- Row 8: Marcus Vance -->
+<tr class="h-11 hover:bg-[#F8FAFD] transition-colors">
+<td class="px-3 font-body-strong text-body-strong text-text-ink whitespace-nowrap">Marcus Vance</td>
+<td class="px-3 text-text-slate whitespace-nowrap">marcus.vance@acme.corp</td>
+<td class="px-3 text-text-ink whitespace-nowrap">Engineering</td>
+<td class="px-3 text-text-ink whitespace-nowrap">Engineering Manager</td>
+<td class="px-3 text-text-ink whitespace-nowrap">United States</td>
+<td class="px-3 text-text-slate whitespace-nowrap">Sarah Jenkins</td>
+<td class="px-3 text-text-slate whitespace-nowrap">Apr 05, 2015</td>
+<td class="px-3 text-right font-body-strong text-body-strong text-text-ink tabular-nums whitespace-nowrap">$165,000</td>
+<td class="px-3 text-right font-body-strong text-body-strong text-text-ink tabular-nums whitespace-nowrap">$210,000</td>
+<td class="px-3 text-center whitespace-nowrap">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-caption font-body-strong bg-status-active-bg text-success">Active</span>
+</td>
+</tr>
+<!-- Row 9: Fiona Gallagher -->
+<tr class="h-11 hover:bg-[#F8FAFD] transition-colors">
+<td class="px-3 font-body-strong text-body-strong text-text-ink whitespace-nowrap">Fiona Gallagher</td>
+<td class="px-3 text-text-slate whitespace-nowrap">fiona.gallagher@acme.corp</td>
+<td class="px-3 text-text-ink whitespace-nowrap">Customer Support</td>
+<td class="px-3 text-text-ink whitespace-nowrap">Customer Success Specialist</td>
+<td class="px-3 text-text-ink whitespace-nowrap">United Kingdom</td>
+<td class="px-3 text-text-slate whitespace-nowrap">Sophie Turner</td>
+<td class="px-3 text-text-slate whitespace-nowrap">Jun 24, 2022</td>
+<td class="px-3 text-right font-body-strong text-body-strong text-text-ink tabular-nums whitespace-nowrap">$52,000</td>
+<td class="px-3 text-right font-body-strong text-body-strong text-text-ink tabular-nums whitespace-nowrap">$58,500</td>
+<td class="px-3 text-center whitespace-nowrap">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-caption font-body-strong bg-status-active-bg text-success">Active</span>
+</td>
+</tr>
+<!-- Row 10: Klaus Neumann (Inactive, Muted text in Slate #5B6676) -->
+<tr class="h-11 hover:bg-[#F8FAFD] transition-colors text-text-slate">
+<td class="px-3 font-body-strong text-body-strong text-text-slate whitespace-nowrap">Klaus Neumann</td>
+<td class="px-3 text-text-slate whitespace-nowrap">klaus.neumann@acme.corp</td>
+<td class="px-3 text-text-slate whitespace-nowrap">Marketing</td>
+<td class="px-3 text-text-slate whitespace-nowrap">Financial Analyst</td>
+<td class="px-3 text-text-slate whitespace-nowrap">Germany</td>
+<td class="px-3 text-text-slate whitespace-nowrap">Elena Rostova</td>
+<td class="px-3 text-text-slate whitespace-nowrap">Oct 14, 2021</td>
+<td class="px-3 text-right font-body-strong text-body-strong text-text-slate tabular-nums whitespace-nowrap">$74,000</td>
+<td class="px-3 text-right font-body-strong text-body-strong text-text-slate tabular-nums whitespace-nowrap">$82,000</td>
+<td class="px-3 text-center whitespace-nowrap">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-caption font-body-strong bg-status-inactive-bg text-text-slate">Inactive</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- MUI DataGrid Style Pagination Footer (44px) -->
+<div class="h-11 border-t border-border-line bg-surface-white px-space-md flex items-center justify-between text-text-slate font-caption text-caption select-none">
+<div class="flex items-center gap-space-sm">
+<span class="">Rows per page:</span>
+<select class="bg-transparent font-body-strong text-text-ink focus:outline-none cursor-pointer">
+<option value="10">10</option>
+<option selected="" value="25">25</option>
+<option value="50">50</option>
+<option value="100">100</option>
+</select>
+</div>
+<div class="flex items-center gap-space-lg">
+<span class="tabular-nums">1–25 of 9,700</span>
+<div class="flex items-center gap-1">
+<button class="w-7 h-7 flex items-center justify-center rounded text-text-ash cursor-not-allowed" disabled="">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="w-7 h-7 flex items-center justify-center rounded text-text-slate hover:text-text-ink hover:bg-table-header-fog transition-colors">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- STATE 2: Loading State (10 Pulse Skeleton Rows) -->
+<div class="hidden bg-surface-white border border-border-line rounded-lg overflow-hidden flex flex-col" id="view-loading">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse min-w-[1180px]">
+<thead>
+<tr class="bg-table-header-fog h-11 border-b border-border-line select-none font-body-strong text-caption text-text-slate">
+<th class="px-3" scope="col">Name</th>
+<th class="px-3" scope="col">Email</th>
+<th class="px-3" scope="col">Department</th>
+<th class="px-3" scope="col">Job title</th>
+<th class="px-3" scope="col">Country</th>
+<th class="px-3" scope="col">Manager</th>
+<th class="px-3" scope="col">Hire date</th>
+<th class="px-3 text-right" scope="col">Base salary</th>
+<th class="px-3 text-right" scope="col">Total compensation</th>
+<th class="px-3 text-center" scope="col">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-line">
+<!-- 10 Shimmer Skeleton Rows -->
+<tr class="h-11 animate-pulse"><td class="px-3"><div class="h-4 bg-border-line rounded w-28"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-36"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-20"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-40"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-24"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-20"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16 ml-auto"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16 ml-auto"></div></td><td class="px-3 text-center"><div class="h-5 bg-border-line rounded-full w-14 mx-auto"></div></td></tr>
+<tr class="h-11 animate-pulse"><td class="px-3"><div class="h-4 bg-border-line rounded w-32"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-40"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-32"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-20"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-20"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-20"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16 ml-auto"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16 ml-auto"></div></td><td class="px-3 text-center"><div class="h-5 bg-border-line rounded-full w-14 mx-auto"></div></td></tr>
+<tr class="h-11 animate-pulse"><td class="px-3"><div class="h-4 bg-border-line rounded w-24"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-36"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-24"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-44"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-14"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-24"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-20"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16 ml-auto"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16 ml-auto"></div></td><td class="px-3 text-center"><div class="h-5 bg-border-line rounded-full w-14 mx-auto"></div></td></tr>
+<tr class="h-11 animate-pulse"><td class="px-3"><div class="h-4 bg-border-line rounded w-28"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-32"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-18"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-36"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-28"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-20"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16 ml-auto"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16 ml-auto"></div></td><td class="px-3 text-center"><div class="h-5 bg-border-line rounded-full w-14 mx-auto"></div></td></tr>
+<tr class="h-11 animate-pulse"><td class="px-3"><div class="h-4 bg-border-line rounded w-30"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-40"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-20"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-40"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-24"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-24"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-20"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16 ml-auto"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16 ml-auto"></div></td><td class="px-3 text-center"><div class="h-5 bg-border-line rounded-full w-14 mx-auto"></div></td></tr>
+<tr class="h-11 animate-pulse"><td class="px-3"><div class="h-4 bg-border-line rounded w-20"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-32"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-24"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-36"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-18"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-20"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-20"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16 ml-auto"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16 ml-auto"></div></td><td class="px-3 text-center"><div class="h-5 bg-border-line rounded-full w-14 mx-auto"></div></td></tr>
+<tr class="h-11 animate-pulse"><td class="px-3"><div class="h-4 bg-border-line rounded w-28"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-36"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-20"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-32"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-24"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-20"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16 ml-auto"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16 ml-auto"></div></td><td class="px-3 text-center"><div class="h-5 bg-border-line rounded-full w-14 mx-auto"></div></td></tr>
+<tr class="h-11 animate-pulse"><td class="px-3"><div class="h-4 bg-border-line rounded w-32"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-44"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-24"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-36"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-20"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-22"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-20"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16 ml-auto"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16 ml-auto"></div></td><td class="px-3 text-center"><div class="h-5 bg-border-line rounded-full w-14 mx-auto"></div></td></tr>
+<tr class="h-11 animate-pulse"><td class="px-3"><div class="h-4 bg-border-line rounded w-28"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-36"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-28"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-40"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-24"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-24"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-20"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16 ml-auto"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16 ml-auto"></div></td><td class="px-3 text-center"><div class="h-5 bg-border-line rounded-full w-14 mx-auto"></div></td></tr>
+<tr class="h-11 animate-pulse"><td class="px-3"><div class="h-4 bg-border-line rounded w-26"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-36"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-20"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-30"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-24"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-20"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16 ml-auto"></div></td><td class="px-3"><div class="h-4 bg-border-line rounded w-16 ml-auto"></div></td><td class="px-3 text-center"><div class="h-5 bg-border-line rounded-full w-14 mx-auto"></div></td></tr>
+</tbody>
+</table>
+</div>
+<div class="h-11 border-t border-border-line bg-surface-white px-space-md flex items-center justify-between text-text-slate font-caption text-caption">
+<span class="animate-pulse">Loading institutional compensation records...</span>
+</div>
+</div>
+<!-- STATE 3: Empty State (No Matches) -->
+<div class="hidden bg-surface-white border border-border-line rounded-lg py-16 px-space-xl flex flex-col items-center justify-center text-center" id="view-empty">
+<div class="w-12 h-12 rounded-full bg-table-header-fog flex items-center justify-center mb-space-md text-text-slate">
+<span class="material-symbols-outlined text-[28px]">search_off</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-text-ink tracking-tight mb-1">No employees match your filters</h3>
+<p class="font-body-default text-body-default text-text-slate max-w-md mb-space-lg">
+        We could not find any employee compensation records matching your current search parameters. Try resetting your department, title, or search criteria.
+      </p>
+<button class="h-8 px-space-md bg-primary-container hover:bg-primary-dark text-on-primary font-body-strong text-caption rounded-[6px] transition-colors inline-flex items-center gap-1.5 select-none shadow-none" onclick="setViewState('default')"><span class="material-symbols-outlined text-[16px]">filter_list</span><span class="">Apply filters</span></button><button class="h-10 px-space-lg border border-border-line hover:bg-table-header-fog text-text-slate hover:text-text-ink font-body-strong text-body-strong rounded-[6px] transition-colors inline-flex items-center gap-2" onclick="resetFilters()">
+<span class="material-symbols-outlined text-[18px]">filter_alt_off</span>
+<span class="">Clear filters</span>
+</button>
+</div>
+<!-- STATE 4: Error State (Retry Alert) -->
+<div class="hidden flex flex-col gap-space-md" id="view-error">
+<!-- MUI Alert Standard Variant (Error style) -->
+<div class="bg-error-container/40 border border-error/30 rounded-lg p-space-md flex items-start justify-between">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-error text-[22px] mt-0.5">error_outline</span>
+<div class="flex flex-col">
+<span class="font-body-strong text-body-strong text-on-error-container">Unable to load employees</span>
+<span class="font-body-default text-body-default text-on-error-container/90 mt-0.5">The server encountered a temporary error while querying ACME compensation records. Please retry.</span>
+</div>
+</div>
+<button class="h-9 px-space-md border border-error text-error hover:bg-error/10 font-body-strong text-caption rounded transition-colors whitespace-nowrap" onclick="setViewState('default')">
+          Retry
+        </button>
+</div>
+<!-- Blank Fallback Table Base -->
+<div class="bg-surface-white border border-border-line rounded-lg h-64 flex items-center justify-center text-text-slate font-caption text-caption">
+        Data connection suspended. Click Retry above to restore session.
+      </div>
+</div>
+</div>
+</div></main><footer class="w-full border-t border-border-line bg-surface-white"><div class="max-w-[1280px] mx-auto px-margin py-space-md flex items-center justify-between text-text-slate font-caption text-caption"><span class="">ACME Corporation © 2024 • Institutional Compensation System</span><span class="">Confidential • Internal HR Personnel Only</span></div></footer>
+
+</body></html>

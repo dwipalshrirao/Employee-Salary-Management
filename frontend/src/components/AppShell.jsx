@@ -3,6 +3,7 @@ import { NavLink, Outlet } from "react-router-dom";
 import { AppBar, Avatar, Box, Button, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
 
 import { useAuth } from "../auth/useAuth";
+import { initialsFor } from "../lib/format";
 
 const navItems = [
   { label: "Dashboard", to: "/", end: true },
@@ -10,16 +11,6 @@ const navItems = [
   { label: "History", to: "/history" },
   { label: "Bulk update", to: "/bulk-update" },
 ];
-
-function initialsFor(name) {
-  const initials = name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0].toUpperCase())
-    .join("");
-  return initials || "HR";
-}
 
 export default function AppShell() {
   const { user, logout } = useAuth();
