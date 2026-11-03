@@ -285,6 +285,49 @@
                         "description": ""
                     }
                 }
+            },
+            "patch": {
+                "operationId": "employees-update",
+                "description": "Partially update an employee and record pay changes.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "employees"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedEmployeeUpdate"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmployeeDetail"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
             }
         },
         "/api/employees/{id}/direct-reports": {
@@ -955,6 +998,59 @@
                     "departments",
                     "job_titles"
                 ]
+            },
+            "PatchedEmployeeUpdate": {
+                "type": "object",
+                "description": "Reject unknown input fields instead of silently ignoring them.",
+                "properties": {
+                    "full_name": {
+                        "type": "string",
+                        "maxLength": 120
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 254
+                    },
+                    "department_id": {
+                        "type": "integer"
+                    },
+                    "job_title_id": {
+                        "type": "integer"
+                    },
+                    "country_code": {
+                        "type": "string"
+                    },
+                    "manager_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "hire_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "base_salary_cents": {
+                        "type": "integer",
+                        "maximum": 1000000000,
+                        "minimum": 1
+                    },
+                    "bonus_cents": {
+                        "type": "integer",
+                        "maximum": 1000000000,
+                        "minimum": 0
+                    },
+                    "allowances_cents": {
+                        "type": "integer",
+                        "maximum": 1000000000,
+                        "minimum": 0
+                    },
+                    "change_reason": {
+                        "type": "string",
+                        "maxLength": 200
+                    }
+                }
             },
             "SalaryAmounts": {
                 "type": "object",

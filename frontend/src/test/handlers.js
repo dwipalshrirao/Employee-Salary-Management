@@ -217,6 +217,18 @@ export function employeeListHandler(items = testEmployees, overrides = {}) {
 export const dataHandlers = [
   http.get("/api/lookups", () => HttpResponse.json(testLookups)),
   employeeListHandler(),
+  http.post("/api/employees", async ({ request }) => {
+    const body = await request.json();
+    return HttpResponse.json(
+      {
+        ...testEmployeeDetail,
+        id: 99,
+        full_name: body.full_name,
+        email: body.email,
+      },
+      { status: 201 },
+    );
+  }),
 ];
 
 export const handlers = [...authHandlers, ...dataHandlers, ...detailHandlers];

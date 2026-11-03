@@ -118,3 +118,17 @@ def test_employee_list_returns_requested_page(auth_client):
     assert payload["page"] == 2
     assert payload["page_size"] == 1
     assert len(payload["items"]) == 1
+
+
+def test_malformed_json_patch_returns_validation_error(auth_client):
+    employee = make_employee()
+
+    response = auth_client.generic(
+        "PATCH",
+        f"/api/employees/{employee.id}",
+        data="{",
+        content_type="application/json",
+    )
+
+    assert response.status_code == 422
+    assert response.json()["error"]["code"] == "validation_error"

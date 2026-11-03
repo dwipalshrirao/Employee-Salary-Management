@@ -17,9 +17,10 @@ from employees.serializers import (
     EmployeeDetailSerializer,
     EmployeeListQuerySerializer,
     EmployeeListResponseSerializer,
+    EmployeeUpdateSerializer,
     SalaryHistoryItemSerializer,
 )
-from employees.services.employees import create_employee
+from employees.services.employees import create_employee, update_employee
 
 
 class EmployeeListView(APIView):
@@ -65,6 +66,19 @@ class EmployeeDetailView(APIView):
     def get(self, request, pk, format=None):
         employee = get_employee_detail(pk)
         return Response(EmployeeDetailSerializer(employee).data)
+
+    @extend_schema(
+        operation_id="employees-update",
+        tags=["employees"],
+        description="Partially update an employee and record pay changes.",
+        request=EmployeeUpdateSerializer,
+        responses={200: EmployeeDetailSerializer},
+    )
+    def patch(self, request, pk, format=None):
+        serializer = EmployeeUpdateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        employee = update_employee(pk, serializer.validated_data)
+        return Response(EmployeeDetailSerializer(get_employee_detail(employee.id)).data)
 
 
 class EmployeeDirectReportsView(APIView):

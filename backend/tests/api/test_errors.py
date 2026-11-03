@@ -1,3 +1,5 @@
+import logging
+
 import pytest
 from rest_framework.exceptions import NotFound, UnsupportedMediaType, ValidationError
 from rest_framework.views import APIView
@@ -81,3 +83,40 @@ def test_internal_error_returns_request_id_without_leaking_details():
         "message": "Internal server error.",
         "details": {"request_id": "req-1"},
     }
+
+
+class _ListHandler(logging.Handler):
+    def __init__(self):
+        super().__init__()
+        self.records = []
+
+    def emit(self, record):
+        self.records.append(record)
+
+
+def test_internal_error_logs_traceback_with_request_id():
+    class _Request:
+        request_id = "req-1"
+
+    context = _exception_context()
+    context["request"] = _Request()
+    logger = logging.getLogger("common")
+    handler_instance = _ListHandler()
+    logger.addHandler(handler_instance)
+
+    try:
+        try:
+            raise RuntimeError("secret internal details")
+        except RuntimeError as exc:
+            response = handler(exc, context)
+    finally:
+        logger.removeHandler(handler_instance)
+
+    assert response.status_code == 500
+    record = handler_instance.records[0]
+    assert record.getMessage() == "unhandled_exception"
+    assert record.request_id == "req-1"
+    assert record.exc_info is not None
+    formatted = logging.Formatter().formatException(record.exc_info)
+    assert "Traceback" in formatted
+    assert "RuntimeError: secret internal details" in formatted

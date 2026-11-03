@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"surface-white":"#FFFFFF","on-background":"#111c2a","success":"#2E7D32","chart-band-3":"#8FB0FA","on-primary-fixed":"#001552","chart-band-7":"#1B3A8F","primary-fixed-dim":"#b7c4ff","on-secondary-fixed":"#00201d","on-error":"#ffffff","inverse-surface":"#26313f","on-surface-variant":"#434655","primary-tint":"#E8EEFC","surface-container-low":"#eff4ff","primary-container":"#1e4ed8","surface-dim":"#d0dbed","text-ash":"#9AA3B2","primary":"#0037b1","primary-fixed":"#dce1ff","on-primary":"#ffffff","on-secondary-fixed-variant":"#00504a","secondary-fixed-dim":"#80d5cb","surface-container-high":"#dee9fc","secondary-container":"#99efe5","on-primary-container":"#cad3ff","on-tertiary-container":"#ffcaae","table-header-fog":"#F1F4F9","surface-container-highest":"#d8e3f6","background-cloud":"#F6F7F9","text-ink":"#1A2230","text-slate":"#5B6676","on-tertiary":"#ffffff","warning":"#B45309","primary-dark":"#173DAE","on-surface":"#111c2a","status-inactive-bg":"#EEF0F4","chart-band-2":"#B7CEFF","surface-container-lowest":"#ffffff","secondary":"#006a63","outline-variant":"#c4c5d7","on-tertiary-fixed-variant":"#763300","on-primary-fixed-variant":"#0038b6","status-active-bg":"#E6F4EA","surface":"#f8f9ff","background":"#f8f9ff","outline":"#747686","on-tertiary-fixed":"#331200","chart-band-6":"#2A52BD","on-error-container":"#93000a","surface-bright":"#f8f9ff","surface-variant":"#d8e3f6","chart-band-1":"#DBE7FF","inverse-primary":"#b7c4ff","error":"#C62828","tertiary-fixed":"#ffdbca","tertiary-fixed-dim":"#ffb68e","secondary-fixed":"#9cf2e8","border-line":"#E3E7EE","tertiary-container":"#984300","error-container":"#ffdad6","surface-tint":"#2251da","tertiary":"#733100","chart-band-5":"#3F6DE0","on-secondary-container":"#006f67","on-secondary":"#ffffff","chart-band-4":"#6590F2","inverse-on-surface":"#eaf1ff","surface-container":"#e5eeff"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"gutter-sm":"1rem","space-md":"1rem","space-xl":"1.5rem","space-sm":"0.5rem","margin":"1.5rem","space-xs":"0.25rem","space-lg":"1.25rem","gutter":"1.5rem"},"fontFamily":{"headline-md":["Inter"],"caption":["Inter"],"headline-lg":["Inter"],"headline-sm":["Inter"],"kpi-value":["Inter"],"body-strong":["Inter"],"body-default":["Inter"]},"fontSize":{"headline-md":["20px",{"lineHeight":"28px","fontWeight":"600"}],"caption":["12px",{"lineHeight":"16px","fontWeight":"400"}],"headline-lg":["28px",{"lineHeight":"36px","fontWeight":"600"}],"headline-sm":["16px",{"lineHeight":"24px","fontWeight":"600"}],"kpi-value":["32px",{"lineHeight":"40px","fontWeight":"600"}],"body-strong":["14px",{"lineHeight":"20px","fontWeight":"600"}],"body-default":["14px",{"lineHeight":"20px","fontWeight":"400"}]}}}}</script></head><body class="bg-background-cloud font-body-default text-body-default text-text-ink min-h-screen"><header class="fixed top-0 left-0 right-0 z-50 bg-surface-white border-b border-border-line"><div class="max-w-[1280px] mx-auto px-margin h-16 flex items-center justify-between"><div class="flex items-center gap-space-xl"><span class="font-headline-sm text-headline-sm text-text-ink tracking-tight select-none">ACME Salary Management</span><nav class="flex items-center gap-space-lg" data-active-classes="text-primary-container font-body-strong border-b-2 border-primary-container"><a class="font-body-default text-body-default text-text-slate hover:text-text-ink h-16 flex items-center transition-colors" data-path="dashboard" href="#">Dashboard</a><a class="font-body-strong text-body-strong text-primary-container border-b-2 border-primary-container h-16 flex items-center transition-colors" data-path="employees" href="#">Employees</a><a class="font-body-default text-body-default text-text-slate hover:text-text-ink h-16 flex items-center transition-colors" data-path="history" href="#">History</a><a class="font-body-default text-body-default text-text-slate hover:text-text-ink h-16 flex items-center transition-colors" data-path="bulk-update" href="#">Bulk update</a></nav></div><div class="relative"><details class="group"><summary class="flex items-center gap-space-sm cursor-pointer select-none list-none outline-none py-space-xs"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><span class="font-body-strong text-body-strong text-text-ink">Sarah Jenkins</span><span class="material-symbols-outlined text-text-slate text-[20px] transition-transform duration-200 group-open:rotate-180">expand_more</span></summary><div class="absolute right-0 mt-space-xs w-48 bg-surface-white border border-border-line rounded-lg shadow-[0_8px_24px_rgba(26,34,48,0.12)] py-space-xs z-50"><div class="px-space-md py-space-xs border-b border-border-line"><div class="font-body-strong text-body-strong text-text-ink">Sarah Jenkins</div><div class="font-caption text-caption text-text-slate">HR Manager</div></div><a class="flex items-center gap-space-sm px-space-md py-space-sm font-body-default text-body-default text-error hover:bg-background-cloud transition-colors" href="#"><span class="material-symbols-outlined text-[18px]">logout</span><span class="">Log out</span></a></div></details></div></div></header><main class="w-full pt-16 bg-background-cloud min-h-[calc(100vh-64px)]"><div class="flex flex-col w-full">
+<!-- Interactive Specification Frame Switcher Toolbar -->
+<div class="w-full bg-surface-white border-b border-border-line px-margin py-2">
+<div class="max-w-[1280px] mx-auto flex items-center justify-between gap-space-md flex-wrap">
+<div class="flex items-center gap-space-xs text-text-slate font-caption text-caption uppercase tracking-wider font-semibold">
+<span class="material-symbols-outlined text-[16px] text-primary-container">tune</span>
+<span>Spec Preview:</span>
+</div>
+<div class="flex items-center gap-1.5 flex-wrap" id="state-tab-group">
+<button class="state-tab px-3 py-1.5 rounded text-caption font-body-strong transition-all bg-primary-container text-on-primary" id="tab-empty" onclick="switchState('empty')" type="button">
+          1. Default Empty (Add Employee)
+        </button>
+<button class="state-tab px-3 py-1.5 rounded text-caption font-body-default transition-all text-text-slate hover:text-text-ink hover:bg-background-cloud" id="tab-validation" onclick="switchState('validation')" type="button">
+          2. Validation Errors
+        </button>
+<button class="state-tab px-3 py-1.5 rounded text-caption font-body-default transition-all text-text-slate hover:text-text-ink hover:bg-background-cloud" id="tab-conflict" onclick="switchState('conflict')" type="button">
+          3. Conflict Error (Email in use)
+        </button>
+<button class="state-tab px-3 py-1.5 rounded text-caption font-body-default transition-all text-text-slate hover:text-text-ink hover:bg-background-cloud" id="tab-edit" onclick="switchState('edit')" type="button">
+          4. Edit Asha Patel (Pre-filled)
+        </button>
+<button class="state-tab px-3 py-1.5 rounded text-caption font-body-default transition-all text-text-slate hover:text-text-ink hover:bg-background-cloud" id="tab-dialog" onclick="switchState('dialog')" type="button">
+          5. Discard Changes Dialog
+        </button>
+<button class="state-tab px-3 py-1.5 rounded text-caption font-body-default transition-all text-text-slate hover:text-text-ink hover:bg-background-cloud" id="tab-compare" onclick="switchState('compare')" type="button">
+          Compare All Frames
+        </button>
+</div>
+</div>
+</div>
+<!-- SINGLE VIEW WORKSPACE (States 1, 2, 3, 4, 5) -->
+<div class="w-full px-margin py-space-xl max-w-[1280px] mx-auto" id="single-view-container">
+<!-- Breadcrumb -->
+<div class="flex items-center gap-space-xs font-body-default text-body-default text-text-slate mb-2">
+<span class="hover:text-text-ink cursor-pointer">Employees</span>
+<span class="material-symbols-outlined text-[16px] text-text-ash">chevron_right</span>
+<span class="text-text-ink font-body-strong" id="breadcrumb-current">New employee</span>
+</div>
+<!-- Page Title Header -->
+<div class="mb-space-lg">
+<h1 class="font-headline-lg text-headline-lg text-text-ink tracking-tight" id="page-title">Add employee</h1>
+</div>
+<!-- Alert Banner (Shown in Conflict Error state) -->
+<div class="hidden mb-space-lg w-full max-w-[960px] mx-auto bg-[#FDE8E8] border border-[#F8B4B4] rounded-lg p-space-md flex items-start gap-space-sm text-error" id="conflict-alert">
+<span class="material-symbols-outlined text-[20px] text-error flex-shrink-0 mt-0.5">error</span>
+<div class="flex-1">
+<span class="font-body-strong text-body-strong text-error block">Conflict detected</span>
+<span class="font-body-default text-body-default text-text-ink">A user with this email address already exists in the institutional directory.</span>
+</div>
+</div>
+<!-- Main White Form Card -->
+<div class="w-full max-w-[960px] mx-auto bg-surface-white border border-border-line rounded-lg p-8 shadow-sm">
+<form class="space-y-8" id="employee-form" onsubmit="event.preventDefault();">
+<!-- SECTION 1: Personal and job -->
+<div>
+<h2 class="font-headline-md text-headline-md text-text-ink pb-3 border-b border-border-line mb-6">
+            Personal and job
+          </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-5">
+<!-- Full Name -->
+<div>
+<label class="block font-body-strong text-body-strong text-text-ink mb-1.5" for="input-fullname">
+                Full name <span class="text-error">*</span>
+</label>
+<input class="w-full h-10 px-3 rounded-lg border border-border-line bg-surface-white text-text-ink font-body-default text-body-default focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" id="input-fullname" placeholder="e.g. Asha Patel" type="text"/>
+</div>
+<!-- Email -->
+<div>
+<label class="block font-body-strong text-body-strong text-text-ink mb-1.5" for="input-email">
+                Email <span class="text-error">*</span>
+</label>
+<input class="w-full h-10 px-3 rounded-lg border border-border-line bg-surface-white text-text-ink font-body-default text-body-default focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" id="input-email" placeholder="e.g. asha.patel@acme.corp" type="email"/>
+<p class="hidden font-caption text-caption text-error mt-1 flex items-center gap-1" id="email-error-text">
+<span class="material-symbols-outlined text-[14px]">error</span>
+<span id="email-error-msg">Enter a valid email</span>
+</p>
+</div>
+<!-- Department -->
+<div>
+<label class="block font-body-strong text-body-strong text-text-ink mb-1.5" for="input-dept">
+                Department <span class="text-error">*</span>
+</label>
+<div class="relative">
+<select class="w-full h-10 px-3 pr-8 rounded-lg border border-border-line bg-surface-white text-text-ink font-body-default text-body-default focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container appearance-none cursor-pointer" id="input-dept">
+<option disabled="" selected="" value="">Select department</option>
+<option value="Engineering">Engineering</option>
+<option value="Product">Product</option>
+<option value="Sales">Sales</option>
+<option value="Finance">Finance</option>
+<option value="Marketing">Marketing</option>
+<option value="Human Resources">Human Resources</option>
+<option value="Operations">Operations</option>
+<option value="Customer Support">Customer Support</option>
+</select>
+<span class="material-symbols-outlined absolute right-2.5 top-2.5 pointer-events-none text-text-slate text-[20px]">expand_more</span>
+</div>
+</div>
+<!-- Job Title -->
+<div>
+<label class="block font-body-strong text-body-strong text-text-ink mb-1.5" for="input-jobtitle">
+                Job title <span class="text-error">*</span>
+</label>
+<div class="relative">
+<select class="w-full h-10 px-3 pr-8 rounded-lg border border-border-line bg-surface-white text-text-ink font-body-default text-body-default focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container appearance-none cursor-pointer" id="input-jobtitle">
+<option disabled="" selected="" value="">Select job title</option>
+<option value="Senior Software Engineer">Senior Software Engineer</option>
+<option value="Software Engineer II">Software Engineer II</option>
+<option value="Account Executive">Account Executive</option>
+<option value="Engineering Manager">Engineering Manager</option>
+<option value="Product Manager">Product Manager</option>
+</select>
+<span class="material-symbols-outlined absolute right-2.5 top-2.5 pointer-events-none text-text-slate text-[20px]">expand_more</span>
+</div>
+</div>
+<!-- Country -->
+<div>
+<label class="block font-body-strong text-body-strong text-text-ink mb-1.5" for="input-country">
+                Country <span class="text-error">*</span>
+</label>
+<div class="relative">
+<select class="w-full h-10 px-3 pr-8 rounded-lg border border-border-line bg-surface-white text-text-ink font-body-default text-body-default focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container appearance-none cursor-pointer" id="input-country">
+<option disabled="" selected="" value="">Select country</option>
+<option value="India">India</option>
+<option value="United States">United States</option>
+<option value="United Kingdom">United Kingdom</option>
+<option value="Germany">Germany</option>
+<option value="Canada">Canada</option>
+<option value="Singapore">Singapore</option>
+</select>
+<span class="material-symbols-outlined absolute right-2.5 top-2.5 pointer-events-none text-text-slate text-[20px]">expand_more</span>
+</div>
+</div>
+<!-- Manager (optional Autocomplete) -->
+<div>
+<label class="block font-body-strong text-body-strong text-text-ink mb-1.5" for="input-manager">
+                Manager (optional)
+              </label>
+<div class="relative">
+<input class="w-full h-10 pl-9 pr-3 rounded-lg border border-border-line bg-surface-white text-text-ink font-body-default text-body-default focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" id="input-manager" placeholder="Search manager..." type="text"/>
+<span class="material-symbols-outlined absolute left-2.5 top-2.5 pointer-events-none text-text-slate text-[18px]">search</span>
+</div>
+</div>
+<!-- Hire Date -->
+<div>
+<label class="block font-body-strong text-body-strong text-text-ink mb-1.5" for="input-hiredate">
+                Hire date <span class="text-error">*</span>
+</label>
+<input class="w-full h-10 px-3 rounded-lg border border-border-line bg-surface-white text-text-ink font-body-default text-body-default focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors cursor-pointer" id="input-hiredate" type="date"/>
+</div>
+</div>
+</div>
+<!-- SECTION 2: Compensation (annual, USD) -->
+<div>
+<h2 class="font-headline-md text-headline-md text-text-ink pb-3 border-b border-border-line mb-6">
+            Compensation (annual, USD)
+          </h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Base Salary -->
+<div>
+<label class="block font-body-strong text-body-strong text-text-ink mb-1.5" for="input-salary">
+                Base salary <span class="text-error">*</span>
+</label>
+<div class="relative">
+<span class="absolute left-3 top-2.5 text-text-slate font-body-default">$</span>
+<input class="w-full h-10 pl-7 pr-3 rounded-lg border border-border-line bg-surface-white text-text-ink font-body-default text-body-default focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" id="input-salary" oninput="calculateTotal()" placeholder="45,000" type="text"/>
+</div>
+<p class="hidden font-caption text-caption text-error mt-1 flex items-center gap-1" id="salary-error-text">
+<span class="material-symbols-outlined text-[14px]">error</span>
+<span>Enter an amount greater than 0</span>
+</p>
+</div>
+<!-- Bonus -->
+<div>
+<label class="block font-body-strong text-body-strong text-text-ink mb-1.5" for="input-bonus">
+                Bonus
+              </label>
+<div class="relative">
+<span class="absolute left-3 top-2.5 text-text-slate font-body-default">$</span>
+<input class="w-full h-10 pl-7 pr-3 rounded-lg border border-border-line bg-surface-white text-text-ink font-body-default text-body-default focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" id="input-bonus" oninput="calculateTotal()" placeholder="4,500" type="text"/>
+</div>
+</div>
+<!-- Allowances -->
+<div>
+<label class="block font-body-strong text-body-strong text-text-ink mb-1.5" for="input-allowances">
+                Allowances
+              </label>
+<div class="relative">
+<span class="absolute left-3 top-2.5 text-text-slate font-body-default">$</span>
+<input class="w-full h-10 pl-7 pr-3 rounded-lg border border-border-line bg-surface-white text-text-ink font-body-default text-body-default focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" id="input-allowances" oninput="calculateTotal()" placeholder="1,800" type="text"/>
+</div>
+</div>
+</div>
+<!-- Total Calculation Helper Text -->
+<div class="mt-3 p-3 bg-table-header-fog rounded-lg flex items-center justify-between border border-border-line">
+<span class="font-body-default text-body-default text-text-slate">Total calculated compensation:</span>
+<span class="font-body-strong text-body-strong text-text-ink" id="total-compensation-display">
+              Total: $0 (approximate: ₹0 INR)
+            </span>
+</div>
+<!-- Reason for change (Condition: Frame 4 Edit Mode) -->
+<div class="hidden mt-5" id="reason-change-wrapper">
+<label class="block font-body-strong text-body-strong text-text-ink mb-1.5" for="input-reason">
+              Reason for change (optional)
+            </label>
+<input class="w-full h-10 px-3 rounded-lg border border-border-line bg-surface-white text-text-ink font-body-default text-body-default focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" id="input-reason" placeholder="e.g. Annual performance review and market adjustment" type="text"/>
+</div>
+</div>
+<!-- Footer Actions inside the Card -->
+<div class="pt-6 border-t border-border-line flex items-center justify-end gap-space-md">
+<button class="h-10 px-5 rounded-lg border border-border-line font-body-strong text-body-strong text-text-ink hover:bg-table-header-fog transition-colors" onclick="showDiscardModal()" type="button">
+            Cancel
+          </button>
+<button class="h-10 px-6 rounded-lg bg-primary-container text-on-primary font-body-strong text-body-strong hover:bg-primary-dark transition-colors shadow-sm" type="submit">
+            Save employee
+          </button>
+</div>
+</form>
+</div>
+</div>
+<!-- COMPARISON MODE (Frame 6) -->
+<div class="hidden w-full px-margin py-space-xl max-w-[1280px] mx-auto space-y-12" id="compare-view-container">
+<div class="flex items-center justify-between border-b border-border-line pb-4">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-text-ink">Side-by-Side State Matrix</h2>
+<p class="font-body-default text-body-default text-text-slate mt-1">Reviewing visual specifications across all input scenarios.</p>
+</div>
+<button class="h-9 px-4 rounded border border-border-line text-text-slate hover:text-text-ink bg-surface-white font-body-default text-body-default" onclick="switchState('empty')" type="button">
+        Back to interactive view
+      </button>
+</div>
+<!-- Mini Frame 1: Empty -->
+<div class="bg-surface-white border border-border-line rounded-lg p-6">
+<div class="flex items-center justify-between pb-3 border-b border-border-line mb-4">
+<span class="font-headline-sm text-headline-sm text-text-ink">Frame 1: Default Empty (Add Employee)</span>
+<span class="font-caption text-caption px-2 py-0.5 rounded bg-table-header-fog text-text-slate">Initial State</span>
+</div>
+<div class="text-caption font-caption text-text-slate mb-3">All fields empty, clear placeholders, default $0 total calculation.</div>
+<div class="grid grid-cols-2 gap-4 text-caption">
+<div class="p-3 bg-background-cloud rounded border border-border-line">Full name: [ e.g. Asha Patel ]</div>
+<div class="p-3 bg-background-cloud rounded border border-border-line">Email: [ e.g. asha.patel@acme.corp ]</div>
+<div class="p-3 bg-background-cloud rounded border border-border-line">Department: [ Select department ]</div>
+<div class="p-3 bg-background-cloud rounded border border-border-line">Base salary: $ [ 45,000 ]</div>
+</div>
+</div>
+<!-- Mini Frame 2: Validation Errors -->
+<div class="bg-surface-white border border-border-line rounded-lg p-6">
+<div class="flex items-center justify-between pb-3 border-b border-border-line mb-4">
+<span class="font-headline-sm text-headline-sm text-error">Frame 2: Validation Errors</span>
+<span class="font-caption text-caption px-2 py-0.5 rounded bg-[#FDE8E8] text-error font-semibold">Validation Failure</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="border border-error p-3 rounded-lg bg-surface-white">
+<label class="block text-caption font-body-strong text-text-ink mb-1">Email *</label>
+<div class="text-body-default text-error">invalid-email</div>
+<span class="text-caption text-error mt-1 block">⚠ Enter a valid email</span>
+</div>
+<div class="border border-error p-3 rounded-lg bg-surface-white">
+<label class="block text-caption font-body-strong text-text-ink mb-1">Base salary *</label>
+<div class="text-body-default text-error">$ 0</div>
+<span class="text-caption text-error mt-1 block">⚠ Enter an amount greater than 0</span>
+</div>
+</div>
+</div>
+<!-- Mini Frame 3: Conflict Error -->
+<div class="bg-surface-white border border-border-line rounded-lg p-6">
+<div class="flex items-center justify-between pb-3 border-b border-border-line mb-4">
+<span class="font-headline-sm text-headline-sm text-error">Frame 3: Conflict Error (Email in use)</span>
+<span class="font-caption text-caption px-2 py-0.5 rounded bg-[#FDE8E8] text-error font-semibold">409 Conflict</span>
+</div>
+<div class="bg-[#FDE8E8] border border-[#F8B4B4] rounded p-3 text-caption text-error mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">error</span>
+<span>A user with this email address already exists in the institutional directory.</span>
+</div>
+<div class="border border-error p-3 rounded-lg bg-surface-white max-w-sm">
+<label class="block text-caption font-body-strong text-text-ink mb-1">Email *</label>
+<div class="text-body-default text-text-ink">asha.patel@acme.corp</div>
+<span class="text-caption text-error mt-1 block">⚠ This email is already in use</span>
+</div>
+</div>
+<!-- Mini Frame 4: Edit Pre-filled -->
+<div class="bg-surface-white border border-border-line rounded-lg p-6">
+<div class="flex items-center justify-between pb-3 border-b border-border-line mb-4">
+<span class="font-headline-sm text-headline-sm text-text-ink">Frame 4: Edit Asha Patel (Pre-filled + Reason for Change)</span>
+<span class="font-caption text-caption px-2 py-0.5 rounded bg-status-active-bg text-success font-semibold">Edit Mode</span>
+</div>
+<div class="grid grid-cols-3 gap-3 text-caption font-body-default mb-4">
+<div class="p-2 border border-border-line rounded"><strong>Name:</strong> Asha Patel</div>
+<div class="p-2 border border-border-line rounded"><strong>Email:</strong> asha.patel@acme.corp</div>
+<div class="p-2 border border-border-line rounded"><strong>Job:</strong> Senior Software Engineer</div>
+<div class="p-2 border border-border-line rounded"><strong>Base:</strong> $48,000</div>
+<div class="p-2 border border-border-line rounded"><strong>Bonus:</strong> $4,800</div>
+<div class="p-2 border border-border-line rounded"><strong>Allowances:</strong> $1,800</div>
+</div>
+<div class="p-3 bg-table-header-fog rounded border border-border-line text-caption font-body-strong text-text-slate">
+        Total: $54,600 (approximate: ₹4,531,800 INR)
+      </div>
+<div class="mt-3 p-3 bg-surface-white border border-border-line rounded text-caption">
+<strong>Reason for change:</strong> Annual performance review and market adjustment
+      </div>
+</div>
+</div>
+<!-- MODAL: Frame 5 Discard Changes Dialog -->
+<div class="fixed inset-0 bg-[#111C2A]/40 backdrop-blur-[1px] z-50 items-center justify-center hidden" id="discard-dialog-backdrop">
+<div class="w-full max-w-[480px] bg-surface-white rounded-lg p-6 shadow-[0_8px_24px_rgba(26,34,48,0.12)] border border-border-line transform transition-all">
+<div class="flex items-start justify-between mb-4">
+<h3 class="font-headline-md text-headline-md text-text-ink">Discard changes?</h3>
+<button class="text-text-slate hover:text-text-ink" onclick="closeDiscardModal()" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<p class="font-body-default text-body-default text-text-slate mb-6">
+        You have unsaved changes. Are you sure you want to discard them? Any details entered will be lost.
+      </p>
+<div class="flex items-center justify-end gap-space-md">
+<button class="h-10 px-4 rounded-lg border border-border-line font-body-strong text-body-strong text-text-slate hover:text-text-ink hover:bg-table-header-fog transition-colors" onclick="closeDiscardModal()" type="button">
+          Keep editing
+        </button>
+<button class="h-10 px-5 rounded-lg bg-error text-on-error font-body-strong text-body-strong hover:bg-[#A82222] transition-colors shadow-sm" onclick="confirmDiscardModal()" type="button">
+          Discard
+        </button>
+</div>
+</div>
+</div>
+<script>
+    const USD_TO_INR = 83.0;
+
+    function formatNumber(num) {
+      return num.toLocaleString('en-US');
+    }
+
+    function calculateTotal() {
+      const salaryRaw = document.getElementById('input-salary').value.replace(/[^0-9.]/g, '');
+      const bonusRaw = document.getElementById('input-bonus').value.replace(/[^0-9.]/g, '');
+      const allowRaw = document.getElementById('input-allowances').value.replace(/[^0-9.]/g, '');
+
+      const s = parseFloat(salaryRaw) || 0;
+      const b = parseFloat(bonusRaw) || 0;
+      const a = parseFloat(allowRaw) || 0;
+
+      const totalUSD = s + b + a;
+      const totalINR = Math.round(totalUSD * USD_TO_INR);
+
+      const display = document.getElementById('total-compensation-display');
+      display.innerText = 'Total: $' + formatNumber(totalUSD) + ' (approximate: ₹' + formatNumber(totalINR) + ' INR)';
+    }
+
+    function clearErrors() {
+      const emailInput = document.getElementById('input-email');
+      const emailError = document.getElementById('email-error-text');
+      const salaryInput = document.getElementById('input-salary');
+      const salaryError = document.getElementById('salary-error-text');
+      const conflictAlert = document.getElementById('conflict-alert');
+
+      emailInput.classList.remove('border-error');
+      emailInput.classList.add('border-border-line');
+      emailError.classList.add('hidden');
+
+      salaryInput.classList.remove('border-error');
+      salaryInput.classList.add('border-border-line');
+      salaryError.classList.add('hidden');
+
+      conflictAlert.classList.add('hidden');
+    }
+
+    function switchState(state) {
+      document.querySelectorAll('.state-tab').forEach(el => {
+        el.className = 'state-tab px-3 py-1.5 rounded text-caption font-body-default transition-all text-text-slate hover:text-text-ink hover:bg-background-cloud';
+      });
+      const activeTab = document.getElementById('tab-' + state);
+      if (activeTab) {
+        activeTab.className = 'state-tab px-3 py-1.5 rounded text-caption font-body-strong transition-all bg-primary-container text-on-primary';
+      }
+
+      const singleView = document.getElementById('single-view-container');
+      const compareView = document.getElementById('compare-view-container');
+      const modal = document.getElementById('discard-dialog-backdrop');
+
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      clearErrors();
+
+      if (state === 'compare') {
+        singleView.classList.add('hidden');
+        compareView.classList.remove('hidden');
+        return;
+      }
+
+      singleView.classList.remove('hidden');
+      compareView.classList.add('hidden');
+
+      const breadcrumb = document.getElementById('breadcrumb-current');
+      const title = document.getElementById('page-title');
+      const reasonWrapper = document.getElementById('reason-change-wrapper');
+
+      const inputName = document.getElementById('input-fullname');
+      const inputEmail = document.getElementById('input-email');
+      const inputDept = document.getElementById('input-dept');
+      const inputJob = document.getElementById('input-jobtitle');
+      const inputCountry = document.getElementById('input-country');
+      const inputManager = document.getElementById('input-manager');
+      const inputHire = document.getElementById('input-hiredate');
+      const inputSalary = document.getElementById('input-salary');
+      const inputBonus = document.getElementById('input-bonus');
+      const inputAllow = document.getElementById('input-allowances');
+      const inputReason = document.getElementById('input-reason');
+
+      if (state === 'empty') {
+        breadcrumb.innerText = 'New employee';
+        title.innerText = 'Add employee';
+        reasonWrapper.classList.add('hidden');
+        
+        inputName.value = '';
+        inputEmail.value = '';
+        inputDept.value = '';
+        inputJob.value = '';
+        inputCountry.value = '';
+        inputManager.value = '';
+        inputHire.value = '';
+        inputSalary.value = '';
+        inputBonus.value = '';
+        inputAllow.value = '';
+        inputReason.value = '';
+        calculateTotal();
+      } 
+      else if (state === 'validation') {
+        breadcrumb.innerText = 'New employee';
+        title.innerText = 'Add employee';
+        reasonWrapper.classList.add('hidden');
+
+        inputName.value = 'Johnathan Doe';
+        inputEmail.value = 'john.doe-invalid';
+        inputDept.value = 'Engineering';
+        inputJob.value = 'Software Engineer II';
+        inputCountry.value = 'United States';
+        inputManager.value = '';
+        inputHire.value = '2023-01-15';
+        inputSalary.value = '0';
+        inputBonus.value = '2,000';
+        inputAllow.value = '500';
+
+        const emailInput = document.getElementById('input-email');
+        const emailError = document.getElementById('email-error-text');
+        const emailMsg = document.getElementById('email-error-msg');
+        emailInput.classList.remove('border-border-line');
+        emailInput.classList.add('border-error');
+        emailMsg.innerText = 'Enter a valid email';
+        emailError.classList.remove('hidden');
+
+        const salaryInput = document.getElementById('input-salary');
+        const salaryError = document.getElementById('salary-error-text');
+        salaryInput.classList.remove('border-border-line');
+        salaryInput.classList.add('border-error');
+        salaryError.classList.remove('hidden');
+
+        calculateTotal();
+      }
+      else if (state === 'conflict') {
+        breadcrumb.innerText = 'New employee';
+        title.innerText = 'Add employee';
+        reasonWrapper.classList.add('hidden');
+
+        inputName.value = 'Asha Patel';
+        inputEmail.value = 'asha.patel@acme.corp';
+        inputDept.value = 'Engineering';
+        inputJob.value = 'Senior Software Engineer';
+        inputCountry.value = 'India';
+        inputManager.value = 'Ravi Shah';
+        inputHire.value = '2021-04-12';
+        inputSalary.value = '45,000';
+        inputBonus.value = '4,500';
+        inputAllow.value = '1,800';
+
+        const emailInput = document.getElementById('input-email');
+        const emailError = document.getElementById('email-error-text');
+        const emailMsg = document.getElementById('email-error-msg');
+        const conflictAlert = document.getElementById('conflict-alert');
+
+        emailInput.classList.remove('border-border-line');
+        emailInput.classList.add('border-error');
+        emailMsg.innerText = 'This email is already in use';
+        emailError.classList.remove('hidden');
+        conflictAlert.classList.remove('hidden');
+
+        calculateTotal();
+      }
+      else if (state === 'edit') {
+        breadcrumb.innerText = 'Asha Patel / Edit';
+        title.innerText = 'Edit Asha Patel';
+        reasonWrapper.classList.remove('hidden');
+
+        inputName.value = 'Asha Patel';
+        inputEmail.value = 'asha.patel@acme.corp';
+        inputDept.value = 'Engineering';
+        inputJob.value = 'Senior Software Engineer';
+        inputCountry.value = 'India';
+        inputManager.value = 'Ravi Shah';
+        inputHire.value = '2021-04-12';
+        inputSalary.value = '48,000';
+        inputBonus.value = '4,800';
+        inputAllow.value = '1,800';
+        inputReason.value = 'Annual performance review and market adjustment';
+
+        const display = document.getElementById('total-compensation-display');
+        display.innerText = 'Total: $54,600 (approximate: ₹4,531,800 INR)';
+      }
+      else if (state === 'dialog') {
+        breadcrumb.innerText = 'Asha Patel / Edit';
+        title.innerText = 'Edit Asha Patel';
+        reasonWrapper.classList.remove('hidden');
+
+        inputName.value = 'Asha Patel';
+        inputEmail.value = 'asha.patel@acme.corp';
+        inputDept.value = 'Engineering';
+        inputJob.value = 'Senior Software Engineer';
+        inputCountry.value = 'India';
+        inputManager.value = 'Ravi Shah';
+        inputHire.value = '2021-04-12';
+        inputSalary.value = '48,000';
+        inputBonus.value = '4,800';
+        inputAllow.value = '1,800';
+        inputReason.value = 'Annual performance review and market adjustment';
+
+        calculateTotal();
+        showDiscardModal();
+      }
+    }
+
+    function showDiscardModal() {
+      const modal = document.getElementById('discard-dialog-backdrop');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeDiscardModal() {
+      const modal = document.getElementById('discard-dialog-backdrop');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function confirmDiscardModal() {
+      closeDiscardModal();
+      switchState('empty');
+    }
+  </script>
+</div></main><footer class="w-full border-t border-border-line bg-surface-white"><div class="max-w-[1280px] mx-auto px-margin py-space-md flex items-center justify-between text-text-slate font-caption text-caption"><span class="">ACME Corporation © 2024 • Institutional Compensation System</span><span class="">Confidential • Internal HR Personnel Only</span></div></footer>
+</body></html>

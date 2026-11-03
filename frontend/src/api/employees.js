@@ -4,6 +4,10 @@ export function listEmployees(params) {
   return request("GET", "/employees", { query: params });
 }
 
+export function createEmployee(body) {
+  return request("POST", "/employees", { body });
+}
+
 export function getEmployee(id) {
   return request("GET", `/employees/${id}`);
 }

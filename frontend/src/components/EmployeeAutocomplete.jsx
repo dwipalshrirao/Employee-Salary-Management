@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { listEmployees } from "../api/employees";
 import { useDebounce } from "../hooks/useDebounce";
 
-export default function EmployeeAutocomplete({ value, onChange }) {
+export default function EmployeeAutocomplete({ value, onChange, label = "Manager" }) {
   const [input, setInput] = useState("");
   const search = useDebounce(input, 300);
   const { data, isFetching } = useQuery({
@@ -28,9 +28,7 @@ export default function EmployeeAutocomplete({ value, onChange }) {
       onChange={(_, option) => onChange(option ? String(option.id) : "")}
       onInputChange={(_, nextInput) => setInput(nextInput)}
       noOptionsText={search ? "No employees found" : "Type to search"}
-      renderInput={(params) => (
-        <TextField {...params} label="Manager" placeholder="Search manager" />
-      )}
+      renderInput={(params) => <TextField {...params} label={label} placeholder="Search manager" />}
     />
   );
 }

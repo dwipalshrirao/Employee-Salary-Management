@@ -1,13 +1,18 @@
+import logging
+
 from django.http import Http404, JsonResponse
 from rest_framework.exceptions import (
     AuthenticationFailed,
     NotAuthenticated,
     NotFound,
+    ParseError,
     PermissionDenied,
     UnsupportedMediaType,
     ValidationError,
 )
 from rest_framework.response import Response
+
+logger = logging.getLogger("common")
 
 
 class AppError(Exception):
@@ -125,6 +130,14 @@ def handler(exc, context):
     if isinstance(exc, ValidationError):
         return _drf_response("validation_error", "Invalid input.", exc.detail, 422)
 
+    if isinstance(exc, ParseError):
+        return _drf_response(
+            "validation_error",
+            "Invalid input.",
+            {"non_field_errors": ["Malformed JSON body."]},
+            422,
+        )
+
     if isinstance(exc, UnsupportedMediaType):
         return _drf_response("validation_error", "Unsupported media type.", {}, 422)
 
@@ -137,9 +150,16 @@ def handler(exc, context):
     if isinstance(exc, PermissionDenied) and str(exc).startswith("CSRF Failed"):
         return _drf_response("csrf_failed", "CSRF failed.", {}, 403)
 
+    request = context.get("request")
+    request_id = getattr(request, "request_id", None)
+    logger.error(
+        "unhandled_exception",
+        exc_info=exc,
+        extra={"request_id": request_id},
+    )
     return _drf_response(
         "internal_error",
         "Internal server error.",
-        _request_details(context.get("request")),
+        _request_details(request),
         500,
     )

@@ -193,3 +193,55 @@ class EmployeeCreateSerializer(StrictSerializer):
         if value > get_clock().today():
             raise serializers.ValidationError("Hire date cannot be in the future.")
         return value
+
+
+class EmployeeUpdateSerializer(StrictSerializer):
+    full_name = serializers.CharField(max_length=120, required=False)
+    email = serializers.EmailField(max_length=254, required=False)
+    department_id = serializers.PrimaryKeyRelatedField(
+        queryset=Department.objects.all(),
+        source="department",
+        required=False,
+    )
+    job_title_id = serializers.PrimaryKeyRelatedField(
+        queryset=JobTitle.objects.all(),
+        source="job_title",
+        required=False,
+    )
+    country_code = serializers.PrimaryKeyRelatedField(
+        queryset=Country.objects.all(),
+        source="country",
+        required=False,
+    )
+    manager_id = serializers.PrimaryKeyRelatedField(
+        queryset=Employee.objects.all(),
+        source="manager",
+        allow_null=True,
+        required=False,
+    )
+    hire_date = serializers.DateField(required=False)
+    base_salary_cents = serializers.IntegerField(
+        min_value=1,
+        max_value=MAX_AMOUNT_CENTS,
+        required=False,
+    )
+    bonus_cents = serializers.IntegerField(
+        min_value=0,
+        max_value=MAX_AMOUNT_CENTS,
+        required=False,
+    )
+    allowances_cents = serializers.IntegerField(
+        min_value=0,
+        max_value=MAX_AMOUNT_CENTS,
+        required=False,
+    )
+    change_reason = serializers.CharField(
+        max_length=200,
+        required=False,
+        allow_blank=True,
+    )
+
+    def validate_hire_date(self, value):
+        if value > get_clock().today():
+            raise serializers.ValidationError("Hire date cannot be in the future.")
+        return value
