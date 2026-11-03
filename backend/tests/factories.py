@@ -4,7 +4,7 @@ from datetime import UTC, date, datetime
 from itertools import count
 
 from catalog.models import Country, CurrencyRate, Department, JobTitle
-from employees.models import Employee
+from employees.models import Employee, SalaryHistory
 
 DEFAULT_NOW = datetime(2026, 1, 1, 12, 0, tzinfo=UTC)
 _employee_ids = count(1)
@@ -52,3 +52,22 @@ def make_employee(**overrides):
     }
     data.update(overrides)
     return Employee.objects.create(**data)
+
+
+def make_salary_history(**overrides):
+    data = {
+        "employee": overrides.pop("employee", None) or make_employee(),
+        "effective_date": date(2026, 1, 1),
+        "change_type": SalaryHistory.ChangeType.HIRE,
+        "reason": "New hire",
+        "batch_id": None,
+        "base_salary_cents": 5_000_000,
+        "bonus_cents": 500_000,
+        "allowances_cents": 200_000,
+        "prev_base_salary_cents": None,
+        "prev_bonus_cents": None,
+        "prev_allowances_cents": None,
+        "created_at": DEFAULT_NOW,
+    }
+    data.update(overrides)
+    return SalaryHistory.objects.create(**data)

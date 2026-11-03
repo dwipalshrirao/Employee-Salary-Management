@@ -217,6 +217,136 @@
                 }
             }
         },
+        "/api/employees/{id}": {
+            "get": {
+                "operationId": "employees-detail",
+                "description": "Return one employee with local-currency amounts.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "employees"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmployeeDetail"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/employees/{id}/direct-reports": {
+            "get": {
+                "operationId": "employees-direct-reports",
+                "description": "Return an employee's direct reports with pagination.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "default": 1
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "page_size",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 1,
+                            "default": 25
+                        }
+                    }
+                ],
+                "tags": [
+                    "employees"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmployeeListResponse"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/employees/{id}/history": {
+            "get": {
+                "operationId": "employees-history",
+                "description": "Return one employee's salary history, newest first.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "employees"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/SalaryHistoryItem"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/health": {
             "get": {
                 "operationId": "health",
@@ -400,6 +530,97 @@
                     "name"
                 ]
             },
+            "EmployeeDetail": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "full_name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "department": {
+                        "$ref": "#/components/schemas/EmployeeDepartment"
+                    },
+                    "job_title": {
+                        "$ref": "#/components/schemas/EmployeeJobTitle"
+                    },
+                    "country": {
+                        "$ref": "#/components/schemas/EmployeeCountry"
+                    },
+                    "manager": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/EmployeeManager"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "hire_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "base_salary_cents": {
+                        "type": "integer"
+                    },
+                    "bonus_cents": {
+                        "type": "integer"
+                    },
+                    "allowances_cents": {
+                        "type": "integer"
+                    },
+                    "total_comp_cents": {
+                        "type": "integer"
+                    },
+                    "direct_reports_count": {
+                        "type": "integer"
+                    },
+                    "local": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/LocalAmounts"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "allowances_cents",
+                    "base_salary_cents",
+                    "bonus_cents",
+                    "country",
+                    "created_at",
+                    "department",
+                    "direct_reports_count",
+                    "email",
+                    "full_name",
+                    "hire_date",
+                    "id",
+                    "job_title",
+                    "local",
+                    "manager",
+                    "status",
+                    "total_comp_cents",
+                    "updated_at"
+                ]
+            },
             "EmployeeJobTitle": {
                 "type": "object",
                 "properties": {
@@ -555,6 +776,38 @@
                     "name"
                 ]
             },
+            "LocalAmounts": {
+                "type": "object",
+                "properties": {
+                    "currency_code": {
+                        "type": "string"
+                    },
+                    "rate_per_usd": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "base_salary_cents": {
+                        "type": "integer"
+                    },
+                    "bonus_cents": {
+                        "type": "integer"
+                    },
+                    "allowances_cents": {
+                        "type": "integer"
+                    },
+                    "total_comp_cents": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "allowances_cents",
+                    "base_salary_cents",
+                    "bonus_cents",
+                    "currency_code",
+                    "rate_per_usd",
+                    "total_comp_cents"
+                ]
+            },
             "LoginRequest": {
                 "type": "object",
                 "description": "Reject unknown input fields instead of silently ignoring them.",
@@ -607,6 +860,87 @@
                     "currency_rates",
                     "departments",
                     "job_titles"
+                ]
+            },
+            "SalaryAmounts": {
+                "type": "object",
+                "properties": {
+                    "base_salary_cents": {
+                        "type": "integer"
+                    },
+                    "bonus_cents": {
+                        "type": "integer"
+                    },
+                    "allowances_cents": {
+                        "type": "integer"
+                    },
+                    "total_comp_cents": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "allowances_cents",
+                    "base_salary_cents",
+                    "bonus_cents",
+                    "total_comp_cents"
+                ]
+            },
+            "SalaryHistoryItem": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "effective_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "change_type": {
+                        "type": "string"
+                    },
+                    "reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "batch_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "new": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/SalaryAmounts"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "previous": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/SalaryAmounts"
+                            }
+                        ],
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "batch_id",
+                    "change_type",
+                    "created_at",
+                    "effective_date",
+                    "id",
+                    "new",
+                    "previous",
+                    "reason"
                 ]
             }
         },

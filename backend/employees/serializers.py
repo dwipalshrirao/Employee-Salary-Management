@@ -1,8 +1,10 @@
 """Serializers for employee list queries and responses."""
 
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from common.serializers import PageQuerySerializer
+from employees.local_currency import local_amounts
 
 SORT_BY_CHOICES = (
     "full_name",
@@ -75,3 +77,71 @@ class EmployeeListResponseSerializer(serializers.Serializer):
     total = serializers.IntegerField()
     page = serializers.IntegerField()
     page_size = serializers.IntegerField()
+
+
+class LocalAmountsSerializer(serializers.Serializer):
+    currency_code = serializers.CharField()
+    rate_per_usd = serializers.FloatField()
+    base_salary_cents = serializers.IntegerField()
+    bonus_cents = serializers.IntegerField()
+    allowances_cents = serializers.IntegerField()
+    total_comp_cents = serializers.IntegerField()
+
+
+class EmployeeDetailSerializer(EmployeeListItemSerializer):
+    direct_reports_count = serializers.IntegerField()
+    local = serializers.SerializerMethodField()
+    created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()
+
+    @extend_schema_field(LocalAmountsSerializer)
+    def get_local(self, employee):
+        return local_amounts(employee)
+
+
+class SalaryAmountsSerializer(serializers.Serializer):
+    base_salary_cents = serializers.IntegerField()
+    bonus_cents = serializers.IntegerField()
+    allowances_cents = serializers.IntegerField()
+    total_comp_cents = serializers.IntegerField()
+
+
+class SalaryHistoryItemSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    effective_date = serializers.DateField()
+    change_type = serializers.CharField()
+    reason = serializers.CharField(allow_null=True)
+    batch_id = serializers.UUIDField(allow_null=True)
+    created_at = serializers.DateTimeField()
+    new = serializers.SerializerMethodField()
+    previous = serializers.SerializerMethodField()
+
+    @extend_schema_field(SalaryAmountsSerializer)
+    def get_new(self, row):
+        return {
+            "base_salary_cents": row.base_salary_cents,
+            "bonus_cents": row.bonus_cents,
+            "allowances_cents": row.allowances_cents,
+            "total_comp_cents": (
+                row.base_salary_cents + row.bonus_cents + row.allowances_cents
+            ),
+        }
+
+    @extend_schema_field(SalaryAmountsSerializer)
+    def get_previous(self, row):
+        if row.change_type == "hire" or (
+            row.prev_base_salary_cents is None
+            and row.prev_bonus_cents is None
+            and row.prev_allowances_cents is None
+        ):
+            return None
+        return {
+            "base_salary_cents": row.prev_base_salary_cents,
+            "bonus_cents": row.prev_bonus_cents,
+            "allowances_cents": row.prev_allowances_cents,
+            "total_comp_cents": (
+                row.prev_base_salary_cents
+                + row.prev_bonus_cents
+                + row.prev_allowances_cents
+            ),
+        }

@@ -1,11 +1,12 @@
 """Read-only employee queries."""
 
-from django.db.models import F, Q
+from django.db.models import Count, F, Q
 from django.db.models.expressions import OrderBy
 from django.db.models.functions import Lower
+from django.shortcuts import get_object_or_404
 
 from common.pagination import paginate_queryset
-from employees.models import Employee
+from employees.models import Employee, SalaryHistory
 
 SORT_FIELDS = {
     "full_name": Lower("full_name"),
@@ -68,3 +69,51 @@ def list_employees(
         "page": page,
         "page_size": page_size,
     }
+
+
+def get_employee_detail(employee_id):
+    """Return one employee with lookups and a direct-report count."""
+    return get_object_or_404(
+        Employee.objects.select_related(
+            "department",
+            "job_title",
+            "country__currency_code",
+            "manager",
+        ).annotate(direct_reports_count=Count("direct_reports")),
+        pk=employee_id,
+    )
+
+
+def list_direct_reports(manager_id, page=1, page_size=25, status="all"):
+    """Return a paginated list of an employee's direct reports."""
+    get_object_or_404(Employee, pk=manager_id)
+    queryset = Employee.objects.select_related(
+        "department",
+        "job_title",
+        "country",
+        "manager",
+    ).filter(manager_id=manager_id)
+    if status != "all":
+        queryset = queryset.filter(status=status)
+    queryset = queryset.order_by(
+        OrderBy(Lower("full_name")),
+        OrderBy(F("id")),
+    )
+    items, total = paginate_queryset(queryset, page, page_size)
+    return {
+        "items": items,
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+    }
+
+
+def list_employee_history(employee_id):
+    """Return one employee's salary history, newest first."""
+    get_object_or_404(Employee, pk=employee_id)
+    return list(
+        SalaryHistory.objects.filter(employee_id=employee_id).order_by(
+            "-effective_date",
+            "-id",
+        )
+    )
