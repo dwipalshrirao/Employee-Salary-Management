@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView
 
 from common.errors import internal_error_response, not_found_response
@@ -19,6 +19,7 @@ handler500 = _internal_error
 
 urlpatterns = [
     path("api/health", HealthView.as_view()),
+    path("api/", include("catalog.urls")),
     path("api/docs/schema/", SpectacularAPIView.as_view(), name="docs-schema"),
     path("api/docs/", ApiDocsView.as_view(), name="swagger-ui"),
 ]

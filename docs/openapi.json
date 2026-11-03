@@ -35,10 +35,92 @@
                     }
                 }
             }
+        },
+        "/api/lookups": {
+            "get": {
+                "operationId": "lookups",
+                "description": "Return the reference data used by employee forms and filters.\n\nAuthentication is deferred to the auth slice. Keeping this endpoint public\nfor now lets the frontend build against stable lookup data without adding\nsession handling to the database/seed commit.",
+                "tags": [
+                    "catalog"
+                ],
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LookupsResponse"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
         }
     },
     "components": {
         "schemas": {
+            "CountryLookup": {
+                "type": "object",
+                "description": "Country row with the currency code flattened for easy client use.",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "currency_code": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "code",
+                    "currency_code",
+                    "name"
+                ]
+            },
+            "CurrencyRateLookup": {
+                "type": "object",
+                "description": "USD conversion rate used for approximate local-currency display.",
+                "properties": {
+                    "currency_code": {
+                        "type": "string"
+                    },
+                    "rate_per_usd": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "currency_code",
+                    "rate_per_usd",
+                    "updated_at"
+                ]
+            },
+            "DepartmentLookup": {
+                "type": "object",
+                "description": "Department option used by employee filters and forms.",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name"
+                ]
+            },
             "HealthResponse": {
                 "type": "object",
                 "properties": {
@@ -48,6 +130,62 @@
                 },
                 "required": [
                     "status"
+                ]
+            },
+            "JobTitleLookup": {
+                "type": "object",
+                "description": "Job title option including its compensation level.",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "level": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "id",
+                    "level",
+                    "name"
+                ]
+            },
+            "LookupsResponse": {
+                "type": "object",
+                "description": "Full lookup payload consumed once by the frontend query cache.",
+                "properties": {
+                    "countries": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CountryLookup"
+                        }
+                    },
+                    "departments": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DepartmentLookup"
+                        }
+                    },
+                    "job_titles": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/JobTitleLookup"
+                        }
+                    },
+                    "currency_rates": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CurrencyRateLookup"
+                        }
+                    }
+                },
+                "required": [
+                    "countries",
+                    "currency_rates",
+                    "departments",
+                    "job_titles"
                 ]
             }
         }

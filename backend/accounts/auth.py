@@ -2,4 +2,4 @@ from rest_framework.authentication import SessionAuthentication
 
 
 class SessionAuth(SessionAuthentication):
-    pass
+    """Session authentication placeholder for the upcoming auth slice."""

@@ -54,6 +54,8 @@ class RequestMonitoringMiddleware:
             },
         )
         response["X-Request-ID"] = request.request_id
-        if request.path.startswith("/api/"):
+        # Lookups intentionally sets a private cache header; keep it instead of
+        # forcing no-store for every API response.
+        if request.path.startswith("/api/") and "Cache-Control" not in response:
             response["Cache-Control"] = "no-store"
         return response

@@ -1,5 +1,7 @@
 .PHONY: setup backend frontend migrate seed test test-watch lint openapi
 
+SEED_ARGS ?= --reset --verify
+
 setup:
 	@echo "setup: not implemented yet (scaffold only)"
 	@exit 1
@@ -14,8 +16,7 @@ migrate:
 	@set -a; . ./.env; set +a; cd backend && .venv/bin/python manage.py migrate
 
 seed:
-	@echo "seed: not implemented yet (scaffold only)"
-	@exit 1
+	@set -a; . ./.env; set +a; cd backend && .venv/bin/python manage.py seed --employees 10000 --seed 42 $(SEED_ARGS)
 
 test:
 	cd backend && SECRET_KEY=test-secret DEBUG=true .venv/bin/python -m pytest
