@@ -7,7 +7,7 @@ setup:
 	@exit 1
 
 backend:
-	@set -a; . ./.env; set +a; cd backend && .venv/bin/python manage.py runserver 127.0.0.1:8001
+	@set -a; . ./.env; set +a; cd backend && .venv/bin/python manage.py runserver 127.0.0.1:8000
 
 frontend:
 	cd frontend && npm run dev

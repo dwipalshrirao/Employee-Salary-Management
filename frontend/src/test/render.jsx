@@ -5,18 +5,25 @@ import { MemoryRouter } from "react-router-dom";
 
 import theme from "../theme";
 
-export function renderWithProviders(ui, { route = "/" } = {}) {
-  const queryClient = new QueryClient({
+export function createTestQueryClient() {
+  return new QueryClient({
     defaultOptions: {
       queries: { retry: false },
     },
   });
+}
 
-  return render(
+export function renderWithProviders(
+  ui,
+  { route = "/", routeState, queryClient = createTestQueryClient() } = {},
+) {
+  const initialEntry = routeState === undefined ? route : { pathname: route, state: routeState };
+
+  const result = render(
     <ThemeProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
         <MemoryRouter
-          initialEntries={[route]}
+          initialEntries={[initialEntry]}
           future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
         >
           {ui}
@@ -24,4 +31,6 @@ export function renderWithProviders(ui, { route = "/" } = {}) {
       </QueryClientProvider>
     </ThemeProvider>,
   );
+
+  return { ...result, queryClient };
 }

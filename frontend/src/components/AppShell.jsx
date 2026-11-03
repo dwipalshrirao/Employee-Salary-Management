@@ -2,6 +2,8 @@ import { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { AppBar, Avatar, Box, Button, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
 
+import { useAuth } from "../auth/useAuth";
+
 const navItems = [
   { label: "Dashboard", to: "/", end: true },
   { label: "Employees", to: "/employees" },
@@ -9,12 +11,29 @@ const navItems = [
   { label: "Bulk update", to: "/bulk-update" },
 ];
 
+function initialsFor(name) {
+  const initials = name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0].toUpperCase())
+    .join("");
+  return initials || "HR";
+}
+
 export default function AppShell() {
+  const { user, logout } = useAuth();
   const [menuAnchor, setMenuAnchor] = useState(null);
   const menuOpen = Boolean(menuAnchor);
+  const displayName = user?.full_name ?? "HR User";
+  const secondaryText = user?.email ?? "";
 
   const openMenu = (event) => setMenuAnchor(event.currentTarget);
   const closeMenu = () => setMenuAnchor(null);
+  const handleLogout = () => {
+    closeMenu();
+    void logout();
+  };
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
@@ -70,14 +89,14 @@ export default function AppShell() {
             sx={{ gap: 1, color: "text.primary", px: 1 }}
           >
             <Avatar sx={{ width: 32, height: 32, bgcolor: "primary.main", fontSize: 14 }}>
-              SJ
+              {initialsFor(displayName)}
             </Avatar>
             <Box sx={{ textAlign: "left", display: { xs: "none", sm: "block" } }}>
               <Typography sx={{ fontSize: 14, fontWeight: 600, lineHeight: 1.2 }}>
-                Sarah Jenkins
+                {displayName}
               </Typography>
               <Typography sx={{ fontSize: 12, color: "text.secondary", lineHeight: 1.2 }}>
-                HR Manager
+                {secondaryText}
               </Typography>
             </Box>
           </Button>
@@ -90,7 +109,7 @@ export default function AppShell() {
             anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             transformOrigin={{ vertical: "top", horizontal: "right" }}
           >
-            <MenuItem onClick={closeMenu} sx={{ color: "error.main" }}>
+            <MenuItem onClick={handleLogout} sx={{ color: "error.main" }}>
               Logout
             </MenuItem>
           </Menu>

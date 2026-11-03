@@ -42,7 +42,7 @@ Screen names in Stitch must match exactly (rename after generation).
 4. Restart OpenCode and check the connection with `opencode mcp debug stitch` (and `opencode mcp auth stitch` if the server uses a browser sign-in).
 5. Smoke test with these prompts:
    - "List the Stitch projects I can access."
-   - "Fetch the screen named `02 Dashboard` from the ACME Salary Management project and describe its layout."
+   - "Fetch the screen named `02 Dashboard` from the ACME Salary Management latest project and describe its layout."
 6. Optional: Google publishes agent skills for Stitch (the `google-labs-code/stitch-skills` repository, including ones that turn screens into React components). For this project, use them only to fetch and read designs. Our specs choose MUI, so do not let a skill switch the UI library or add dependencies.
 
 ## 4. Workflow for the agent (every frontend page)
@@ -96,3 +96,5 @@ Add a row whenever the built UI differs from the Stitch screen or the spec.
 | Date | Screen | Difference | Decision and reason |
 |---|---|---|---|
 | 2026-11-01 | `02 Dashboard` (app shell) | Initials avatar instead of a person icon; menu label `Logout` instead of `Log out`. | MUI-only scaffold with no icon package added; spec 04 sec 6.2 copy wins. |
+| 2026-11-03 | `01 Login` | Password visibility uses text `Show`/`Hide` instead of an eye icon. | Avoid adding `@mui/icons-material`; the spec does not require an icon. |
+| 2026-11-03 | App shell | User menu secondary line shows the signed-in email instead of `HR Manager`. | The auth API returns no role field; the name remains the primary label. |
