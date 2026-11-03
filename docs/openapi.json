@@ -1,180 +1,55 @@
 {
-  "openapi": "3.1.0",
-  "info": {
-    "title": "ACME Salary Management API",
-    "version": "0.1.0"
-  },
-  "paths": {
-    "/api/health": {
-      "get": {
-        "summary": "Health",
-        "operationId": "health_api_health_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "additionalProperties": {
-                    "type": "string"
-                  },
-                  "type": "object",
-                  "title": "Response Health Api Health Get"
-                }
-              }
-            }
-          }
-        }
-      }
+    "openapi": "3.1.0",
+    "info": {
+        "title": "ACME Salary Management API",
+        "version": "0.1.0"
     },
-    "/api/lookups": {
-      "get": {
-        "summary": "Lookups",
-        "operationId": "lookups_api_lookups_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LookupsResponse"
+    "paths": {
+        "/api/health": {
+            "get": {
+                "operationId": "health",
+                "tags": [
+                    "health"
+                ],
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HealthResponse"
+                                },
+                                "examples": {
+                                    "Ok": {
+                                        "value": {
+                                            "status": "ok"
+                                        },
+                                        "summary": "ok"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
                 }
-              }
             }
-          }
         }
-      }
+    },
+    "components": {
+        "schemas": {
+            "HealthResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "status"
+                ]
+            }
+        }
     }
-  },
-  "components": {
-    "schemas": {
-      "CountryLookup": {
-        "properties": {
-          "code": {
-            "type": "string",
-            "title": "Code"
-          },
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "currency_code": {
-            "type": "string",
-            "title": "Currency Code"
-          }
-        },
-        "type": "object",
-        "required": [
-          "code",
-          "name",
-          "currency_code"
-        ],
-        "title": "CountryLookup"
-      },
-      "CurrencyRateLookup": {
-        "properties": {
-          "currency_code": {
-            "type": "string",
-            "title": "Currency Code"
-          },
-          "rate_per_usd": {
-            "type": "number",
-            "title": "Rate Per Usd"
-          },
-          "updated_at": {
-            "type": "string",
-            "title": "Updated At"
-          }
-        },
-        "type": "object",
-        "required": [
-          "currency_code",
-          "rate_per_usd",
-          "updated_at"
-        ],
-        "title": "CurrencyRateLookup"
-      },
-      "DepartmentLookup": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "name": {
-            "type": "string",
-            "title": "Name"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "name"
-        ],
-        "title": "DepartmentLookup"
-      },
-      "JobTitleLookup": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "level": {
-            "type": "integer",
-            "title": "Level"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "name",
-          "level"
-        ],
-        "title": "JobTitleLookup"
-      },
-      "LookupsResponse": {
-        "properties": {
-          "countries": {
-            "items": {
-              "$ref": "#/components/schemas/CountryLookup"
-            },
-            "type": "array",
-            "title": "Countries"
-          },
-          "departments": {
-            "items": {
-              "$ref": "#/components/schemas/DepartmentLookup"
-            },
-            "type": "array",
-            "title": "Departments"
-          },
-          "job_titles": {
-            "items": {
-              "$ref": "#/components/schemas/JobTitleLookup"
-            },
-            "type": "array",
-            "title": "Job Titles"
-          },
-          "currency_rates": {
-            "items": {
-              "$ref": "#/components/schemas/CurrencyRateLookup"
-            },
-            "type": "array",
-            "title": "Currency Rates"
-          }
-        },
-        "type": "object",
-        "required": [
-          "countries",
-          "departments",
-          "job_titles",
-          "currency_rates"
-        ],
-        "title": "LookupsResponse"
-      }
-    }
-  }
 }
