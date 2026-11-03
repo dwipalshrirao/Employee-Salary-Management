@@ -1,5 +1,4 @@
 from drf_spectacular.utils import extend_schema
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -8,15 +7,7 @@ from catalog.serializers import LookupsResponseSerializer
 
 
 class LookupsView(APIView):
-    """Return the reference data used by employee forms and filters.
-
-    Authentication is deferred to the auth slice. Keeping this endpoint public
-    for now lets the frontend build against stable lookup data without adding
-    session handling to the database/seed commit.
-    """
-
-    authentication_classes = []
-    permission_classes = [AllowAny]
+    """Return the reference data used by employee forms and filters."""
 
     @extend_schema(
         operation_id="lookups",

@@ -5,6 +5,85 @@
         "version": "0.1.0"
     },
     "paths": {
+        "/api/auth/login": {
+            "post": {
+                "operationId": "auth-login",
+                "description": "Authenticate an HR user and establish a session.",
+                "tags": [
+                    "auth"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthResponse"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/auth/logout": {
+            "post": {
+                "operationId": "auth-logout",
+                "description": "End the current session and clear its cookie.",
+                "tags": [
+                    "auth"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/auth/me": {
+            "get": {
+                "operationId": "auth-me",
+                "description": "Return the signed-in user and the current CSRF token.",
+                "tags": [
+                    "auth"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthResponse"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/health": {
             "get": {
                 "operationId": "health",
@@ -39,12 +118,14 @@
         "/api/lookups": {
             "get": {
                 "operationId": "lookups",
-                "description": "Return the reference data used by employee forms and filters.\n\nAuthentication is deferred to the auth slice. Keeping this endpoint public\nfor now lets the frontend build against stable lookup data without adding\nsession handling to the database/seed commit.",
+                "description": "Return the reference data used by employee forms and filters.",
                 "tags": [
                     "catalog"
                 ],
                 "security": [
-                    {}
+                    {
+                        "sessionAuth": []
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -63,6 +144,41 @@
     },
     "components": {
         "schemas": {
+            "AuthResponse": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/AuthUser"
+                    },
+                    "csrf_token": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "csrf_token",
+                    "user"
+                ]
+            },
+            "AuthUser": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "full_name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "email",
+                    "full_name",
+                    "id"
+                ]
+            },
             "CountryLookup": {
                 "type": "object",
                 "description": "Country row with the currency code flattened for easy client use.",
@@ -152,6 +268,24 @@
                     "name"
                 ]
             },
+            "LoginRequest": {
+                "type": "object",
+                "description": "Reject unknown input fields instead of silently ignoring them.",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "password": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
+                },
+                "required": [
+                    "email",
+                    "password"
+                ]
+            },
             "LookupsResponse": {
                 "type": "object",
                 "description": "Full lookup payload consumed once by the frontend query cache.",
@@ -187,6 +321,13 @@
                     "departments",
                     "job_titles"
                 ]
+            }
+        },
+        "securitySchemes": {
+            "sessionAuth": {
+                "type": "apiKey",
+                "in": "cookie",
+                "name": "acme_session"
             }
         }
     }

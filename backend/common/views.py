@@ -22,4 +22,6 @@ class HealthView(APIView):
 
 
 class ApiDocsView(SpectacularSwaggerView):
+    """Serve Swagger UI for local API exploration."""
+
     url_name = "docs-schema"

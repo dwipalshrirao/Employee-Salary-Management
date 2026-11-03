@@ -15,11 +15,12 @@ class AppError(Exception):
     code = "internal_error"
     message = "Unexpected error."
 
-    def __init__(self, message=None, code=None, details=None):
+    def __init__(self, message=None, code=None, details=None, headers=None):
         super().__init__(message or self.message)
         self.message = message or self.message
         self.code = code or self.code
         self.details = details or {}
+        self.headers = headers or {}
 
 
 class NotFoundError(AppError):
@@ -108,7 +109,15 @@ def internal_error_response(request, exception=None):
 
 def handler(exc, context):
     if isinstance(exc, AppError):
-        return _drf_response(exc.code, exc.message, exc.details, exc.status_code)
+        response = _drf_response(
+            exc.code,
+            exc.message,
+            exc.details,
+            exc.status_code,
+        )
+        for header, value in exc.headers.items():
+            response[header] = value
+        return response
 
     if isinstance(exc, Http404 | NotFound):
         return not_found()
@@ -119,8 +128,11 @@ def handler(exc, context):
     if isinstance(exc, UnsupportedMediaType):
         return _drf_response("validation_error", "Unsupported media type.", {}, 422)
 
-    if isinstance(exc, NotAuthenticated | AuthenticationFailed):
+    if isinstance(exc, NotAuthenticated):
         return _drf_response("unauthorized", "Authentication required.", {}, 401)
+
+    if isinstance(exc, AuthenticationFailed):
+        return _drf_response("unauthorized", str(exc.detail), {}, 401)
 
     if isinstance(exc, PermissionDenied) and str(exc).startswith("CSRF Failed"):
         return _drf_response("csrf_failed", "CSRF failed.", {}, 403)

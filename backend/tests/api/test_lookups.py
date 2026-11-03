@@ -25,15 +25,16 @@ def reference_data():
 
 
 @pytest.mark.django_db
-def test_lookups_is_public_until_auth_slice(client, reference_data):
+def test_lookups_requires_authentication(client, reference_data):
     response = client.get("/api/lookups")
 
-    assert response.status_code == 200
+    assert response.status_code == 401
+    assert response.json()["error"]["code"] == "unauthorized"
 
 
 @pytest.mark.django_db
-def test_lookups_returns_reference_data(client, reference_data):
-    response = client.get("/api/lookups")
+def test_lookups_returns_reference_data(auth_client, reference_data):
+    response = auth_client.get("/api/lookups")
 
     assert response.status_code == 200
     assert response.json() == {
@@ -59,13 +60,11 @@ def test_lookups_returns_reference_data(client, reference_data):
     assert response["Cache-Control"] == "private, max-age=60"
 
 
-def test_lookups_schema_has_no_security_until_auth_slice():
+def test_lookups_schema_documents_session_cookie_auth():
     schema = SchemaGenerator().get_schema(request=None, public=True)
 
-    security = schema["paths"]["/api/lookups"]["get"].get("security")
-    # DRF represents an endpoint with no authenticators as an anonymous
-    # security requirement. There must be no named auth scheme yet.
-    assert security in (None, [], [{}])
-    assert "sessionAuth" not in schema.get("components", {}).get(
-        "securitySchemes", {}
-    )
+    assert schema["paths"]["/api/lookups"]["get"]["security"] == [{"sessionAuth": []}]
+    scheme = schema["components"]["securitySchemes"]["sessionAuth"]
+    assert scheme["type"] == "apiKey"
+    assert scheme["in"] == "cookie"
+    assert scheme["name"] == "acme_session"
