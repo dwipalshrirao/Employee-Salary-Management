@@ -1,4 +1,16 @@
+from django.conf import settings
 from rest_framework import serializers
+
+
+class PageQuerySerializer(serializers.Serializer):
+    """Shared 1-based pagination query parameters."""
+
+    page = serializers.IntegerField(min_value=1, default=1)
+    page_size = serializers.IntegerField(
+        min_value=1,
+        max_value=settings.MAX_PAGE_SIZE,
+        default=25,
+    )
 
 
 class StrictSerializer(serializers.Serializer):
