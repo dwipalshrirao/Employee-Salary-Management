@@ -20,6 +20,34 @@ SORT_FIELDS = {
 }
 
 
+def filter_employees(
+    queryset,
+    *,
+    q=None,
+    country_code=None,
+    department_id=None,
+    job_title_id=None,
+    manager_id=None,
+    status=None,
+):
+    """Apply the shared employee filters to a queryset."""
+    if q:
+        queryset = queryset.filter(
+            Q(full_name__icontains=q) | Q(email__icontains=q)
+        )
+    if country_code:
+        queryset = queryset.filter(country_id=country_code)
+    if department_id is not None:
+        queryset = queryset.filter(department_id=department_id)
+    if job_title_id is not None:
+        queryset = queryset.filter(job_title_id=job_title_id)
+    if manager_id is not None:
+        queryset = queryset.filter(manager_id=manager_id)
+    if status and status != "all":
+        queryset = queryset.filter(status=status)
+    return queryset
+
+
 def list_employees(
     *,
     q=None,
@@ -34,27 +62,20 @@ def list_employees(
     page_size=25,
 ):
     """Return a filtered, sorted page of employees and its total count."""
-    queryset = Employee.objects.select_related(
-        "department",
-        "job_title",
-        "country",
-        "manager",
+    queryset = filter_employees(
+        Employee.objects.select_related(
+            "department",
+            "job_title",
+            "country",
+            "manager",
+        ),
+        q=q,
+        country_code=country_code,
+        department_id=department_id,
+        job_title_id=job_title_id,
+        manager_id=manager_id,
+        status=status,
     )
-
-    if q:
-        queryset = queryset.filter(
-            Q(full_name__icontains=q) | Q(email__icontains=q)
-        )
-    if country_code:
-        queryset = queryset.filter(country_id=country_code)
-    if department_id is not None:
-        queryset = queryset.filter(department_id=department_id)
-    if job_title_id is not None:
-        queryset = queryset.filter(job_title_id=job_title_id)
-    if manager_id is not None:
-        queryset = queryset.filter(manager_id=manager_id)
-    if status != "all":
-        queryset = queryset.filter(status=status)
 
     descending = sort_dir == "desc"
     queryset = queryset.order_by(

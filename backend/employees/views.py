@@ -13,6 +13,10 @@ from employees.selectors import (
     list_employees,
 )
 from employees.serializers import (
+    BulkUpdateApplyResponseSerializer,
+    BulkUpdateApplySerializer,
+    BulkUpdatePreviewResponseSerializer,
+    BulkUpdatePreviewSerializer,
     EmployeeCreateSerializer,
     EmployeeDetailSerializer,
     EmployeeListQuerySerializer,
@@ -20,6 +24,7 @@ from employees.serializers import (
     EmployeeUpdateSerializer,
     SalaryHistoryItemSerializer,
 )
+from employees.services.bulk_updates import apply_bulk_update, preview_bulk_update
 from employees.services.employees import (
     create_employee,
     deactivate_employee,
@@ -141,3 +146,33 @@ class EmployeeReactivateView(APIView):
     def post(self, request, pk, format=None):
         employee = reactivate_employee(pk)
         return Response(EmployeeDetailSerializer(get_employee_detail(employee.id)).data)
+
+
+class BulkUpdatePreviewView(APIView):
+    """Calculate a bulk pay update without changing data."""
+
+    @extend_schema(
+        operation_id="bulk-updates-preview",
+        tags=["bulk-updates"],
+        request=BulkUpdatePreviewSerializer,
+        responses={200: BulkUpdatePreviewResponseSerializer},
+    )
+    def post(self, request, format=None):
+        serializer = BulkUpdatePreviewSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(preview_bulk_update(serializer.validated_data))
+
+
+class BulkUpdateApplyView(APIView):
+    """Apply a previewed bulk pay update in one transaction."""
+
+    @extend_schema(
+        operation_id="bulk-updates-apply",
+        tags=["bulk-updates"],
+        request=BulkUpdateApplySerializer,
+        responses={200: BulkUpdateApplyResponseSerializer},
+    )
+    def post(self, request, format=None):
+        serializer = BulkUpdateApplySerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(apply_bulk_update(serializer.validated_data))

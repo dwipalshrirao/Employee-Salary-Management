@@ -1,5 +1,8 @@
 """Serializers for employee list queries and responses."""
 
+from decimal import Decimal
+
+from django.conf import settings
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
@@ -245,3 +248,99 @@ class EmployeeUpdateSerializer(StrictSerializer):
         if value > get_clock().today():
             raise serializers.ValidationError("Hire date cannot be in the future.")
         return value
+
+
+class BulkUpdateFilterSerializer(StrictSerializer):
+    country_code = serializers.CharField(
+        max_length=2,
+        required=False,
+        allow_null=True,
+        allow_blank=True,
+    )
+    department_id = serializers.IntegerField(required=False, allow_null=True)
+    job_title_id = serializers.IntegerField(required=False, allow_null=True)
+    manager_id = serializers.IntegerField(required=False, allow_null=True)
+
+
+class BulkUpdatePreviewSerializer(StrictSerializer):
+    filter = BulkUpdateFilterSerializer(required=False)
+    apply_to_all = serializers.BooleanField(default=False)
+    component = serializers.ChoiceField(choices=("base", "bonus", "allowances"))
+    mode = serializers.ChoiceField(choices=("percent", "fixed_amount"))
+    percentage = serializers.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        required=False,
+        allow_null=True,
+        min_value=Decimal(str(settings.BULK_MIN_PERCENT)),
+        max_value=Decimal(str(settings.BULK_MAX_PERCENT)),
+    )
+    amount_cents = serializers.IntegerField(
+        required=False,
+        allow_null=True,
+        min_value=1,
+        max_value=MAX_AMOUNT_CENTS,
+    )
+
+    def validate(self, attrs):
+        filters = attrs.get("filter") or {}
+        has_filter = any(
+            filters.get(field) not in (None, "")
+            for field in ("country_code", "department_id", "job_title_id", "manager_id")
+        )
+        if not has_filter and not attrs.get("apply_to_all"):
+            raise serializers.ValidationError(
+                {
+                    "filter": [
+                        "Choose a filter or set apply_to_all to true."
+                    ]
+                }
+            )
+
+        mode = attrs["mode"]
+        percentage = attrs.get("percentage")
+        amount_cents = attrs.get("amount_cents")
+        if mode == "percent":
+            if percentage is None or amount_cents is not None:
+                raise serializers.ValidationError(
+                    {"percentage": ["Provide only percentage for percent mode."]}
+                )
+            if percentage == 0:
+                raise serializers.ValidationError(
+                    {"percentage": ["Percentage cannot be zero."]}
+                )
+        else:
+            if amount_cents is None or percentage is not None:
+                raise serializers.ValidationError(
+                    {"amount_cents": ["Provide only amount_cents for fixed_amount mode."]}
+                )
+        return attrs
+
+
+class BulkUpdateApplySerializer(BulkUpdatePreviewSerializer):
+    expected_count = serializers.IntegerField(min_value=0)
+    reason = serializers.CharField(max_length=200)
+
+
+class BulkUpdateSampleSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    full_name = serializers.CharField()
+    before_cents = serializers.IntegerField()
+    after_cents = serializers.IntegerField()
+
+
+class BulkUpdatePreviewResponseSerializer(serializers.Serializer):
+    component = serializers.CharField()
+    mode = serializers.CharField()
+    affected_count = serializers.IntegerField()
+    sum_before_cents = serializers.IntegerField()
+    sum_after_cents = serializers.IntegerField()
+    sum_delta_cents = serializers.IntegerField()
+    sample = BulkUpdateSampleSerializer(many=True)
+
+
+class BulkUpdateApplyResponseSerializer(serializers.Serializer):
+    batch_id = serializers.UUIDField()
+    component = serializers.CharField()
+    affected_count = serializers.IntegerField()
+    sum_delta_cents = serializers.IntegerField()

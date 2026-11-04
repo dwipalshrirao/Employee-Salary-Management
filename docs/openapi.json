@@ -84,6 +84,78 @@
                 }
             }
         },
+        "/api/bulk-updates/apply": {
+            "post": {
+                "operationId": "bulk-updates-apply",
+                "description": "Apply a previewed bulk pay update in one transaction.",
+                "tags": [
+                    "bulk-updates"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BulkUpdateApply"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BulkUpdateApplyResponse"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/bulk-updates/preview": {
+            "post": {
+                "operationId": "bulk-updates-preview",
+                "description": "Calculate a bulk pay update without changing data.",
+                "tags": [
+                    "bulk-updates"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BulkUpdatePreview"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BulkUpdatePreviewResponse"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/employees": {
             "get": {
                 "operationId": "employees-list",
@@ -591,6 +663,218 @@
                     "id"
                 ]
             },
+            "BulkUpdateApply": {
+                "type": "object",
+                "description": "Reject unknown input fields instead of silently ignoring them.",
+                "properties": {
+                    "filter": {
+                        "$ref": "#/components/schemas/BulkUpdateFilter"
+                    },
+                    "apply_to_all": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "component": {
+                        "$ref": "#/components/schemas/ComponentEnum"
+                    },
+                    "mode": {
+                        "$ref": "#/components/schemas/ModeEnum"
+                    },
+                    "percentage": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,3}(?:\\.\\d{0,2})?$"
+                    },
+                    "amount_cents": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "maximum": 1000000000,
+                        "minimum": 1
+                    },
+                    "expected_count": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "reason": {
+                        "type": "string",
+                        "maxLength": 200
+                    }
+                },
+                "required": [
+                    "component",
+                    "expected_count",
+                    "mode",
+                    "reason"
+                ]
+            },
+            "BulkUpdateApplyResponse": {
+                "type": "object",
+                "properties": {
+                    "batch_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "component": {
+                        "type": "string"
+                    },
+                    "affected_count": {
+                        "type": "integer"
+                    },
+                    "sum_delta_cents": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "affected_count",
+                    "batch_id",
+                    "component",
+                    "sum_delta_cents"
+                ]
+            },
+            "BulkUpdateFilter": {
+                "type": "object",
+                "description": "Reject unknown input fields instead of silently ignoring them.",
+                "properties": {
+                    "country_code": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "department_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "job_title_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "manager_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    }
+                }
+            },
+            "BulkUpdatePreview": {
+                "type": "object",
+                "description": "Reject unknown input fields instead of silently ignoring them.",
+                "properties": {
+                    "filter": {
+                        "$ref": "#/components/schemas/BulkUpdateFilter"
+                    },
+                    "apply_to_all": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "component": {
+                        "$ref": "#/components/schemas/ComponentEnum"
+                    },
+                    "mode": {
+                        "$ref": "#/components/schemas/ModeEnum"
+                    },
+                    "percentage": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,3}(?:\\.\\d{0,2})?$"
+                    },
+                    "amount_cents": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "maximum": 1000000000,
+                        "minimum": 1
+                    }
+                },
+                "required": [
+                    "component",
+                    "mode"
+                ]
+            },
+            "BulkUpdatePreviewResponse": {
+                "type": "object",
+                "properties": {
+                    "component": {
+                        "type": "string"
+                    },
+                    "mode": {
+                        "type": "string"
+                    },
+                    "affected_count": {
+                        "type": "integer"
+                    },
+                    "sum_before_cents": {
+                        "type": "integer"
+                    },
+                    "sum_after_cents": {
+                        "type": "integer"
+                    },
+                    "sum_delta_cents": {
+                        "type": "integer"
+                    },
+                    "sample": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/BulkUpdateSample"
+                        }
+                    }
+                },
+                "required": [
+                    "affected_count",
+                    "component",
+                    "mode",
+                    "sample",
+                    "sum_after_cents",
+                    "sum_before_cents",
+                    "sum_delta_cents"
+                ]
+            },
+            "BulkUpdateSample": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "full_name": {
+                        "type": "string"
+                    },
+                    "before_cents": {
+                        "type": "integer"
+                    },
+                    "after_cents": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "after_cents",
+                    "before_cents",
+                    "full_name",
+                    "id"
+                ]
+            },
+            "ComponentEnum": {
+                "enum": [
+                    "base",
+                    "bonus",
+                    "allowances"
+                ],
+                "type": "string",
+                "description": "* `base` - base\n* `bonus` - bonus\n* `allowances` - allowances"
+            },
             "CountryLookup": {
                 "type": "object",
                 "description": "Country row with the currency code flattened for easy client use.",
@@ -1070,6 +1354,14 @@
                     "departments",
                     "job_titles"
                 ]
+            },
+            "ModeEnum": {
+                "enum": [
+                    "percent",
+                    "fixed_amount"
+                ],
+                "type": "string",
+                "description": "* `percent` - percent\n* `fixed_amount` - fixed_amount"
             },
             "PatchedEmployeeUpdate": {
                 "type": "object",

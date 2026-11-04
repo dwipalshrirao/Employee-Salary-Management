@@ -219,6 +219,31 @@ export const detailHandlers = [
   ),
 ];
 
+export const testBulkPreview = {
+  component: "base",
+  mode: "percent",
+  affected_count: 2,
+  sum_before_cents: 8_500_000,
+  sum_after_cents: 8_925_000,
+  sum_delta_cents: 425_000,
+  sample: [
+    { id: 1, full_name: "Asha Patel", before_cents: 4_500_000, after_cents: 4_725_000 },
+    { id: 2, full_name: "Ravi Shah", before_cents: 4_000_000, after_cents: 4_200_000 },
+  ],
+};
+
+export const testBulkApply = {
+  batch_id: "6f1c8a00-0000-0000-0000-000000000000",
+  component: "base",
+  affected_count: 2,
+  sum_delta_cents: 425_000,
+};
+
+export const bulkHandlers = [
+  http.post("/api/bulk-updates/preview", () => HttpResponse.json(testBulkPreview)),
+  http.post("/api/bulk-updates/apply", () => HttpResponse.json(testBulkApply)),
+];
+
 export function employeeListHandler(items = testEmployees, overrides = {}) {
   return http.get("/api/employees", () =>
     HttpResponse.json({
@@ -248,4 +273,4 @@ export const dataHandlers = [
   }),
 ];
 
-export const handlers = [...authHandlers, ...dataHandlers, ...detailHandlers];
+export const handlers = [...authHandlers, ...dataHandlers, ...detailHandlers, ...bulkHandlers];
