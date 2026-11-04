@@ -1,13 +1,18 @@
 import pytest
 
-from tests.factories import make_analytics_dataset
+from tests.factories import make_analytics_dataset, make_outlier_dataset, make_team_dataset
 
 pytestmark = pytest.mark.django_db
 
 
 @pytest.mark.parametrize(
     "path",
-    ["/api/analytics/summary", "/api/analytics/breakdown?group_by=country"],
+    [
+        "/api/analytics/summary",
+        "/api/analytics/breakdown?group_by=country",
+        "/api/analytics/outliers",
+        "/api/analytics/team/1",
+    ],
 )
 def test_analytics_routes_require_authentication(client, path):
     response = client.get(path)
@@ -158,6 +163,122 @@ def test_breakdown_applies_scope_filters(auth_client):
     ],
 )
 def test_invalid_analytics_query_parameters_return_422(auth_client, path, params):
+    response = auth_client.get(path, params)
+
+    assert response.status_code == 422
+    assert response.json()["error"]["code"] == "validation_error"
+
+
+def test_team_returns_manager_summary_and_direct_report_stats(auth_client):
+    data = make_team_dataset()
+
+    response = auth_client.get(f"/api/analytics/team/{data['manager'].id}")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "manager": {
+            "id": data["manager"].id,
+            "full_name": "Morgan Manager",
+        },
+        "headcount": 3,
+        "total_cents": 60_000_000,
+        "avg_cents": 20_000_000,
+        "min_cents": 10_000_000,
+        "max_cents": 30_000_000,
+    }
+
+
+def test_team_supports_measure_include_inactive_and_scope(auth_client):
+    data = make_team_dataset()
+
+    response = auth_client.get(
+        f"/api/analytics/team/{data['manager'].id}",
+        {"measure": "base", "include_inactive": "true", "country_code": "US"},
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["headcount"] == 2
+    assert payload["total_cents"] == 24_000_000
+    assert payload["avg_cents"] == 12_000_000
+    assert payload["min_cents"] == 8_000_000
+    assert payload["max_cents"] == 16_000_000
+
+
+def test_team_returns_404_for_an_unknown_manager(auth_client):
+    response = auth_client.get("/api/analytics/team/999999")
+
+    assert response.status_code == 404
+    assert response.json()["error"]["code"] == "not_found"
+
+
+def test_outliers_return_the_golden_page(auth_client):
+    data = make_outlier_dataset()
+
+    response = auth_client.get("/api/analytics/outliers")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "items": [
+            {
+                "employee_id": data["employees"]["in_outlier"].id,
+                "full_name": "IN Outlier",
+                "job_title": "Account Executive",
+                "country": "India",
+                "amount_cents": 15_000_000,
+                "peer_avg_cents": 7_000_000,
+                "ratio": 2.14,
+            },
+            {
+                "employee_id": data["employees"]["us_outlier"].id,
+                "full_name": "US Outlier",
+                "job_title": "Software Engineer",
+                "country": "United States",
+                "amount_cents": 25_000_000,
+                "peer_avg_cents": 13_000_000,
+                "ratio": 1.92,
+            },
+        ],
+        "total": 2,
+        "page": 1,
+        "page_size": 25,
+    }
+
+
+def test_outliers_support_pagination_measure_and_scope(auth_client):
+    data = make_outlier_dataset()
+
+    second = auth_client.get(
+        "/api/analytics/outliers",
+        {"page": 2, "page_size": 1},
+    )
+    base = auth_client.get("/api/analytics/outliers", {"measure": "base"})
+    india = auth_client.get("/api/analytics/outliers", {"country_code": "IN"})
+
+    assert second.status_code == 200
+    assert second.json()["total"] == 2
+    assert second.json()["items"][0]["employee_id"] == data["employees"]["us_outlier"].id
+    assert [item["full_name"] for item in base.json()["items"]] == ["US Outlier"]
+    assert [item["full_name"] for item in india.json()["items"]] == ["IN Outlier"]
+
+
+@pytest.mark.parametrize(
+    ("path", "params"),
+    [
+        ("/api/analytics/team/1", {"measure": "median"}),
+        ("/api/analytics/team/1", {"country_code": "USA"}),
+        ("/api/analytics/outliers", {"threshold": "1.0"}),
+        ("/api/analytics/outliers", {"threshold": "5.1"}),
+        ("/api/analytics/outliers", {"threshold": "high"}),
+        ("/api/analytics/outliers", {"min_peers": "1"}),
+        ("/api/analytics/outliers", {"min_peers": "101"}),
+        ("/api/analytics/outliers", {"min_peers": "many"}),
+        ("/api/analytics/outliers", {"measure": "median"}),
+        ("/api/analytics/outliers", {"country_code": "USA"}),
+        ("/api/analytics/outliers", {"page_size": "101"}),
+    ],
+)
+def test_invalid_team_and_outlier_query_parameters_return_422(auth_client, path, params):
     response = auth_client.get(path, params)
 
     assert response.status_code == 422

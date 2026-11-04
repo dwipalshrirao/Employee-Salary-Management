@@ -9,10 +9,20 @@ from analytics.serializers import (
     BreakdownResponseSerializer,
     DistributionQuerySerializer,
     DistributionResponseSerializer,
+    OutlierQuerySerializer,
+    OutlierResponseSerializer,
     SummaryQuerySerializer,
     SummaryResponseSerializer,
+    TeamQuerySerializer,
+    TeamResponseSerializer,
 )
-from analytics.services import get_breakdown, get_distribution, get_summary
+from analytics.services import (
+    get_breakdown,
+    get_distribution,
+    get_outliers,
+    get_summary,
+    get_team,
+)
 
 
 class AnalyticsSummaryView(APIView):
@@ -61,3 +71,35 @@ class AnalyticsDistributionView(APIView):
         query.is_valid(raise_exception=True)
         result = get_distribution(**query.validated_data)
         return Response(DistributionResponseSerializer(result).data)
+
+
+class AnalyticsTeamView(APIView):
+    """Return pay statistics for a manager's direct reports."""
+
+    @extend_schema(
+        operation_id="analytics-team",
+        tags=["analytics"],
+        parameters=[TeamQuerySerializer],
+        responses={200: TeamResponseSerializer},
+    )
+    def get(self, request, manager_id, format=None):
+        query = TeamQuerySerializer(data=request.query_params)
+        query.is_valid(raise_exception=True)
+        result = get_team(manager_id, **query.validated_data)
+        return Response(TeamResponseSerializer(result).data)
+
+
+class AnalyticsOutliersView(APIView):
+    """Return employees paid above their peer-group threshold."""
+
+    @extend_schema(
+        operation_id="analytics-outliers",
+        tags=["analytics"],
+        parameters=[OutlierQuerySerializer],
+        responses={200: OutlierResponseSerializer},
+    )
+    def get(self, request, format=None):
+        query = OutlierQuerySerializer(data=request.query_params)
+        query.is_valid(raise_exception=True)
+        result = get_outliers(**query.validated_data)
+        return Response(OutlierResponseSerializer(result).data)

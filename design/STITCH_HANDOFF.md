@@ -17,7 +17,7 @@ Screen names in Stitch must match exactly (rename after generation).
 | `01 Login` | `/login` | 04 sec 6.1 | Card, TextField, Button, Alert | `POST /api/auth/login` |
 | `02 Dashboard` | `/` | 04 sec 6.3, 03 | StatCard, Recharts bar and stacked bar, Table, toggle, Select | `/api/analytics/summary`, `breakdown`, `distribution`, `outliers` |
 | `03 Employees` | `/employees` | 04 sec 6.4 | Filter bar, DataGrid (server mode), Autocomplete, Chip | `GET /api/employees`, `GET /api/lookups` |
-| `04 Employee detail` | `/employees/:id` | 04 sec 6.5 | Cards, Chip, Table, styled-list timeline, Dialog | `GET /api/employees/{id}`, `/history`, `/direct-reports`, `POST .../deactivate`, `.../reactivate` |
+| `04 Employee detail` | `/employees/:id` | 04 sec 6.5 | Cards, Chip, Table, styled-list timeline, Dialog | `GET /api/employees/{id}`, `/history`, `/direct-reports`, `/api/analytics/team/{id}`, `POST .../deactivate`, `.../reactivate` |
 | `05 Employee form` | `/employees/new`, `/employees/:id/edit` | 04 sec 6.6 | React Hook Form, TextField, Select, Autocomplete, `type="date"` | `POST /api/employees`, `PATCH /api/employees/{id}` |
 | `06 Bulk update` | `/bulk-update` | 04 sec 6.7 | Stepper, Select, RadioGroup, TextField, Checkbox, Alert, Dialog, Table | `POST /api/bulk-updates/preview`, `/apply` |
 | `07 Not found and errors` | `*` and error boundary | 04 sec 6.8 | Centered message, Button | n/a |
@@ -100,10 +100,10 @@ Add a row whenever the built UI differs from the Stitch screen or the spec.
 | 2026-11-03 | App shell | User menu secondary line shows the signed-in email instead of `HR Manager`. | The auth API returns no role field; the name remains the primary label. |
 | 2026-11-04 | `03 Employees` | Filters apply immediately; Stitch's `Apply filters` button is omitted. | Spec 04 sec 6.4 defines immediate server-side filtering and does not include an apply step. |
 | 2026-11-04 | `03 Employees` | Filter fields use MUI outlined labels and the DataGrid footer instead of Stitch's custom label/table chrome. | MUI and MUI X DataGrid are required by the spec; spacing and hierarchy follow the screen. |
-| 2026-11-04 | `04 Employee detail` | The analytics team summary is deferred; Edit links to the employee form. | Detail, local currency, direct reports, history, deactivate and reactivate are implemented; the team summary belongs to S12. |
 | 2026-11-04 | `04 Employee detail` | Direct reports are in a separate card; Reporting shows only the manager link. | Clarified requirement: direct reports deserve their own section. |
 | 2026-11-04 | `08 History` | Filters apply immediately; Stitch's `Apply filters` button is omitted. | Spec 04 sec 6.9 defines immediate URL-synced filtering and does not include an apply step. |
 | 2026-11-04 | `08 History` | Batch chip reads `Batch 6f1c8a` instead of Stitch's `Batch: 6f1c8a`. | Spec 04 sec 6.9 copy wins. |
-| 2026-11-04 | `02 Dashboard` | Pay outliers are deferred. | S10/S11 cover controls, KPI cards, pay mix, average charts, distribution and the job-title table; outliers belong to S12. |
 | 2026-11-04 | `02 Dashboard` | Average KPI shows the selected measure label instead of Stitch's median. | Median and percentile statistics are explicitly out of scope; spec 04 sec 6.3 wins. |
 | 2026-11-04 | `02 Dashboard` | Distribution legend uses spec labels (`< $30k`, `$30k - $50k`, `$200k+`) instead of Stitch's `Under $30k`/en-dash copy. | The backend supplies band labels from spec 03 sec 3.3, which wins for data copy. |
+| 2026-11-04 | `02 Dashboard` | Pay outliers uses MUI X DataGrid with inline ratio chips and the DataGrid pagination footer instead of Stitch's custom table chrome. | MUI X DataGrid is required by the spec; columns, rule note and server-side pagination follow the screen. |
+| 2026-11-04 | `04 Employee detail` | The team summary line appears once its analytics request resolves and uses singular `1 person`. | The direct-reports table does not wait on the analytics call; the wording follows spec 04 sec 6.5. |

@@ -11,6 +11,7 @@ import {
   testAnalyticsDistributionCountry,
   testAnalyticsDistributionDepartment,
   testAnalyticsJobTitleBreakdown,
+  testAnalyticsOutliers,
   testAnalyticsSummary,
 } from "../test/handlers";
 import { renderWithProviders } from "../test/render";
@@ -118,6 +119,12 @@ function trackAnalyticsRequests() {
         measure,
       });
     }),
+    http.get("/api/analytics/outliers", ({ request }) => {
+      const url = new URL(request.url);
+      requests.push(url);
+      const page = Number(url.searchParams.get("page") ?? "1");
+      return HttpResponse.json({ ...testAnalyticsOutliers, page });
+    }),
   );
   return requests;
 }
@@ -151,14 +158,30 @@ describe("DashboardPage", () => {
     expect(screen.getByText("Pay by job title")).toBeInTheDocument();
     expect(await screen.findByText("Engineering Manager")).toBeInTheDocument();
     expect(screen.getByText("$171,800")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Pay outliers" })).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Paid more than 1.5x the average for the same job title and country (at least 5 peers)",
+      ),
+    ).toBeInTheDocument();
+    const outlierRow = screen.getByRole("row", { name: /Marcus Vance/ });
+    expect(within(outlierRow).getByRole("link", { name: "Marcus Vance" })).toHaveAttribute(
+      "href",
+      "/employees/9",
+    );
+    expect(within(outlierRow).getByText("$285,000")).toBeInTheDocument();
+    expect(within(outlierRow).getByText("$150,000")).toBeInTheDocument();
+    expect(within(outlierRow).getByText("1.9x")).toBeInTheDocument();
 
-    await waitFor(() => expect(requests).toHaveLength(5));
+    await waitFor(() => expect(requests).toHaveLength(6));
     const summary = requests.filter((url) => url.pathname === "/api/analytics/summary");
     const breakdowns = requests.filter((url) => url.pathname === "/api/analytics/breakdown");
     const distributions = requests.filter((url) => url.pathname === "/api/analytics/distribution");
+    const outliers = requests.filter((url) => url.pathname === "/api/analytics/outliers");
     expect(summary).toHaveLength(1);
     expect(breakdowns).toHaveLength(3);
     expect(distributions).toHaveLength(1);
+    expect(outliers).toHaveLength(1);
     expect(summary[0].searchParams.get("measure")).toBe("total");
     expect(breakdowns.map((url) => url.searchParams.get("group_by")).sort()).toEqual([
       "country",
@@ -166,6 +189,8 @@ describe("DashboardPage", () => {
       "job_title",
     ]);
     expect(distributions[0].searchParams.get("group_by")).toBe("department");
+    expect(outliers[0].searchParams.get("page")).toBe("1");
+    expect(outliers[0].searchParams.get("page_size")).toBe("25");
   });
 
   it("refetches every widget when the measure changes and writes the URL", async () => {
@@ -174,14 +199,14 @@ describe("DashboardPage", () => {
 
     renderDashboard();
     await screen.findByText("$812.3M");
-    await waitFor(() => expect(requests).toHaveLength(5));
+    await waitFor(() => expect(requests).toHaveLength(6));
     const initialCount = requests.length;
 
     await user.click(screen.getByRole("button", { name: "Base salary" }));
 
     expect(await screen.findByText("$666.1M")).toBeInTheDocument();
     expect(screen.getByText("$68,670")).toBeInTheDocument();
-    await waitFor(() => expect(requests).toHaveLength(initialCount + 5));
+    await waitFor(() => expect(requests).toHaveLength(initialCount + 6));
     expect(
       requests.slice(initialCount).every((url) => url.searchParams.get("measure") === "base"),
     ).toBe(true);
@@ -194,14 +219,14 @@ describe("DashboardPage", () => {
 
     renderDashboard();
     await screen.findByText("$812.3M");
-    await waitFor(() => expect(requests).toHaveLength(5));
+    await waitFor(() => expect(requests).toHaveLength(6));
     const initialCount = requests.length;
 
     await user.click(screen.getByRole("combobox", { name: "Country" }));
     await user.click(await screen.findByRole("option", { name: "India" }));
 
     expect(await screen.findByText("$42,600 average")).toBeInTheDocument();
-    await waitFor(() => expect(requests).toHaveLength(initialCount + 5));
+    await waitFor(() => expect(requests).toHaveLength(initialCount + 6));
     expect(
       requests.slice(initialCount).every((url) => url.searchParams.get("country_code") === "IN"),
     ).toBe(true);
@@ -211,7 +236,7 @@ describe("DashboardPage", () => {
     await user.click(screen.getByRole("combobox", { name: "Department" }));
     await user.click(await screen.findByRole("option", { name: "Engineering" }));
 
-    await waitFor(() => expect(requests).toHaveLength(countryCount + 5));
+    await waitFor(() => expect(requests).toHaveLength(countryCount + 6));
     expect(
       requests.slice(countryCount).every((url) => url.searchParams.get("department_id") === "1"),
     ).toBe(true);
@@ -229,7 +254,7 @@ describe("DashboardPage", () => {
       "true",
     );
     expect(screen.getByText("$42,600 average")).toBeInTheDocument();
-    await waitFor(() => expect(requests).toHaveLength(5));
+    await waitFor(() => expect(requests).toHaveLength(6));
     for (const url of requests) {
       expect(url.searchParams.get("measure")).toBe("base");
       expect(url.searchParams.get("country_code")).toBe("IN");
@@ -251,6 +276,9 @@ describe("DashboardPage", () => {
           groups: [],
         }),
       ),
+      http.get("/api/analytics/outliers", () =>
+        HttpResponse.json({ items: [], total: 0, page: 1, page_size: 25 }),
+      ),
     );
 
     renderDashboard();
@@ -262,6 +290,7 @@ describe("DashboardPage", () => {
     expect(screen.getAllByText("No data for these filters")).toHaveLength(2);
     expect(screen.getByText("No distribution data for these filters")).toBeInTheDocument();
     expect(screen.getByText("No job-title data for these filters")).toBeInTheDocument();
+    expect(screen.getByText("No pay outliers for these filters")).toBeInTheDocument();
     expect(document.body).not.toHaveTextContent("NaN");
   });
 
@@ -271,7 +300,7 @@ describe("DashboardPage", () => {
 
     renderDashboard();
     await screen.findByText("$812.3M");
-    await waitFor(() => expect(requests).toHaveLength(5));
+    await waitFor(() => expect(requests).toHaveLength(6));
     const initialCount = requests.length;
 
     await user.click(screen.getByRole("button", { name: "By country" }));
@@ -294,14 +323,41 @@ describe("DashboardPage", () => {
 
     renderDashboard();
     expect(await screen.findByText("Engineering Manager")).toBeInTheDocument();
-    expect(screen.getByText("Pay by job title")).toBeInTheDocument();
+    const card = screen.getByRole("heading", { name: "Pay by job title" }).closest(".MuiCard-root");
 
-    await user.click(screen.getByText("Job title"));
+    await user.click(within(card).getByText("Job title"));
 
     await waitFor(() => {
-      const dataRows = screen.getAllByRole("row").slice(1);
+      const dataRows = within(card).getAllByRole("row").slice(1);
       expect(within(dataRows[0]).getByText("Account Executive")).toBeInTheDocument();
     });
+  });
+
+  it("paginates pay outliers on the server", async () => {
+    const user = userEvent.setup();
+    const requests = [];
+    server.use(
+      http.get("/api/analytics/outliers", ({ request }) => {
+        const url = new URL(request.url);
+        requests.push(url);
+        return HttpResponse.json({
+          ...testAnalyticsOutliers,
+          total: 60,
+          page: Number(url.searchParams.get("page") ?? "1"),
+        });
+      }),
+    );
+
+    renderDashboard();
+    await screen.findByText("Marcus Vance");
+    await waitFor(() => expect(requests).toHaveLength(1));
+    const card = screen.getByRole("heading", { name: "Pay outliers" }).closest(".MuiCard-root");
+
+    await user.click(within(card).getByRole("button", { name: /go to next page/i }));
+
+    await waitFor(() => expect(requests).toHaveLength(2));
+    expect(requests[1].searchParams.get("page")).toBe("2");
+    expect(requests[1].searchParams.get("page_size")).toBe("25");
   });
 
   it("opens the employee list filtered by country from the country chart", async () => {

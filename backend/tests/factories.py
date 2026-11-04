@@ -276,3 +276,152 @@ def make_analytics_dataset():
         "job_titles": job_titles,
         "employees": employees,
     }
+
+
+def make_team_dataset():
+    """Manager with three active direct reports, one inactive and one grandchild."""
+    countries = {
+        "US": make_country("US", "United States", "USD"),
+        "DE": make_country("DE", "Germany", "EUR"),
+    }
+    manager = make_employee(
+        full_name="Morgan Manager",
+        email="morgan.manager@acme.example",
+        country=countries["US"],
+        base_salary_cents=100_000_000,
+        bonus_cents=0,
+        allowances_cents=0,
+    )
+    empty_manager = make_employee(
+        full_name="Empty Manager",
+        email="empty.manager@acme.example",
+        country=countries["US"],
+    )
+    employee_specs = {
+        "report_one": ("Report One", "US", 8_000_000, 2_000_000, 0, Employee.Status.ACTIVE),
+        "report_two": ("Report Two", "US", 16_000_000, 4_000_000, 0, Employee.Status.ACTIVE),
+        "report_three": ("Report Three", "DE", 24_000_000, 6_000_000, 0, Employee.Status.ACTIVE),
+        "report_inactive": (
+            "Report Inactive",
+            "DE",
+            32_000_000,
+            8_000_000,
+            0,
+            Employee.Status.INACTIVE,
+        ),
+    }
+    employees = {}
+    for key, (name, country_code, base, bonus, allowances, status) in employee_specs.items():
+        employees[key] = make_employee(
+            full_name=name,
+            email=f"{key}@acme.example",
+            country=countries[country_code],
+            manager=manager,
+            status=status,
+            base_salary_cents=base,
+            bonus_cents=bonus,
+            allowances_cents=allowances,
+        )
+    employees["grandchild"] = make_employee(
+        full_name="Grandchild",
+        email="grandchild@acme.example",
+        country=countries["US"],
+        manager=employees["report_one"],
+        base_salary_cents=40_000_000,
+        bonus_cents=10_000_000,
+        allowances_cents=0,
+    )
+    return {
+        "countries": countries,
+        "manager": manager,
+        "empty_manager": empty_manager,
+        "employees": employees,
+    }
+
+
+def make_outlier_dataset():
+    """Two qualifying peer groups and one below the default min_peers."""
+    countries = {
+        "US": make_country("US", "United States", "USD"),
+        "IN": make_country("IN", "India", "INR"),
+        "DE": make_country("DE", "Germany", "EUR"),
+    }
+    departments = {
+        "engineering": make_department("Engineering"),
+        "sales": make_department("Sales"),
+    }
+    job_titles = {
+        "software_engineer": make_job_title("Software Engineer", 2),
+        "account_executive": make_job_title("Account Executive", 2),
+    }
+    employees = {}
+
+    def add(key, name, country_code, department_key, title_key, base, bonus=0, status="active"):
+        employees[key] = make_employee(
+            full_name=name,
+            email=f"{key}@acme.example",
+            country=countries[country_code],
+            department=departments[department_key],
+            job_title=job_titles[title_key],
+            status=status,
+            base_salary_cents=base,
+            bonus_cents=bonus,
+            allowances_cents=0,
+        )
+
+    for index in range(1, 5):
+        add(
+            f"us_normal_{index}",
+            f"US Normal {index}",
+            "US",
+            "engineering",
+            "software_engineer",
+            10_000_000,
+        )
+    add("us_outlier", "US Outlier", "US", "engineering", "software_engineer", 25_000_000)
+    add(
+        "us_inactive",
+        "US Inactive",
+        "US",
+        "engineering",
+        "software_engineer",
+        50_000_000,
+        status=Employee.Status.INACTIVE,
+    )
+
+    for index in range(1, 5):
+        add(
+            f"in_normal_{index}",
+            f"IN Normal {index}",
+            "IN",
+            "sales",
+            "account_executive",
+            5_000_000,
+        )
+    add(
+        "in_outlier",
+        "IN Outlier",
+        "IN",
+        "sales",
+        "account_executive",
+        5_000_000,
+        bonus=10_000_000,
+    )
+
+    for index in range(1, 4):
+        add(
+            f"de_normal_{index}",
+            f"DE Normal {index}",
+            "DE",
+            "engineering",
+            "software_engineer",
+            10_000_000,
+        )
+    add("de_high", "DE High", "DE", "engineering", "software_engineer", 30_000_000)
+
+    return {
+        "countries": countries,
+        "departments": departments,
+        "job_titles": job_titles,
+        "employees": employees,
+    }

@@ -481,6 +481,41 @@ export const testAnalyticsDepartmentBreakdown = {
   rows: analyticsDepartmentRows,
 };
 
+export const testAnalyticsOutliers = {
+  items: [
+    {
+      employee_id: 9,
+      full_name: "Marcus Vance",
+      job_title: "Staff Solutions Architect",
+      country: "Singapore",
+      amount_cents: 28_500_000,
+      peer_avg_cents: 15_000_000,
+      ratio: 1.9,
+    },
+    {
+      employee_id: 10,
+      full_name: "Fiona Gallagher",
+      job_title: "Principal Product Specialist",
+      country: "United Kingdom",
+      amount_cents: 17_640_000,
+      peer_avg_cents: 9_800_000,
+      ratio: 1.8,
+    },
+  ],
+  total: 2,
+  page: 1,
+  page_size: 25,
+};
+
+export const testAnalyticsTeam = {
+  manager: { id: 1, full_name: "Asha Patel" },
+  headcount: 1,
+  total_cents: 3_648_000,
+  avg_cents: 3_648_000,
+  min_cents: 3_648_000,
+  max_cents: 3_648_000,
+};
+
 export const analyticsHandlers = [
   http.get("/api/analytics/summary", ({ request }) => {
     const measure = new URL(request.url).searchParams.get("measure");
@@ -528,6 +563,10 @@ export const analyticsHandlers = [
       measure,
     });
   }),
+  http.get("/api/analytics/outliers", () => HttpResponse.json(testAnalyticsOutliers)),
+  http.get("/api/analytics/team/:id", ({ params }) =>
+    params.id === "1" ? HttpResponse.json(testAnalyticsTeam) : notFoundResponse(),
+  ),
 ];
 
 export const testSalaryHistoryPage = {

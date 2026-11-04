@@ -11,3 +11,11 @@ export function getAnalyticsBreakdown(params) {
 export function getAnalyticsDistribution(params) {
   return request("GET", "/analytics/distribution", { query: params });
 }
+
+export function getAnalyticsOutliers(params) {
+  return request("GET", "/analytics/outliers", { query: params });
+}
+
+export function getAnalyticsTeam(managerId) {
+  return request("GET", `/analytics/team/${managerId}`);
+}

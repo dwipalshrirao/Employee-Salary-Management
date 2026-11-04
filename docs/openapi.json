@@ -220,6 +220,109 @@
                 }
             }
         },
+        "/api/analytics/outliers": {
+            "get": {
+                "operationId": "analytics-outliers",
+                "description": "Return employees paid above their peer-group threshold.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "country_code",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 2
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "department_id",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "job_title_id",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "measure",
+                        "schema": {
+                            "enum": [
+                                "total",
+                                "base"
+                            ],
+                            "type": "string",
+                            "default": "total",
+                            "minLength": 1
+                        },
+                        "description": "* `total` - total\n* `base` - base"
+                    },
+                    {
+                        "in": "query",
+                        "name": "min_peers",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 2,
+                            "default": 5
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "default": 1
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "page_size",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 1,
+                            "default": 25
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "threshold",
+                        "schema": {
+                            "type": "string",
+                            "format": "decimal",
+                            "pattern": "^-?\\d{0,2}(?:\\.\\d{0,3})?$",
+                            "default": "1.500"
+                        }
+                    }
+                ],
+                "tags": [
+                    "analytics"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OutlierResponse"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/analytics/summary": {
             "get": {
                 "operationId": "analytics-summary",
@@ -284,6 +387,86 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/SummaryResponse"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/analytics/team/{manager_id}": {
+            "get": {
+                "operationId": "analytics-team",
+                "description": "Return pay statistics for a manager's direct reports.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "country_code",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 2
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "department_id",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "include_inactive",
+                        "schema": {
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "job_title_id",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "manager_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "measure",
+                        "schema": {
+                            "enum": [
+                                "total",
+                                "base"
+                            ],
+                            "type": "string",
+                            "default": "total",
+                            "minLength": 1
+                        },
+                        "description": "* `total` - total\n* `base` - base"
+                    }
+                ],
+                "tags": [
+                    "analytics"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TeamResponse"
                                 }
                             }
                         },
@@ -1906,6 +2089,68 @@
                 "type": "string",
                 "description": "* `percent` - percent\n* `fixed_amount` - fixed_amount"
             },
+            "OutlierItem": {
+                "type": "object",
+                "properties": {
+                    "employee_id": {
+                        "type": "integer"
+                    },
+                    "full_name": {
+                        "type": "string"
+                    },
+                    "job_title": {
+                        "type": "string"
+                    },
+                    "country": {
+                        "type": "string"
+                    },
+                    "amount_cents": {
+                        "type": "integer"
+                    },
+                    "peer_avg_cents": {
+                        "type": "integer"
+                    },
+                    "ratio": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                },
+                "required": [
+                    "amount_cents",
+                    "country",
+                    "employee_id",
+                    "full_name",
+                    "job_title",
+                    "peer_avg_cents",
+                    "ratio"
+                ]
+            },
+            "OutlierResponse": {
+                "type": "object",
+                "properties": {
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/OutlierItem"
+                        }
+                    },
+                    "total": {
+                        "type": "integer"
+                    },
+                    "page": {
+                        "type": "integer"
+                    },
+                    "page_size": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "items",
+                    "page",
+                    "page_size",
+                    "total"
+                ]
+            },
             "PatchedEmployeeUpdate": {
                 "type": "object",
                 "description": "Reject unknown input fields instead of silently ignoring them.",
@@ -2201,6 +2446,52 @@
                     "country_count",
                     "department_count",
                     "headcount",
+                    "max_cents",
+                    "min_cents",
+                    "total_cents"
+                ]
+            },
+            "TeamManager": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "full_name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "full_name",
+                    "id"
+                ]
+            },
+            "TeamResponse": {
+                "type": "object",
+                "properties": {
+                    "manager": {
+                        "$ref": "#/components/schemas/TeamManager"
+                    },
+                    "headcount": {
+                        "type": "integer"
+                    },
+                    "total_cents": {
+                        "type": "integer"
+                    },
+                    "avg_cents": {
+                        "type": "integer"
+                    },
+                    "min_cents": {
+                        "type": "integer"
+                    },
+                    "max_cents": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "avg_cents",
+                    "headcount",
+                    "manager",
                     "max_cents",
                     "min_cents",
                     "total_cents"

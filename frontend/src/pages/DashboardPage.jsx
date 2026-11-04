@@ -18,9 +18,11 @@ import { useNavigate } from "react-router-dom";
 import {
   getAnalyticsBreakdown,
   getAnalyticsDistribution,
+  getAnalyticsOutliers,
   getAnalyticsSummary,
 } from "../api/analytics";
 import JobTitlePayTable from "../components/JobTitlePayTable";
+import OutliersTable from "../components/OutliersTable";
 import StatCard from "../components/StatCard";
 import AverageBarChart from "../components/charts/AverageBarChart";
 import DistributionChart from "../components/charts/DistributionChart";
@@ -129,8 +131,14 @@ export default function DashboardPage() {
   const navigate = useNavigate();
   const { values, update } = useUrlState(DEFAULT_STATE);
   const [distributionGroup, setDistributionGroup] = useState("department");
+  const [outlierPage, setOutlierPage] = useState(1);
+  const [outlierPageSize, setOutlierPageSize] = useState(25);
   const lookups = useLookups();
   const filters = filtersFor(values);
+  const updateFilters = (next) => {
+    update(next);
+    setOutlierPage(1);
+  };
   const summaryQuery = useQuery({
     queryKey: ["analytics", "summary", filters],
     queryFn: () => getAnalyticsSummary(filters),
@@ -156,6 +164,12 @@ export default function DashboardPage() {
     queryFn: () => getAnalyticsDistribution({ ...filters, group_by: distributionGroup }),
     staleTime: 60_000,
   });
+  const outliersQuery = useQuery({
+    queryKey: ["analytics", "outliers", filters, outlierPage, outlierPageSize],
+    queryFn: () =>
+      getAnalyticsOutliers({ ...filters, page: outlierPage, page_size: outlierPageSize }),
+    staleTime: 60_000,
+  });
 
   const retry = () => {
     summaryQuery.refetch();
@@ -163,6 +177,7 @@ export default function DashboardPage() {
     departmentQuery.refetch();
     jobTitleQuery.refetch();
     distributionQuery.refetch();
+    outliersQuery.refetch();
   };
 
   const measure = filters.measure;
@@ -176,7 +191,8 @@ export default function DashboardPage() {
     countryQuery.isError ||
     departmentQuery.isError ||
     jobTitleQuery.isError ||
-    distributionQuery.isError;
+    distributionQuery.isError ||
+    outliersQuery.isError;
   const countries = lookups.data?.countries ?? [];
   const departments = lookups.data?.departments ?? [];
 
@@ -207,7 +223,7 @@ export default function DashboardPage() {
             value={measure}
             onChange={(_, nextMeasure) => {
               if (nextMeasure) {
-                update({ measure: nextMeasure });
+                updateFilters({ measure: nextMeasure });
               }
             }}
             aria-label="Measure"
@@ -219,7 +235,7 @@ export default function DashboardPage() {
             select
             label="Country"
             value={lookups.data ? values.country_code : ""}
-            onChange={(event) => update({ country_code: event.target.value })}
+            onChange={(event) => updateFilters({ country_code: event.target.value })}
             sx={{ minWidth: 180 }}
           >
             <MenuItem value="">All countries</MenuItem>
@@ -233,7 +249,7 @@ export default function DashboardPage() {
             select
             label="Department"
             value={lookups.data ? values.department_id : ""}
-            onChange={(event) => update({ department_id: event.target.value })}
+            onChange={(event) => updateFilters({ department_id: event.target.value })}
             sx={{ minWidth: 190 }}
           >
             <MenuItem value="">All departments</MenuItem>
@@ -340,6 +356,19 @@ export default function DashboardPage() {
           />
 
           <JobTitlePayTable rows={jobTitleRows} loading={jobTitleQuery.isLoading} />
+
+          <OutliersTable
+            rows={outliersQuery.data?.items ?? []}
+            total={outliersQuery.data?.total ?? 0}
+            page={outliersQuery.data?.page ?? outlierPage}
+            pageSize={outlierPageSize}
+            loading={outliersQuery.isLoading}
+            onPageChange={setOutlierPage}
+            onPageSizeChange={(nextPageSize) => {
+              setOutlierPageSize(nextPageSize);
+              setOutlierPage(1);
+            }}
+          />
         </Box>
       )}
     </Box>

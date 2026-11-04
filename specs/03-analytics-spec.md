@@ -92,6 +92,10 @@ Generate the `CASE` from the band edge list so the SQL and the labels cannot dri
 
 ### 3.4 Team `GET /api/analytics/team/{manager_id}`
 Direct reports only (active unless `include_inactive=true`). Returns the manager summary and `headcount`, `total_cents`, `avg_cents`, `min_cents`, `max_cents` for the chosen `measure`. 404 if the manager does not exist. A manager with no reports returns zeros.
+```json
+{ "manager": { "id": 42, "full_name": "Morgan Manager" },
+  "headcount": 4, "total_cents": 0, "avg_cents": 0, "min_cents": 0, "max_cents": 0 }
+```
 
 ### 3.5 Outliers `GET /api/analytics/outliers`
 Params: `threshold` (decimal, default 1.5, range 1.1 to 5), `min_peers` (int, default 5, range 2 to 100), `measure`, scope filters, `page`, `page_size`.

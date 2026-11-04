@@ -46,6 +46,43 @@ describe("EmployeeDetailPage", () => {
     expect(await screen.findByRole("heading", { name: "Direct reports" })).toBeInTheDocument();
   });
 
+  it("shows the team pay summary when the employee has direct reports", async () => {
+    renderDetail();
+
+    expect(
+      await screen.findByText("Team: 1 person, average $36,480, range $36,480 to $36,480"),
+    ).toBeInTheDocument();
+  });
+
+  it("does not request a team summary when the employee has no direct reports", async () => {
+    const teamRequests = [];
+    server.use(
+      http.get("/api/employees/1", () =>
+        HttpResponse.json({ ...testEmployeeDetail, direct_reports_count: 0 }),
+      ),
+      http.get("/api/employees/:id/direct-reports", () =>
+        HttpResponse.json({ items: [], total: 0, page: 1, page_size: 25 }),
+      ),
+      http.get("/api/analytics/team/:id", ({ request, params }) => {
+        teamRequests.push({ request, params });
+        return HttpResponse.json({
+          manager: { id: 1, full_name: "Asha Patel" },
+          headcount: 0,
+          total_cents: 0,
+          avg_cents: 0,
+          min_cents: 0,
+          max_cents: 0,
+        });
+      }),
+    );
+
+    renderDetail();
+
+    expect(await screen.findByText("No direct reports")).toBeInTheDocument();
+    expect(screen.queryByText(/^Team:/)).not.toBeInTheDocument();
+    expect(teamRequests).toHaveLength(0);
+  });
+
   it("renders direct reports and the salary history timeline", async () => {
     renderDetail();
 

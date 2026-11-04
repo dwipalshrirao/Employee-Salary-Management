@@ -31,6 +31,7 @@ import {
   getEmployeeHistory,
   reactivateEmployee,
 } from "../api/employees";
+import { getAnalyticsTeam } from "../api/analytics";
 import { ApiError } from "../api/client";
 import StatusChip from "../components/StatusChip";
 import { useLookups } from "../hooks/useLookups";
@@ -130,6 +131,11 @@ function HistoryEntry({ row }) {
   );
 }
 
+function teamSummary(team) {
+  const people = team.headcount === 1 ? "person" : "people";
+  return `Team: ${team.headcount} ${people}, average ${formatUsd(team.avg_cents)}, range ${formatUsd(team.min_cents)} to ${formatUsd(team.max_cents)}`;
+}
+
 function NotFoundState() {
   return (
     <Card>
@@ -180,6 +186,14 @@ export default function EmployeeDetailPage() {
     queryFn: () => getEmployeeDirectReports(id, { page: reportsPage, page_size: 25 }),
     retry: false,
     enabled: Boolean(id) && employeeQuery.isSuccess,
+  });
+  const hasDirectReports = (employeeQuery.data?.direct_reports_count ?? 0) > 0;
+  const teamQuery = useQuery({
+    queryKey: ["analytics", "team", id],
+    queryFn: () => getAnalyticsTeam(id),
+    retry: false,
+    enabled: Boolean(id) && employeeQuery.isSuccess && hasDirectReports,
+    staleTime: 60_000,
   });
 
   if (employeeQuery.isLoading) {
@@ -385,6 +399,11 @@ export default function EmployeeDetailPage() {
             </Typography>
           ) : (
             <>
+              {teamQuery.data ? (
+                <Typography color="text.secondary" sx={{ mt: 2 }}>
+                  {teamSummary(teamQuery.data)}
+                </Typography>
+              ) : null}
               <Table size="small" sx={{ mt: 2 }}>
                 <TableHead>
                   <TableRow>
