@@ -7,6 +7,13 @@ from tests.factories import make_team_dataset
 pytestmark = pytest.mark.django_db
 
 
+def test_team_uses_two_queries(django_assert_num_queries):
+    data = make_team_dataset()
+
+    with django_assert_num_queries(2):
+        get_team(data["manager"].id)
+
+
 def test_team_counts_only_active_direct_reports():
     data = make_team_dataset()
 

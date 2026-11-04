@@ -19,6 +19,9 @@ DJANGO_SETTINGS_MODULE = "config.settings"
 python_files = ["test_*.py", "*_test.py"]
 addopts = "-ra"
 testpaths = ["tests"]
+markers = [
+    "slow: runs against the 10k seed and is excluded from the default suite",
+]
 
 [tool.ruff]
 line-length = 100

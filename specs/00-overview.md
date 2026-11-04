@@ -139,7 +139,6 @@ BULK_MAX_PERCENT=100
 MAX_PAGE_SIZE=100
 SEED_HR_EMAIL=hr@acme.example
 SEED_HR_PASSWORD=             # empty = generate a random one and print it once
-SEED_RANDOM_SEED=42
 ```
 No default password is committed anywhere.
 

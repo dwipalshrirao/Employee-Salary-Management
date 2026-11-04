@@ -1,4 +1,4 @@
-.PHONY: setup backend frontend migrate seed test test-watch lint openapi
+.PHONY: setup backend frontend migrate seed test test-slow test-watch lint openapi
 
 SEED_ARGS ?= --reset --verify
 
@@ -19,8 +19,11 @@ seed:
 	@set -a; . ./.env; set +a; cd backend && .venv/bin/python manage.py seed --employees 10000 --seed 42 $(SEED_ARGS)
 
 test:
-	cd backend && SECRET_KEY=test-secret DEBUG=true .venv/bin/python -m pytest
+	cd backend && SECRET_KEY=test-secret DEBUG=true .venv/bin/python -m pytest -m "not slow"
 	cd frontend && npm test
+
+test-slow:
+	cd backend && SECRET_KEY=test-secret DEBUG=true .venv/bin/python -m pytest -m slow
 
 test-watch:
 	@echo "test-watch: not implemented yet (scaffold only)"

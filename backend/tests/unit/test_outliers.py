@@ -8,6 +8,13 @@ from tests.factories import make_outlier_dataset
 pytestmark = pytest.mark.django_db
 
 
+def test_outliers_use_two_queries(django_assert_num_queries):
+    make_outlier_dataset()
+
+    with django_assert_num_queries(2):
+        get_outliers()
+
+
 def test_outliers_include_high_earners_sorted_by_ratio():
     data = make_outlier_dataset()
 

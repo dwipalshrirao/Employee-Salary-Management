@@ -82,6 +82,29 @@ def test_middleware_log_does_not_include_request_body():
     assert body not in record.getMessage()
 
 
+def test_middleware_log_omits_passwords_tokens_and_salary_amounts():
+    request = RequestFactory().post(
+        "/api/auth/login?salary=1500000&token=super-secret-token",
+        data='{"email":"hr@acme.example","password":"super-secret"}',
+        content_type="application/json",
+    )
+    middleware = RequestMonitoringMiddleware(lambda _request: HttpResponse())
+    logger = logging.getLogger("common")
+    handler = _ListHandler()
+    logger.addHandler(handler)
+
+    try:
+        middleware(request)
+    finally:
+        logger.removeHandler(handler)
+
+    record = handler.records[-1]
+    assert record.path == "/api/auth/login"
+    assert "super-secret" not in record.getMessage()
+    assert "super-secret-token" not in record.getMessage()
+    assert "1500000" not in record.getMessage()
+
+
 def test_middleware_adds_only_operational_headers():
     response = HttpResponse()
     request = RequestFactory().get("/api/health")
