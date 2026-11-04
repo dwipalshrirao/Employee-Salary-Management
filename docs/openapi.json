@@ -5,6 +5,206 @@
         "version": "0.1.0"
     },
     "paths": {
+        "/api/analytics/breakdown": {
+            "get": {
+                "operationId": "analytics-breakdown",
+                "description": "Return headcount and pay statistics grouped by one dimension.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "country_code",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 2
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "department_id",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "group_by",
+                        "schema": {
+                            "enum": [
+                                "country",
+                                "department",
+                                "job_title"
+                            ],
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "description": "* `country` - country\n* `department` - department\n* `job_title` - job_title",
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "include_inactive",
+                        "schema": {
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "job_title_id",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "measure",
+                        "schema": {
+                            "enum": [
+                                "total",
+                                "base"
+                            ],
+                            "type": "string",
+                            "default": "total",
+                            "minLength": 1
+                        },
+                        "description": "* `total` - total\n* `base` - base"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sort_by",
+                        "schema": {
+                            "enum": [
+                                "name",
+                                "headcount",
+                                "total",
+                                "avg",
+                                "min",
+                                "max"
+                            ],
+                            "type": "string",
+                            "default": "avg",
+                            "minLength": 1
+                        },
+                        "description": "* `name` - name\n* `headcount` - headcount\n* `total` - total\n* `avg` - avg\n* `min` - min\n* `max` - max"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sort_dir",
+                        "schema": {
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "type": "string",
+                            "default": "desc",
+                            "minLength": 1
+                        },
+                        "description": "* `asc` - asc\n* `desc` - desc"
+                    }
+                ],
+                "tags": [
+                    "analytics"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BreakdownResponse"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/analytics/summary": {
+            "get": {
+                "operationId": "analytics-summary",
+                "description": "Return organisation-wide pay totals and components.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "country_code",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 2
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "department_id",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "include_inactive",
+                        "schema": {
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "job_title_id",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "measure",
+                        "schema": {
+                            "enum": [
+                                "total",
+                                "base"
+                            ],
+                            "type": "string",
+                            "default": "total",
+                            "minLength": 1
+                        },
+                        "description": "* `total` - total\n* `base` - base"
+                    }
+                ],
+                "tags": [
+                    "analytics"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SummaryResponse"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/auth/login": {
             "post": {
                 "operationId": "auth-login",
@@ -794,6 +994,63 @@
                     "email",
                     "full_name",
                     "id"
+                ]
+            },
+            "BreakdownResponse": {
+                "type": "object",
+                "properties": {
+                    "group_by": {
+                        "type": "string"
+                    },
+                    "measure": {
+                        "type": "string"
+                    },
+                    "rows": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/BreakdownRow"
+                        }
+                    }
+                },
+                "required": [
+                    "group_by",
+                    "measure",
+                    "rows"
+                ]
+            },
+            "BreakdownRow": {
+                "type": "object",
+                "properties": {
+                    "key": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "headcount": {
+                        "type": "integer"
+                    },
+                    "total_cents": {
+                        "type": "integer"
+                    },
+                    "avg_cents": {
+                        "type": "integer"
+                    },
+                    "min_cents": {
+                        "type": "integer"
+                    },
+                    "max_cents": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "avg_cents",
+                    "headcount",
+                    "key",
+                    "max_cents",
+                    "min_cents",
+                    "name",
+                    "total_cents"
                 ]
             },
             "BulkUpdateApply": {
@@ -1736,6 +1993,64 @@
                     "new",
                     "previous",
                     "reason"
+                ]
+            },
+            "SummaryComponents": {
+                "type": "object",
+                "properties": {
+                    "base_cents": {
+                        "type": "integer"
+                    },
+                    "bonus_cents": {
+                        "type": "integer"
+                    },
+                    "allowances_cents": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "allowances_cents",
+                    "base_cents",
+                    "bonus_cents"
+                ]
+            },
+            "SummaryResponse": {
+                "type": "object",
+                "properties": {
+                    "headcount": {
+                        "type": "integer"
+                    },
+                    "total_cents": {
+                        "type": "integer"
+                    },
+                    "avg_cents": {
+                        "type": "integer"
+                    },
+                    "min_cents": {
+                        "type": "integer"
+                    },
+                    "max_cents": {
+                        "type": "integer"
+                    },
+                    "components": {
+                        "$ref": "#/components/schemas/SummaryComponents"
+                    },
+                    "country_count": {
+                        "type": "integer"
+                    },
+                    "department_count": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "avg_cents",
+                    "components",
+                    "country_count",
+                    "department_count",
+                    "headcount",
+                    "max_cents",
+                    "min_cents",
+                    "total_cents"
                 ]
             }
         },

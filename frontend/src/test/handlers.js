@@ -219,6 +219,203 @@ export const detailHandlers = [
   ),
 ];
 
+const analyticsCountryRows = [
+  {
+    key: "US",
+    name: "United States",
+    headcount: 2700,
+    total_cents: 31_914_000_000,
+    avg_cents: 11_820_000,
+    min_cents: 4_500_000,
+    max_cents: 35_000_000,
+  },
+  {
+    key: "SG",
+    name: "Singapore",
+    headcount: 1200,
+    total_cents: 12_288_000_000,
+    avg_cents: 10_240_000,
+    min_cents: 4_200_000,
+    max_cents: 28_000_000,
+  },
+  {
+    key: "CA",
+    name: "Canada",
+    headcount: 900,
+    total_cents: 8_262_000_000,
+    avg_cents: 9_180_000,
+    min_cents: 4_000_000,
+    max_cents: 24_000_000,
+  },
+  {
+    key: "DE",
+    name: "Germany",
+    headcount: 1200,
+    total_cents: 10_500_000_000,
+    avg_cents: 8_750_000,
+    min_cents: 3_800_000,
+    max_cents: 25_000_000,
+  },
+  {
+    key: "GB",
+    name: "United Kingdom",
+    headcount: 1200,
+    total_cents: 10_092_000_000,
+    avg_cents: 8_410_000,
+    min_cents: 3_600_000,
+    max_cents: 23_000_000,
+  },
+  {
+    key: "IN",
+    name: "India",
+    headcount: 2500,
+    total_cents: 10_650_000_000,
+    avg_cents: 4_260_000,
+    min_cents: 1_500_000,
+    max_cents: 18_000_000,
+  },
+];
+
+const analyticsDepartmentRows = [
+  {
+    key: "1",
+    name: "Engineering",
+    headcount: 3000,
+    total_cents: 33_600_000_000,
+    avg_cents: 11_200_000,
+    min_cents: 4_500_000,
+    max_cents: 35_000_000,
+  },
+  {
+    key: "2",
+    name: "Product",
+    headcount: 800,
+    total_cents: 8_680_000_000,
+    avg_cents: 10_850_000,
+    min_cents: 4_200_000,
+    max_cents: 30_000_000,
+  },
+  {
+    key: "3",
+    name: "Sales",
+    headcount: 1800,
+    total_cents: 16_956_000_000,
+    avg_cents: 9_420_000,
+    min_cents: 3_800_000,
+    max_cents: 28_000_000,
+  },
+  {
+    key: "4",
+    name: "Finance",
+    headcount: 700,
+    total_cents: 6_237_000_000,
+    avg_cents: 8_910_000,
+    min_cents: 3_600_000,
+    max_cents: 24_000_000,
+  },
+  {
+    key: "5",
+    name: "Marketing",
+    headcount: 800,
+    total_cents: 6_272_000_000,
+    avg_cents: 7_840_000,
+    min_cents: 3_400_000,
+    max_cents: 22_000_000,
+  },
+  {
+    key: "6",
+    name: "Human Resources",
+    headcount: 500,
+    total_cents: 3_630_000_000,
+    avg_cents: 7_260_000,
+    min_cents: 3_200_000,
+    max_cents: 20_000_000,
+  },
+  {
+    key: "7",
+    name: "Operations",
+    headcount: 1000,
+    total_cents: 6_430_000_000,
+    avg_cents: 6_430_000,
+    min_cents: 3_000_000,
+    max_cents: 18_000_000,
+  },
+  {
+    key: "8",
+    name: "Customer Support",
+    headcount: 1100,
+    total_cents: 5_632_000_000,
+    avg_cents: 5_120_000,
+    min_cents: 2_800_000,
+    max_cents: 16_000_000,
+  },
+];
+
+export const testAnalyticsSummary = {
+  headcount: 9700,
+  total_cents: 81_230_000_000,
+  avg_cents: 8_374_000,
+  min_cents: 3_000_000,
+  max_cents: 35_000_000,
+  components: {
+    base_cents: 66_610_000_000,
+    bonus_cents: 8_904_000_000,
+    allowances_cents: 5_716_000_000,
+  },
+  country_count: 6,
+  department_count: 9,
+};
+
+export const testAnalyticsBaseSummary = {
+  ...testAnalyticsSummary,
+  total_cents: 66_610_000_000,
+  avg_cents: 6_867_000,
+};
+
+export const testAnalyticsCountryBreakdown = {
+  group_by: "country",
+  measure: "total",
+  rows: analyticsCountryRows,
+};
+
+export const testAnalyticsDepartmentBreakdown = {
+  group_by: "department",
+  measure: "total",
+  rows: analyticsDepartmentRows,
+};
+
+export const analyticsHandlers = [
+  http.get("/api/analytics/summary", ({ request }) => {
+    const measure = new URL(request.url).searchParams.get("measure");
+    return HttpResponse.json(measure === "base" ? testAnalyticsBaseSummary : testAnalyticsSummary);
+  }),
+  http.get("/api/analytics/breakdown", ({ request }) => {
+    const url = new URL(request.url);
+    const groupBy = url.searchParams.get("group_by");
+    const measure = url.searchParams.get("measure") ?? "total";
+    const countryCode = url.searchParams.get("country_code");
+    const departmentId = url.searchParams.get("department_id");
+    if (groupBy === "department") {
+      const rows = departmentId
+        ? analyticsDepartmentRows.filter((row) => row.key === departmentId)
+        : analyticsDepartmentRows;
+      return HttpResponse.json({
+        ...testAnalyticsDepartmentBreakdown,
+        measure,
+        rows,
+      });
+    }
+    const rows = countryCode
+      ? analyticsCountryRows.filter((row) => row.key === countryCode)
+      : analyticsCountryRows;
+    return HttpResponse.json({
+      ...testAnalyticsCountryBreakdown,
+      measure,
+      rows,
+    });
+  }),
+];
+
 export const testSalaryHistoryPage = {
   items: [
     {
@@ -368,4 +565,5 @@ export const handlers = [
   ...detailHandlers,
   ...bulkHandlers,
   salaryHistoryHandler(),
+  ...analyticsHandlers,
 ];

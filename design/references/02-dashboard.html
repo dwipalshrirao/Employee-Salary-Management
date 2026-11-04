@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"surface-white":"#FFFFFF","on-background":"#111c2a","success":"#2E7D32","chart-band-3":"#8FB0FA","on-primary-fixed":"#001552","chart-band-7":"#1B3A8F","primary-fixed-dim":"#b7c4ff","on-secondary-fixed":"#00201d","on-error":"#ffffff","inverse-surface":"#26313f","on-surface-variant":"#434655","primary-tint":"#E8EEFC","surface-container-low":"#eff4ff","primary-container":"#1e4ed8","surface-dim":"#d0dbed","text-ash":"#9AA3B2","primary":"#0037b1","primary-fixed":"#dce1ff","on-primary":"#ffffff","on-secondary-fixed-variant":"#00504a","secondary-fixed-dim":"#80d5cb","surface-container-high":"#dee9fc","secondary-container":"#99efe5","on-primary-container":"#cad3ff","on-tertiary-container":"#ffcaae","table-header-fog":"#F1F4F9","surface-container-highest":"#d8e3f6","background-cloud":"#F6F7F9","text-ink":"#1A2230","text-slate":"#5B6676","on-tertiary":"#ffffff","warning":"#B45309","primary-dark":"#173DAE","on-surface":"#111c2a","status-inactive-bg":"#EEF0F4","chart-band-2":"#B7CEFF","surface-container-lowest":"#ffffff","secondary":"#006a63","outline-variant":"#c4c5d7","on-tertiary-fixed-variant":"#763300","on-primary-fixed-variant":"#0038b6","status-active-bg":"#E6F4EA","surface":"#f8f9ff","background":"#f8f9ff","outline":"#747686","on-tertiary-fixed":"#331200","chart-band-6":"#2A52BD","on-error-container":"#93000a","surface-bright":"#f8f9ff","surface-variant":"#d8e3f6","chart-band-1":"#DBE7FF","inverse-primary":"#b7c4ff","error":"#C62828","tertiary-fixed":"#ffdbca","tertiary-fixed-dim":"#ffb68e","secondary-fixed":"#9cf2e8","border-line":"#E3E7EE","tertiary-container":"#984300","error-container":"#ffdad6","surface-tint":"#2251da","tertiary":"#733100","chart-band-5":"#3F6DE0","on-secondary-container":"#006f67","on-secondary":"#ffffff","chart-band-4":"#6590F2","inverse-on-surface":"#eaf1ff","surface-container":"#e5eeff"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"gutter-sm":"1rem","space-md":"1rem","space-xl":"1.5rem","space-sm":"0.5rem","margin":"1.5rem","space-xs":"0.25rem","space-lg":"1.25rem","gutter":"1.5rem"},"fontFamily":{"headline-md":["Inter"],"caption":["Inter"],"headline-lg":["Inter"],"headline-sm":["Inter"],"kpi-value":["Inter"],"body-strong":["Inter"],"body-default":["Inter"]},"fontSize":{"headline-md":["20px",{"lineHeight":"28px","fontWeight":"600"}],"caption":["12px",{"lineHeight":"16px","fontWeight":"400"}],"headline-lg":["28px",{"lineHeight":"36px","fontWeight":"600"}],"headline-sm":["16px",{"lineHeight":"24px","fontWeight":"600"}],"kpi-value":["32px",{"lineHeight":"40px","fontWeight":"600"}],"body-strong":["14px",{"lineHeight":"20px","fontWeight":"600"}],"body-default":["14px",{"lineHeight":"20px","fontWeight":"400"}]}}}}</script></head><body class="bg-background-cloud font-body-default text-body-default text-text-ink min-h-screen"><header class="fixed top-0 left-0 right-0 z-50 bg-surface-white border-b border-border-line"><div class="max-w-[1280px] mx-auto px-margin h-16 flex items-center justify-between"><div class="flex items-center gap-space-xl"><span class="font-headline-sm text-headline-sm text-text-ink tracking-tight select-none">ACME Salary Management</span><nav class="flex items-center gap-space-lg" data-active-classes="text-primary-container font-body-strong border-b-2 border-primary-container"><a aria-current="page" class="h-16 flex items-center transition-colors text-primary-container font-body-strong border-b-2 border-primary-container" data-path="dashboard" href="#">Dashboard</a><a class="font-body-default text-body-default text-text-slate hover:text-text-ink h-16 flex items-center transition-colors" data-path="employees" href="#">Employees</a><a class="font-body-default text-body-default text-text-slate hover:text-text-ink h-16 flex items-center transition-colors" data-path="history" href="#">History</a><a class="font-body-default text-body-default text-text-slate hover:text-text-ink h-16 flex items-center transition-colors" data-path="bulk-update" href="#">Bulk update</a></nav></div><div class="relative"><details class="group"><summary class="flex items-center gap-space-sm cursor-pointer select-none list-none outline-none py-space-xs"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><span class="font-body-strong text-body-strong text-text-ink">Sarah Jenkins</span><span class="material-symbols-outlined text-text-slate text-[20px] transition-transform duration-200 group-open:rotate-180">expand_more</span></summary><div class="absolute right-0 mt-space-xs w-48 bg-surface-white border border-border-line rounded-lg shadow-[0_8px_24px_rgba(26,34,48,0.12)] py-space-xs z-50"><div class="px-space-md py-space-xs border-b border-border-line"><div class="font-body-strong text-body-strong text-text-ink">Sarah Jenkins</div><div class="font-caption text-caption text-text-slate">HR Manager</div></div><a class="flex items-center gap-space-sm px-space-md py-space-sm font-body-default text-body-default text-error hover:bg-background-cloud transition-colors" href="#"><span class="material-symbols-outlined text-[18px]">logout</span><span>Log out</span></a></div></details></div></div></header><main class="w-full pt-16 bg-background-cloud min-h-[calc(100vh-64px)]"><div class="max-w-[1280px] mx-auto p-margin"><div class="flex flex-col w-full">
+<!-- Interactive State Frame Switcher Bar -->
+<div class="flex items-center justify-between pb-space-lg mb-space-lg border-b border-border-line">
+<div class="flex items-center gap-space-sm">
+<span class="font-caption text-caption text-text-slate uppercase tracking-wider font-semibold">Dashboard State View:</span>
+<div class="inline-flex p-space-xs bg-table-header-fog border border-border-line rounded-lg">
+<button class="px-space-md py-1 text-caption font-body-strong rounded bg-surface-white text-primary shadow-sm border border-border-line transition-all" id="tab-default" onclick="switchState('default')" type="button">
+          Default Dashboard
+        </button>
+<button class="px-space-md py-1 text-caption font-body-strong rounded text-text-slate hover:text-text-ink transition-all" id="tab-loading" onclick="switchState('loading')" type="button">
+          Loading State (Skeletons)
+        </button>
+<button class="px-space-md py-1 text-caption font-body-strong rounded text-text-slate hover:text-text-ink transition-all" id="tab-empty" onclick="switchState('empty')" type="button">
+          Empty State (No Matches)
+        </button>
+</div>
+</div>
+<span class="font-caption text-caption text-text-ash">Scope: 9,700 Active Personnel • Q4 Compensation Baseline</span>
+</div>
+<!-- STATE 1: DEFAULT DASHBOARD -->
+<div class="flex flex-col gap-gutter" id="view-default">
+<!-- 1. PAGE HEADER -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-text-ink">Pay insights</h1>
+<p class="font-body-default text-body-default text-text-slate">Active employees only</p>
+</div>
+<div class="flex flex-wrap items-center gap-space-md">
+<!-- Segmented Toggle -->
+<div class="inline-flex p-0.5 bg-table-header-fog border border-border-line rounded-lg">
+<button class="px-space-md py-1.5 font-body-strong text-body-strong text-primary bg-surface-white border border-border-line rounded shadow-sm" type="button">
+            Total compensation
+          </button>
+<button class="px-space-md py-1.5 font-body-default text-body-default text-text-slate hover:text-text-ink" type="button">
+            Base salary
+          </button>
+</div>
+<!-- Outlined Select 1: Country -->
+<div class="relative">
+<select class="appearance-none h-10 pl-space-md pr-9 bg-surface-white border border-border-line rounded-lg font-body-default text-body-default text-text-ink focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 cursor-pointer">
+<option>All countries</option>
+<option>United States</option>
+<option>Singapore</option>
+<option>Canada</option>
+<option>Germany</option>
+<option>United Kingdom</option>
+<option>India</option>
+</select>
+<span class="material-symbols-outlined text-[18px] text-text-slate absolute right-2.5 top-2.5 pointer-events-none">expand_more</span>
+</div>
+<!-- Outlined Select 2: Department -->
+<div class="relative">
+<select class="appearance-none h-10 pl-space-md pr-9 bg-surface-white border border-border-line rounded-lg font-body-default text-body-default text-text-ink focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 cursor-pointer" id="filter-dept-select" onchange="if(this.value==='empty_opt') switchState('empty');">
+<option value="all">All departments</option>
+<option value="eng">Engineering</option>
+<option value="prod">Product</option>
+<option value="sales">Sales</option>
+<option value="fin">Finance</option>
+<option value="mkt">Marketing</option>
+<option value="hr">Human Resources</option>
+<option value="ops">Operations</option>
+<option value="cs">Customer Support</option>
+<option value="empty_opt">Legal & Compliance (0 matches)</option>
+</select>
+<span class="material-symbols-outlined text-[18px] text-text-slate absolute right-2.5 top-2.5 pointer-events-none">expand_more</span>
+</div>
+</div>
+</div>
+<!-- 2. FOUR KPI CARDS (Single 4-column row) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- KPI Card 1 -->
+<div class="bg-surface-white border border-border-line rounded-lg p-5 flex flex-col justify-between">
+<span class="font-caption text-caption text-text-slate uppercase tracking-wide">Total compensation expenditure</span>
+<div class="mt-space-sm font-kpi-value text-kpi-value text-text-ink tabular-nums">$812.3M</div>
+<span class="font-caption text-caption text-text-ash mt-space-xs">Trailing 12-month baseline</span>
+</div>
+<!-- KPI Card 2 -->
+<div class="bg-surface-white border border-border-line rounded-lg p-5 flex flex-col justify-between">
+<span class="font-caption text-caption text-text-slate uppercase tracking-wide">Headcount</span>
+<div class="mt-space-sm font-kpi-value text-kpi-value text-text-ink tabular-nums">9,700</div>
+<span class="font-caption text-caption text-success mt-space-xs">100% active payroll</span>
+</div>
+<!-- KPI Card 3 -->
+<div class="bg-surface-white border border-border-line rounded-lg p-5 flex flex-col justify-between">
+<span class="font-caption text-caption text-text-slate uppercase tracking-wide">Average compensation</span>
+<div class="mt-space-sm font-kpi-value text-kpi-value text-text-ink tabular-nums">$83,740</div>
+<span class="font-caption text-caption text-text-ash mt-space-xs">Median: $79,200</span>
+</div>
+<!-- KPI Card 4 -->
+<div class="bg-surface-white border border-border-line rounded-lg p-5 flex flex-col justify-between">
+<span class="font-caption text-caption text-text-slate uppercase tracking-wide">Highest-paying country</span>
+<div class="mt-space-sm font-headline-lg text-headline-lg text-text-ink truncate">United States</div>
+<span class="font-caption text-caption text-text-slate mt-space-xs tabular-nums">$118,200 average</span>
+</div>
+</div>
+<!-- 3. PAY MIX CARD -->
+<div class="bg-surface-white border border-border-line rounded-lg p-5">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs pb-space-md border-b border-border-line mb-space-md">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-text-ink">Pay mix</h2>
+<p class="font-caption text-caption text-text-slate">Proportional expenditure across fixed base, incentive bonus, and corporate allowances</p>
+</div>
+<div class="flex items-center gap-space-lg text-caption font-caption text-text-slate">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-sm bg-primary-container inline-block"></span>
+<span>Base: <strong class="text-text-ink font-body-strong tabular-nums">82% ($666.1M)</strong></span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-sm bg-secondary inline-block"></span>
+<span>Bonus: <strong class="text-text-ink font-body-strong tabular-nums">11% ($89.4M)</strong></span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-sm bg-warning inline-block"></span>
+<span>Allowances: <strong class="text-text-ink font-body-strong tabular-nums">7% ($56.8M)</strong></span>
+</div>
+</div>
+</div>
+<!-- Horizontal Stacked Bar -->
+<div class="w-full h-8 bg-table-header-fog rounded-md overflow-hidden flex border border-border-line">
+<div class="bg-primary-container h-full flex items-center justify-center text-on-primary font-caption text-caption font-semibold tabular-nums" style="width: 82%" title="Base: 82% ($666.1M)">
+          82% • $666.1M
+        </div>
+<div class="bg-secondary h-full flex items-center justify-center text-on-secondary font-caption text-caption font-semibold tabular-nums" style="width: 11%" title="Bonus: 11% ($89.4M)">
+          11%
+        </div>
+<div class="bg-warning h-full flex items-center justify-center text-on-primary font-caption text-caption font-semibold tabular-nums" style="width: 7%" title="Allowances: 7% ($56.8M)">
+          7%
+        </div>
+</div>
+</div>
+<!-- 4. TWO CHARTS SIDE BY SIDE (2-column grid, 6 cols + 6 cols) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Chart 1: Average compensation by country -->
+<div class="lg:col-span-6 bg-surface-white border border-border-line rounded-lg p-5 flex flex-col justify-between">
+<div class="mb-space-md">
+<h2 class="font-headline-sm text-headline-sm text-text-ink">Average compensation by country</h2>
+<p class="font-caption text-caption text-text-slate">Sorted high to low across global operating regions (in USD)</p>
+</div>
+<!-- Vertical Bar Chart Visual -->
+<div class="h-64 w-full flex flex-col justify-end pt-4">
+<div class="h-48 w-full flex items-end justify-between gap-3 border-b border-border-line pb-1 relative">
+<!-- Gridlines -->
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-40">
+<div class="border-b border-dashed border-border-line w-full flex justify-end"><span class="text-[10px] text-text-ash pr-1 tabular-nums">$120k</span></div>
+<div class="border-b border-dashed border-border-line w-full flex justify-end"><span class="text-[10px] text-text-ash pr-1 tabular-nums">$80k</span></div>
+<div class="border-b border-dashed border-border-line w-full flex justify-end"><span class="text-[10px] text-text-ash pr-1 tabular-nums">$40k</span></div>
+<div class="w-full flex justify-end"><span class="text-[10px] text-text-ash pr-1 tabular-nums">$0k</span></div>
+</div>
+<!-- US: $118,200 (Highest in Deep Blue #173DAE) -->
+<div class="flex-1 flex flex-col items-center gap-1 z-10 h-full justify-end">
+<span class="font-caption text-[11px] text-text-ink font-semibold tabular-nums">$118.2k</span>
+<div class="w-full max-w-[42px] bg-primary-dark rounded-t" style="height: 98%;"></div>
+</div>
+<!-- SG: $102,400 (Ledger Blue #1E4ED8) -->
+<div class="flex-1 flex flex-col items-center gap-1 z-10 h-full justify-end">
+<span class="font-caption text-[11px] text-text-slate font-medium tabular-nums">$102.4k</span>
+<div class="w-full max-w-[42px] bg-primary-container rounded-t" style="height: 85%;"></div>
+</div>
+<!-- CA: $91,800 -->
+<div class="flex-1 flex flex-col items-center gap-1 z-10 h-full justify-end">
+<span class="font-caption text-[11px] text-text-slate font-medium tabular-nums">$91.8k</span>
+<div class="w-full max-w-[42px] bg-primary-container rounded-t" style="height: 76%;"></div>
+</div>
+<!-- DE: $87,500 -->
+<div class="flex-1 flex flex-col items-center gap-1 z-10 h-full justify-end">
+<span class="font-caption text-[11px] text-text-slate font-medium tabular-nums">$87.5k</span>
+<div class="w-full max-w-[42px] bg-primary-container rounded-t" style="height: 72%;"></div>
+</div>
+<!-- UK: $84,100 -->
+<div class="flex-1 flex flex-col items-center gap-1 z-10 h-full justify-end">
+<span class="font-caption text-[11px] text-text-slate font-medium tabular-nums">$84.1k</span>
+<div class="w-full max-w-[42px] bg-primary-container rounded-t" style="height: 69%;"></div>
+</div>
+<!-- IN: $42,600 -->
+<div class="flex-1 flex flex-col items-center gap-1 z-10 h-full justify-end">
+<span class="font-caption text-[11px] text-text-slate font-medium tabular-nums">$42.6k</span>
+<div class="w-full max-w-[42px] bg-primary-container rounded-t" style="height: 35%;"></div>
+</div>
+</div>
+<!-- X-Axis Labels -->
+<div class="flex items-center justify-between gap-3 pt-2">
+<span class="flex-1 text-center font-caption text-caption text-text-ink font-semibold truncate">United States</span>
+<span class="flex-1 text-center font-caption text-caption text-text-slate truncate">Singapore</span>
+<span class="flex-1 text-center font-caption text-caption text-text-slate truncate">Canada</span>
+<span class="flex-1 text-center font-caption text-caption text-text-slate truncate">Germany</span>
+<span class="flex-1 text-center font-caption text-caption text-text-slate truncate">UK</span>
+<span class="flex-1 text-center font-caption text-caption text-text-slate truncate">India</span>
+</div>
+</div>
+</div>
+<!-- Chart 2: Average compensation by department -->
+<div class="lg:col-span-6 bg-surface-white border border-border-line rounded-lg p-5 flex flex-col justify-between">
+<div class="mb-space-md">
+<h2 class="font-headline-sm text-headline-sm text-text-ink">Average compensation by department</h2>
+<p class="font-caption text-caption text-text-slate">Ranked organizational unit remuneration benchmarks</p>
+</div>
+<div class="flex flex-col gap-2.5 pt-1">
+<!-- Item 1: Engineering -->
+<div class="flex items-center gap-3">
+<span class="w-32 text-right font-caption text-caption text-text-ink truncate">Engineering</span>
+<div class="flex-1 bg-table-header-fog h-5 rounded overflow-hidden">
+<div class="bg-primary-container h-full rounded" style="width: 95%;"></div>
+</div>
+<span class="w-16 font-caption text-caption text-text-ink font-semibold tabular-nums text-right">$112,000</span>
+</div>
+<!-- Item 2: Product -->
+<div class="flex items-center gap-3">
+<span class="w-32 text-right font-caption text-caption text-text-ink truncate">Product</span>
+<div class="flex-1 bg-table-header-fog h-5 rounded overflow-hidden">
+<div class="bg-primary-container h-full rounded" style="width: 92%;"></div>
+</div>
+<span class="w-16 font-caption text-caption text-text-ink font-semibold tabular-nums text-right">$108,500</span>
+</div>
+<!-- Item 3: Sales -->
+<div class="flex items-center gap-3">
+<span class="w-32 text-right font-caption text-caption text-text-ink truncate">Sales</span>
+<div class="flex-1 bg-table-header-fog h-5 rounded overflow-hidden">
+<div class="bg-primary-container h-full rounded" style="width: 80%;"></div>
+</div>
+<span class="w-16 font-caption text-caption text-text-ink font-semibold tabular-nums text-right">$94,200</span>
+</div>
+<!-- Item 4: Finance -->
+<div class="flex items-center gap-3">
+<span class="w-32 text-right font-caption text-caption text-text-ink truncate">Finance</span>
+<div class="flex-1 bg-table-header-fog h-5 rounded overflow-hidden">
+<div class="bg-primary-container h-full rounded" style="width: 75%;"></div>
+</div>
+<span class="w-16 font-caption text-caption text-text-ink font-semibold tabular-nums text-right">$89,100</span>
+</div>
+<!-- Item 5: Marketing -->
+<div class="flex items-center gap-3">
+<span class="w-32 text-right font-caption text-caption text-text-ink truncate">Marketing</span>
+<div class="flex-1 bg-table-header-fog h-5 rounded overflow-hidden">
+<div class="bg-primary-container h-full rounded" style="width: 66%;"></div>
+</div>
+<span class="w-16 font-caption text-caption text-text-ink font-semibold tabular-nums text-right">$78,400</span>
+</div>
+<!-- Item 6: Human Resources -->
+<div class="flex items-center gap-3">
+<span class="w-32 text-right font-caption text-caption text-text-ink truncate">Human Resources</span>
+<div class="flex-1 bg-table-header-fog h-5 rounded overflow-hidden">
+<div class="bg-primary-container h-full rounded" style="width: 61%;"></div>
+</div>
+<span class="w-16 font-caption text-caption text-text-ink font-semibold tabular-nums text-right">$72,600</span>
+</div>
+<!-- Item 7: Operations -->
+<div class="flex items-center gap-3">
+<span class="w-32 text-right font-caption text-caption text-text-ink truncate">Operations</span>
+<div class="flex-1 bg-table-header-fog h-5 rounded overflow-hidden">
+<div class="bg-primary-container h-full rounded" style="width: 54%;"></div>
+</div>
+<span class="w-16 font-caption text-caption text-text-ink font-semibold tabular-nums text-right">$64,300</span>
+</div>
+<!-- Item 8: Customer Support -->
+<div class="flex items-center gap-3">
+<span class="w-32 text-right font-caption text-caption text-text-ink truncate">Customer Support</span>
+<div class="flex-1 bg-table-header-fog h-5 rounded overflow-hidden">
+<div class="bg-primary-container h-full rounded" style="width: 43%;"></div>
+</div>
+<span class="w-16 font-caption text-caption text-text-ink font-semibold tabular-nums text-right">$51,200</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 5. SALARY DISTRIBUTION CARD (Full-width) -->
+<div class="bg-surface-white border border-border-line rounded-lg p-5">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between pb-space-md border-b border-border-line gap-space-sm mb-space-md">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-text-ink">Salary distribution</h2>
+<p class="font-caption text-caption text-text-slate">Proportion of team members within standardized compensation tiers</p>
+</div>
+<div class="inline-flex p-0.5 bg-table-header-fog border border-border-line rounded-lg">
+<button class="px-space-md py-1 font-caption font-body-strong text-primary bg-surface-white border border-border-line rounded shadow-sm" type="button">
+            By department
+          </button>
+<button class="px-space-md py-1 font-caption font-body-default text-text-slate hover:text-text-ink" type="button">
+            By country
+          </button>
+</div>
+</div>
+<!-- 7 Ordered salary bands Legend -->
+<div class="flex flex-wrap items-center gap-x-4 gap-y-2 pb-space-md text-caption font-caption text-text-slate">
+<div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-xs bg-chart-band-1 border border-border-line"></span><span>Under $30k</span></div>
+<div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-xs bg-chart-band-2"></span><span>$30k–$50k</span></div>
+<div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-xs bg-chart-band-3"></span><span>$50k–$75k</span></div>
+<div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-xs bg-chart-band-4"></span><span>$75k–$100k</span></div>
+<div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-xs bg-chart-band-5"></span><span>$100k–$150k</span></div>
+<div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-xs bg-chart-band-6"></span><span>$150k–$200k</span></div>
+<div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-xs bg-chart-band-7"></span><span>$200k+</span></div>
+</div>
+<!-- Stacked horizontal bars per department -->
+<div class="flex flex-col gap-3">
+<!-- Engineering -->
+<div class="flex items-center gap-3">
+<span class="w-32 text-right font-caption text-caption text-text-ink truncate">Engineering</span>
+<div class="flex-1 h-6 bg-table-header-fog rounded overflow-hidden flex border border-border-line/60">
+<div class="bg-chart-band-1 h-full" style="width: 2%" title="Under $30k: 2%"></div>
+<div class="bg-chart-band-2 h-full" style="width: 6%" title="$30k-$50k: 6%"></div>
+<div class="bg-chart-band-3 h-full" style="width: 14%" title="$50k-$75k: 14%"></div>
+<div class="bg-chart-band-4 h-full" style="width: 28%" title="$75k-$100k: 28%"></div>
+<div class="bg-chart-band-5 h-full" style="width: 32%" title="$100k-$150k: 32%"></div>
+<div class="bg-chart-band-6 h-full" style="width: 12%" title="$150k-$200k: 12%"></div>
+<div class="bg-chart-band-7 h-full" style="width: 6%" title="$200k+: 6%"></div>
+</div>
+</div>
+<!-- Product -->
+<div class="flex items-center gap-3">
+<span class="w-32 text-right font-caption text-caption text-text-ink truncate">Product</span>
+<div class="flex-1 h-6 bg-table-header-fog rounded overflow-hidden flex border border-border-line/60">
+<div class="bg-chart-band-1 h-full" style="width: 3%"></div>
+<div class="bg-chart-band-2 h-full" style="width: 8%"></div>
+<div class="bg-chart-band-3 h-full" style="width: 16%"></div>
+<div class="bg-chart-band-4 h-full" style="width: 29%"></div>
+<div class="bg-chart-band-5 h-full" style="width: 30%"></div>
+<div class="bg-chart-band-6 h-full" style="width: 10%"></div>
+<div class="bg-chart-band-7 h-full" style="width: 4%"></div>
+</div>
+</div>
+<!-- Sales -->
+<div class="flex items-center gap-3">
+<span class="w-32 text-right font-caption text-caption text-text-ink truncate">Sales</span>
+<div class="flex-1 h-6 bg-table-header-fog rounded overflow-hidden flex border border-border-line/60">
+<div class="bg-chart-band-1 h-full" style="width: 4%"></div>
+<div class="bg-chart-band-2 h-full" style="width: 12%"></div>
+<div class="bg-chart-band-3 h-full" style="width: 24%"></div>
+<div class="bg-chart-band-4 h-full" style="width: 32%"></div>
+<div class="bg-chart-band-5 h-full" style="width: 18%"></div>
+<div class="bg-chart-band-6 h-full" style="width: 7%"></div>
+<div class="bg-chart-band-7 h-full" style="width: 3%"></div>
+</div>
+</div>
+<!-- Finance -->
+<div class="flex items-center gap-3">
+<span class="w-32 text-right font-caption text-caption text-text-ink truncate">Finance</span>
+<div class="flex-1 h-6 bg-table-header-fog rounded overflow-hidden flex border border-border-line/60">
+<div class="bg-chart-band-1 h-full" style="width: 5%"></div>
+<div class="bg-chart-band-2 h-full" style="width: 15%"></div>
+<div class="bg-chart-band-3 h-full" style="width: 25%"></div>
+<div class="bg-chart-band-4 h-full" style="width: 30%"></div>
+<div class="bg-chart-band-5 h-full" style="width: 16%"></div>
+<div class="bg-chart-band-6 h-full" style="width: 7%"></div>
+<div class="bg-chart-band-7 h-full" style="width: 2%"></div>
+</div>
+</div>
+<!-- Marketing -->
+<div class="flex items-center gap-3">
+<span class="w-32 text-right font-caption text-caption text-text-ink truncate">Marketing</span>
+<div class="flex-1 h-6 bg-table-header-fog rounded overflow-hidden flex border border-border-line/60">
+<div class="bg-chart-band-1 h-full" style="width: 8%"></div>
+<div class="bg-chart-band-2 h-full" style="width: 20%"></div>
+<div class="bg-chart-band-3 h-full" style="width: 32%"></div>
+<div class="bg-chart-band-4 h-full" style="width: 24%"></div>
+<div class="bg-chart-band-5 h-full" style="width: 12%"></div>
+<div class="bg-chart-band-6 h-full" style="width: 3%"></div>
+<div class="bg-chart-band-7 h-full" style="width: 1%"></div>
+</div>
+</div>
+<!-- Human Resources -->
+<div class="flex items-center gap-3">
+<span class="w-32 text-right font-caption text-caption text-text-ink truncate">Human Resources</span>
+<div class="flex-1 h-6 bg-table-header-fog rounded overflow-hidden flex border border-border-line/60">
+<div class="bg-chart-band-1 h-full" style="width: 9%"></div>
+<div class="bg-chart-band-2 h-full" style="width: 22%"></div>
+<div class="bg-chart-band-3 h-full" style="width: 35%"></div>
+<div class="bg-chart-band-4 h-full" style="width: 22%"></div>
+<div class="bg-chart-band-5 h-full" style="width: 9%"></div>
+<div class="bg-chart-band-6 h-full" style="width: 2%"></div>
+<div class="bg-chart-band-7 h-full" style="width: 1%"></div>
+</div>
+</div>
+<!-- Operations -->
+<div class="flex items-center gap-3">
+<span class="w-32 text-right font-caption text-caption text-text-ink truncate">Operations</span>
+<div class="flex-1 h-6 bg-table-header-fog rounded overflow-hidden flex border border-border-line/60">
+<div class="bg-chart-band-1 h-full" style="width: 14%"></div>
+<div class="bg-chart-band-2 h-full" style="width: 28%"></div>
+<div class="bg-chart-band-3 h-full" style="width: 32%"></div>
+<div class="bg-chart-band-4 h-full" style="width: 18%"></div>
+<div class="bg-chart-band-5 h-full" style="width: 6%"></div>
+<div class="bg-chart-band-6 h-full" style="width: 1%"></div>
+<div class="bg-chart-band-7 h-full" style="width: 1%"></div>
+</div>
+</div>
+<!-- Customer Support -->
+<div class="flex items-center gap-3">
+<span class="w-32 text-right font-caption text-caption text-text-ink truncate">Customer Support</span>
+<div class="flex-1 h-6 bg-table-header-fog rounded overflow-hidden flex border border-border-line/60">
+<div class="bg-chart-band-1 h-full" style="width: 22%"></div>
+<div class="bg-chart-band-2 h-full" style="width: 38%"></div>
+<div class="bg-chart-band-3 h-full" style="width: 26%"></div>
+<div class="bg-chart-band-4 h-full" style="width: 10%"></div>
+<div class="bg-chart-band-5 h-full" style="width: 3%"></div>
+<div class="bg-chart-band-6 h-full" style="width: 1%"></div>
+<div class="bg-chart-band-7 h-full" style="width: 0%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- 6. TABLE CARD: "Pay by job title" -->
+<div class="bg-surface-white border border-border-line rounded-lg overflow-hidden">
+<div class="p-5 border-b border-border-line flex items-center justify-between">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-text-ink">Pay by job title</h2>
+<p class="font-caption text-caption text-text-slate">Standard distribution stats by corporate role</p>
+</div>
+<span class="font-caption text-caption text-text-slate tabular-nums">42 Roles tracked</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="h-11 bg-table-header-fog border-b border-border-line text-text-ink font-body-strong text-caption select-none">
+<th class="px-space-md font-semibold">Job title</th>
+<th class="px-space-md text-right font-semibold">Headcount</th>
+<th class="px-space-md text-right font-semibold">Minimum</th>
+<th class="px-space-md text-right font-semibold">Average</th>
+<th class="px-space-md text-right font-semibold">Maximum</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-line text-body-default font-body-default text-text-ink">
+<!-- Row 1 -->
+<tr class="h-11 hover:bg-surface-bright transition-colors">
+<td class="px-space-md font-medium text-text-ink">Senior Software Engineer</td>
+<td class="px-space-md text-right tabular-nums text-text-slate">1,142</td>
+<td class="px-space-md text-right tabular-nums text-text-ink">$88,000</td>
+<td class="px-space-md text-right tabular-nums font-semibold text-text-ink">$134,500</td>
+<td class="px-space-md text-right tabular-nums text-text-ink">$192,000</td>
+</tr>
+<!-- Row 2 -->
+<tr class="h-11 hover:bg-surface-bright transition-colors">
+<td class="px-space-md font-medium text-text-ink">Software Engineer II</td>
+<td class="px-space-md text-right tabular-nums text-text-slate">1,620</td>
+<td class="px-space-md text-right tabular-nums text-text-ink">$64,000</td>
+<td class="px-space-md text-right tabular-nums font-semibold text-text-ink">$98,200</td>
+<td class="px-space-md text-right tabular-nums text-text-ink">$132,000</td>
+</tr>
+<!-- Row 3 -->
+<tr class="h-11 hover:bg-surface-bright transition-colors">
+<td class="px-space-md font-medium text-text-ink">Account Executive</td>
+<td class="px-space-md text-right tabular-nums text-text-slate">845</td>
+<td class="px-space-md text-right tabular-nums text-text-ink">$52,000</td>
+<td class="px-space-md text-right tabular-nums font-semibold text-text-ink">$96,400</td>
+<td class="px-space-md text-right tabular-nums text-text-ink">$185,000</td>
+</tr>
+<!-- Row 4 -->
+<tr class="h-11 hover:bg-surface-bright transition-colors">
+<td class="px-space-md font-medium text-text-ink">Engineering Manager</td>
+<td class="px-space-md text-right tabular-nums text-text-slate">215</td>
+<td class="px-space-md text-right tabular-nums text-text-ink">$128,000</td>
+<td class="px-space-md text-right tabular-nums font-semibold text-text-ink">$171,800</td>
+<td class="px-space-md text-right tabular-nums text-text-ink">$230,000</td>
+</tr>
+<!-- Row 5 -->
+<tr class="h-11 hover:bg-surface-bright transition-colors">
+<td class="px-space-md font-medium text-text-ink">Product Manager</td>
+<td class="px-space-md text-right tabular-nums text-text-slate">340</td>
+<td class="px-space-md text-right tabular-nums text-text-ink">$78,000</td>
+<td class="px-space-md text-right tabular-nums font-semibold text-text-ink">$118,600</td>
+<td class="px-space-md text-right tabular-nums text-text-ink">$164,000</td>
+</tr>
+<!-- Row 6 -->
+<tr class="h-11 hover:bg-surface-bright transition-colors">
+<td class="px-space-md font-medium text-text-ink">Customer Success Specialist</td>
+<td class="px-space-md text-right tabular-nums text-text-slate">630</td>
+<td class="px-space-md text-right tabular-nums text-text-ink">$38,000</td>
+<td class="px-space-md text-right tabular-nums font-semibold text-text-ink">$54,200</td>
+<td class="px-space-md text-right tabular-nums text-text-ink">$76,000</td>
+</tr>
+<!-- Row 7 -->
+<tr class="h-11 hover:bg-surface-bright transition-colors">
+<td class="px-space-md font-medium text-text-ink">HR Business Partner</td>
+<td class="px-space-md text-right tabular-nums text-text-slate">118</td>
+<td class="px-space-md text-right tabular-nums text-text-ink">$58,000</td>
+<td class="px-space-md text-right tabular-nums font-semibold text-text-ink">$82,900</td>
+<td class="px-space-md text-right tabular-nums text-text-ink">$115,000</td>
+</tr>
+<!-- Row 8 -->
+<tr class="h-11 hover:bg-surface-bright transition-colors">
+<td class="px-space-md font-medium text-text-ink">Financial Analyst</td>
+<td class="px-space-md text-right tabular-nums text-text-slate">192</td>
+<td class="px-space-md text-right tabular-nums text-text-ink">$61,000</td>
+<td class="px-space-md text-right tabular-nums font-semibold text-text-ink">$86,300</td>
+<td class="px-space-md text-right tabular-nums text-text-ink">$120,000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="h-12 px-space-md border-t border-border-line flex items-center justify-between text-caption font-caption text-text-slate bg-surface-white">
+<div>Showing <span class="font-medium text-text-ink tabular-nums">1–8</span> of <span class="font-medium text-text-ink tabular-nums">42</span></div>
+<div class="flex items-center gap-space-lg">
+<div class="flex items-center gap-1.5">
+<span>Rows per page:</span>
+<span class="font-semibold text-text-ink tabular-nums">25</span>
+</div>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 rounded flex items-center justify-center text-text-ash cursor-not-allowed">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded flex items-center justify-center text-text-ink hover:bg-background-cloud transition-colors">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- 7. TABLE CARD: "Pay outliers" -->
+<div class="bg-surface-white border border-border-line rounded-lg overflow-hidden">
+<div class="p-5 border-b border-border-line">
+<h2 class="font-headline-sm text-headline-sm text-text-ink">Pay outliers</h2>
+<p class="font-caption text-caption text-text-slate mt-0.5">Paid more than 1.5x the average for the same job title and country (at least 5 peers)</p>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="h-11 bg-table-header-fog border-b border-border-line text-text-ink font-body-strong text-caption select-none">
+<th class="px-space-md font-semibold">Employee</th>
+<th class="px-space-md font-semibold">Job title</th>
+<th class="px-space-md font-semibold">Country</th>
+<th class="px-space-md text-right font-semibold">Compensation</th>
+<th class="px-space-md text-right font-semibold">Peer average</th>
+<th class="px-space-md text-right font-semibold">Ratio</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-line text-body-default font-body-default text-text-ink">
+<!-- Outlier 1: US -->
+<tr class="h-11 hover:bg-surface-bright transition-colors">
+<td class="px-space-md font-medium text-text-ink">Marcus Vance</td>
+<td class="px-space-md text-text-slate">Staff Solutions Architect</td>
+<td class="px-space-md text-text-slate">United States</td>
+<td class="px-space-md text-right tabular-nums font-semibold text-text-ink">$285,000</td>
+<td class="px-space-md text-right tabular-nums text-text-slate">$150,000</td>
+<td class="px-space-md text-right">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-caption font-semibold bg-secondary-container text-on-secondary-container tabular-nums">1.9x</span>
+</td>
+</tr>
+<!-- Outlier 2: UK -->
+<tr class="h-11 hover:bg-surface-bright transition-colors">
+<td class="px-space-md font-medium text-text-ink">Fiona Gallagher</td>
+<td class="px-space-md text-text-slate">Principal Product Specialist</td>
+<td class="px-space-md text-text-slate">United Kingdom</td>
+<td class="px-space-md text-right tabular-nums font-semibold text-text-ink">$176,400</td>
+<td class="px-space-md text-right tabular-nums text-text-slate">$98,000</td>
+<td class="px-space-md text-right">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-caption font-semibold bg-secondary-container text-on-secondary-container tabular-nums">1.8x</span>
+</td>
+</tr>
+<!-- Outlier 3: Singapore -->
+<tr class="h-11 hover:bg-surface-bright transition-colors">
+<td class="px-space-md font-medium text-text-ink">Cheng Wei</td>
+<td class="px-space-md text-text-slate">Lead Security Engineer</td>
+<td class="px-space-md text-text-slate">Singapore</td>
+<td class="px-space-md text-right tabular-nums font-semibold text-text-ink">$194,000</td>
+<td class="px-space-md text-right tabular-nums text-text-slate">$114,100</td>
+<td class="px-space-md text-right">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-caption font-semibold bg-primary-tint text-primary tabular-nums">1.7x</span>
+</td>
+</tr>
+<!-- Outlier 4: Germany -->
+<tr class="h-11 hover:bg-surface-bright transition-colors">
+<td class="px-space-md font-medium text-text-ink">Klaus Neumann</td>
+<td class="px-space-md text-text-slate">Senior Strategic Sales Lead</td>
+<td class="px-space-md text-text-slate">Germany</td>
+<td class="px-space-md text-right tabular-nums font-semibold text-text-ink">$168,000</td>
+<td class="px-space-md text-right tabular-nums text-text-slate">$105,000</td>
+<td class="px-space-md text-right">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-caption font-semibold bg-primary-tint text-primary tabular-nums">1.6x</span>
+</td>
+</tr>
+<!-- Outlier 5: Canada -->
+<tr class="h-11 hover:bg-surface-bright transition-colors">
+<td class="px-space-md font-medium text-text-ink">Amelie Bouchard</td>
+<td class="px-space-md text-text-slate">Corporate Controller</td>
+<td class="px-space-md text-text-slate">Canada</td>
+<td class="px-space-md text-right tabular-nums font-semibold text-text-ink">$156,000</td>
+<td class="px-space-md text-right tabular-nums text-text-slate">$97,500</td>
+<td class="px-space-md text-right">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-caption font-semibold bg-primary-tint text-primary tabular-nums">1.6x</span>
+</td>
+</tr>
+<!-- Outlier 6: India -->
+<tr class="h-11 hover:bg-surface-bright transition-colors">
+<td class="px-space-md font-medium text-text-ink">Aarav Patel</td>
+<td class="px-space-md text-text-slate">Site Reliability Lead</td>
+<td class="px-space-md text-text-slate">India</td>
+<td class="px-space-md text-right tabular-nums font-semibold text-text-ink">$78,000</td>
+<td class="px-space-md text-right tabular-nums text-text-slate">$52,000</td>
+<td class="px-space-md text-right">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-caption font-semibold bg-primary-tint text-primary tabular-nums">1.5x</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="h-12 px-space-md border-t border-border-line flex items-center justify-between text-caption font-caption text-text-slate bg-surface-white">
+<div>Showing <span class="font-medium text-text-ink tabular-nums">1–6</span> of <span class="font-medium text-text-ink tabular-nums">6</span></div>
+<div class="flex items-center gap-space-lg">
+<div class="flex items-center gap-1.5">
+<span>Rows per page:</span>
+<span class="font-semibold text-text-ink tabular-nums">25</span>
+</div>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 rounded flex items-center justify-center text-text-ash cursor-not-allowed">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded flex items-center justify-center text-text-ash cursor-not-allowed">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- STATE 2: LOADING SKELETON STATE -->
+<div class="hidden flex-col gap-gutter" id="view-loading">
+<!-- Header skeleton -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md animate-pulse">
+<div class="flex flex-col gap-2">
+<div class="h-8 w-48 bg-table-header-fog rounded"></div>
+<div class="h-4 w-32 bg-table-header-fog rounded"></div>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="h-10 w-44 bg-table-header-fog rounded-lg"></div>
+<div class="h-10 w-36 bg-table-header-fog rounded-lg"></div>
+<div class="h-10 w-40 bg-table-header-fog rounded-lg"></div>
+</div>
+</div>
+<!-- 4 KPI Card Skeletons -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter animate-pulse">
+<div class="bg-surface-white border border-border-line rounded-lg p-5 flex flex-col gap-3">
+<div class="h-3 w-36 bg-table-header-fog rounded"></div>
+<div class="h-9 w-28 bg-table-header-fog rounded mt-1"></div>
+<div class="h-3 w-24 bg-table-header-fog rounded"></div>
+</div>
+<div class="bg-surface-white border border-border-line rounded-lg p-5 flex flex-col gap-3">
+<div class="h-3 w-28 bg-table-header-fog rounded"></div>
+<div class="h-9 w-20 bg-table-header-fog rounded mt-1"></div>
+<div class="h-3 w-20 bg-table-header-fog rounded"></div>
+</div>
+<div class="bg-surface-white border border-border-line rounded-lg p-5 flex flex-col gap-3">
+<div class="h-3 w-32 bg-table-header-fog rounded"></div>
+<div class="h-9 w-24 bg-table-header-fog rounded mt-1"></div>
+<div class="h-3 w-20 bg-table-header-fog rounded"></div>
+</div>
+<div class="bg-surface-white border border-border-line rounded-lg p-5 flex flex-col gap-3">
+<div class="h-3 w-36 bg-table-header-fog rounded"></div>
+<div class="h-9 w-32 bg-table-header-fog rounded mt-1"></div>
+<div class="h-3 w-24 bg-table-header-fog rounded"></div>
+</div>
+</div>
+<!-- Pay Mix Skeleton -->
+<div class="bg-surface-white border border-border-line rounded-lg p-5 flex flex-col gap-4 animate-pulse">
+<div class="flex items-center justify-between pb-3 border-b border-border-line">
+<div class="h-5 w-32 bg-table-header-fog rounded"></div>
+<div class="h-4 w-64 bg-table-header-fog rounded"></div>
+</div>
+<div class="h-8 w-full bg-table-header-fog rounded-md"></div>
+</div>
+<!-- 2 Charts Skeletons -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter animate-pulse">
+<div class="lg:col-span-6 bg-surface-white border border-border-line rounded-lg p-5 flex flex-col gap-6">
+<div class="h-5 w-52 bg-table-header-fog rounded"></div>
+<div class="h-56 w-full bg-table-header-fog rounded flex items-end justify-around pb-3">
+<div class="w-8 h-40 bg-surface-dim rounded-t"></div>
+<div class="w-8 h-36 bg-surface-dim rounded-t"></div>
+<div class="w-8 h-32 bg-surface-dim rounded-t"></div>
+<div class="w-8 h-28 bg-surface-dim rounded-t"></div>
+<div class="w-8 h-24 bg-surface-dim rounded-t"></div>
+<div class="w-8 h-16 bg-surface-dim rounded-t"></div>
+</div>
+</div>
+<div class="lg:col-span-6 bg-surface-white border border-border-line rounded-lg p-5 flex flex-col gap-4">
+<div class="h-5 w-56 bg-table-header-fog rounded"></div>
+<div class="flex flex-col gap-3 pt-2">
+<div class="h-5 w-full bg-table-header-fog rounded"></div>
+<div class="h-5 w-full bg-table-header-fog rounded"></div>
+<div class="h-5 w-full bg-table-header-fog rounded"></div>
+<div class="h-5 w-full bg-table-header-fog rounded"></div>
+<div class="h-5 w-full bg-table-header-fog rounded"></div>
+<div class="h-5 w-full bg-table-header-fog rounded"></div>
+<div class="h-5 w-full bg-table-header-fog rounded"></div>
+<div class="h-5 w-full bg-table-header-fog rounded"></div>
+</div>
+</div>
+</div>
+<!-- Salary Distribution Skeleton -->
+<div class="bg-surface-white border border-border-line rounded-lg p-5 flex flex-col gap-4 animate-pulse">
+<div class="flex justify-between items-center pb-3 border-b border-border-line">
+<div class="h-5 w-48 bg-table-header-fog rounded"></div>
+<div class="h-8 w-40 bg-table-header-fog rounded"></div>
+</div>
+<div class="h-4 w-96 bg-table-header-fog rounded mb-2"></div>
+<div class="flex flex-col gap-3">
+<div class="h-6 w-full bg-table-header-fog rounded"></div>
+<div class="h-6 w-full bg-table-header-fog rounded"></div>
+<div class="h-6 w-full bg-table-header-fog rounded"></div>
+<div class="h-6 w-full bg-table-header-fog rounded"></div>
+<div class="h-6 w-full bg-table-header-fog rounded"></div>
+<div class="h-6 w-full bg-table-header-fog rounded"></div>
+<div class="h-6 w-full bg-table-header-fog rounded"></div>
+<div class="h-6 w-full bg-table-header-fog rounded"></div>
+</div>
+</div>
+<!-- Table Skeletons -->
+<div class="bg-surface-white border border-border-line rounded-lg p-5 animate-pulse flex flex-col gap-4">
+<div class="h-5 w-44 bg-table-header-fog rounded"></div>
+<div class="h-10 w-full bg-table-header-fog rounded"></div>
+<div class="flex flex-col gap-2">
+<div class="h-9 w-full bg-background-cloud rounded"></div>
+<div class="h-9 w-full bg-background-cloud rounded"></div>
+<div class="h-9 w-full bg-background-cloud rounded"></div>
+<div class="h-9 w-full bg-background-cloud rounded"></div>
+<div class="h-9 w-full bg-background-cloud rounded"></div>
+</div>
+</div>
+</div>
+<!-- STATE 3: EMPTY STATE (Filter No Matches) -->
+<div class="hidden flex-col gap-gutter" id="view-empty">
+<!-- Header with Active Filters showing no matches -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-text-ink">Pay insights</h1>
+<p class="font-body-default text-body-default text-text-slate">Active employees only</p>
+</div>
+<div class="flex flex-wrap items-center gap-space-md">
+<div class="inline-flex p-0.5 bg-table-header-fog border border-border-line rounded-lg">
+<button class="px-space-md py-1.5 font-body-strong text-body-strong text-primary bg-surface-white border border-border-line rounded shadow-sm" type="button">
+            Total compensation
+          </button>
+<button class="px-space-md py-1.5 font-body-default text-body-default text-text-slate" type="button">
+            Base salary
+          </button>
+</div>
+<div class="relative">
+<select class="appearance-none h-10 pl-space-md pr-9 bg-surface-white border border-border-line rounded-lg font-body-default text-body-default text-text-ink focus:outline-none">
+<option>All countries</option>
+</select>
+<span class="material-symbols-outlined text-[18px] text-text-slate absolute right-2.5 top-2.5 pointer-events-none">expand_more</span>
+</div>
+<div class="relative">
+<select class="appearance-none h-10 pl-space-md pr-9 bg-surface-white border border-border-line rounded-lg font-body-default text-body-default text-text-ink focus:outline-none">
+<option selected="">Legal & Compliance (0 matches)</option>
+<option>All departments</option>
+</select>
+<span class="material-symbols-outlined text-[18px] text-text-slate absolute right-2.5 top-2.5 pointer-events-none">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Empty State Content Container -->
+<div class="bg-surface-white border border-border-line rounded-lg p-16 flex flex-col items-center justify-center text-center">
+<div class="w-12 h-12 rounded-full bg-table-header-fog border border-border-line flex items-center justify-center text-text-slate mb-space-md">
+<span class="material-symbols-outlined text-[24px]">filter_list_off</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-text-ink mb-1">No employees match your filters</h3>
+<p class="font-body-default text-body-default text-text-slate max-w-md mb-space-lg">
+        The selected criteria returned 0 active personnel records in the current pay cycle. Adjust your country or department parameters to reveal compensation data.
+      </p>
+<button class="h-10 px-space-xl border border-border-line rounded-lg font-body-strong text-body-strong text-text-ink hover:bg-table-header-fog transition-colors inline-flex items-center gap-2" onclick="switchState('default')" type="button">
+<span class="material-symbols-outlined text-[18px] text-text-slate">restart_alt</span>
+<span>Reset filters</span>
+</button>
+</div>
+</div>
+<script>
+    function switchState(state) {
+      const defView = document.getElementById('view-default');
+      const loadView = document.getElementById('view-loading');
+      const emptyView = document.getElementById('view-empty');
+
+      const tabDef = document.getElementById('tab-default');
+      const tabLoad = document.getElementById('tab-loading');
+      const tabEmpty = document.getElementById('tab-empty');
+
+      const tabs = [tabDef, tabLoad, tabEmpty];
+      tabs.forEach(t => {
+        t.className = "px-space-md py-1 text-caption font-body-strong rounded text-text-slate hover:text-text-ink transition-all";
+      });
+
+      defView.classList.add('hidden');
+      loadView.classList.add('hidden');
+      emptyView.classList.add('hidden');
+
+      if (state === 'default') {
+        defView.classList.remove('hidden');
+        tabDef.className = "px-space-md py-1 text-caption font-body-strong rounded bg-surface-white text-primary shadow-sm border border-border-line transition-all";
+        const deptSelect = document.getElementById('filter-dept-select');
+        if(deptSelect) deptSelect.value = 'all';
+      } else if (state === 'loading') {
+        loadView.classList.remove('hidden');
+        tabLoad.className = "px-space-md py-1 text-caption font-body-strong rounded bg-surface-white text-primary shadow-sm border border-border-line transition-all";
+      } else if (state === 'empty') {
+        emptyView.classList.remove('hidden');
+        tabEmpty.className = "px-space-md py-1 text-caption font-body-strong rounded bg-surface-white text-primary shadow-sm border border-border-line transition-all";
+      }
+    }
+  </script>
+</div></div></main><footer class="w-full border-t border-border-line bg-surface-white"><div class="max-w-[1280px] mx-auto px-margin py-space-md flex items-center justify-between text-text-slate font-caption text-caption"><span>ACME Corporation © 2024 • Institutional Compensation System</span><span>Confidential • Internal HR Personnel Only</span></div></footer></body></html>

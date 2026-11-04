@@ -1,3 +1,5 @@
+import { lazy, Suspense } from "react";
+import { Box, CircularProgress } from "@mui/material";
 import { Route, Routes } from "react-router-dom";
 
 import ProtectedRoute from "./auth/ProtectedRoute";
@@ -10,13 +12,29 @@ import HistoryPage from "./pages/HistoryPage";
 import LoginPage from "./pages/LoginPage";
 import PlaceholderPage from "./pages/PlaceholderPage";
 
+const DashboardPage = lazy(() => import("./pages/DashboardPage"));
+
+function DashboardRoute() {
+  return (
+    <Suspense
+      fallback={
+        <Box sx={{ minHeight: 320, display: "grid", placeItems: "center" }}>
+          <CircularProgress aria-label="Loading dashboard" />
+        </Box>
+      }
+    >
+      <DashboardPage />
+    </Suspense>
+  );
+}
+
 export default function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route element={<ProtectedRoute />}>
         <Route element={<AppShell />}>
-          <Route index element={<PlaceholderPage title="Dashboard" />} />
+          <Route index element={<DashboardRoute />} />
           <Route path="employees" element={<EmployeesPage />} />
           <Route path="employees/new" element={<EmployeeFormPage />} />
           <Route path="employees/:id" element={<EmployeeDetailPage />} />
