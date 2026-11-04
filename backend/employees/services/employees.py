@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from common.clock import get_clock
 from common.errors import ConflictError
 from employees.models import Employee, SalaryHistory
-from employees.services.hierarchy import validate_manager
+from employees.services.hierarchy import active_report_count, validate_manager
 
 
 def create_employee(data, clock=None):
@@ -110,4 +110,47 @@ def update_employee(employee_id, data, clock=None):
             details={"field": "email"},
         ) from exc
 
+    return employee
+
+
+def deactivate_employee(employee_id, clock=None):
+    """Soft-delete an employee unless they still have active direct reports."""
+    clock = clock or get_clock()
+    employee = get_object_or_404(Employee, pk=employee_id)
+    if employee.status == Employee.Status.INACTIVE:
+        return employee
+
+    active_reports = active_report_count(employee.id)
+    if active_reports:
+        noun = "report" if active_reports == 1 else "reports"
+        raise ConflictError(
+            f"This employee has {active_reports} active direct {noun}. "
+            "Reassign them first.",
+            details={"active_reports": active_reports},
+        )
+
+    employee.status = Employee.Status.INACTIVE
+    employee.updated_at = clock.now()
+    with transaction.atomic():
+        employee.save(update_fields=["status", "updated_at"])
+    return employee
+
+
+def reactivate_employee(employee_id, clock=None):
+    """Restore an employee unless their manager is still inactive."""
+    clock = clock or get_clock()
+    employee = get_object_or_404(Employee, pk=employee_id)
+    if employee.status == Employee.Status.ACTIVE:
+        return employee
+
+    if employee.manager_id and employee.manager.status != Employee.Status.ACTIVE:
+        raise ConflictError(
+            "Cannot reactivate while the manager is inactive.",
+            details={"manager_id": employee.manager_id},
+        )
+
+    employee.status = Employee.Status.ACTIVE
+    employee.updated_at = clock.now()
+    with transaction.atomic():
+        employee.save(update_fields=["status", "updated_at"])
     return employee

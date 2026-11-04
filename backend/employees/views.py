@@ -20,7 +20,12 @@ from employees.serializers import (
     EmployeeUpdateSerializer,
     SalaryHistoryItemSerializer,
 )
-from employees.services.employees import create_employee, update_employee
+from employees.services.employees import (
+    create_employee,
+    deactivate_employee,
+    reactivate_employee,
+    update_employee,
+)
 
 
 class EmployeeListView(APIView):
@@ -108,3 +113,31 @@ class EmployeeHistoryView(APIView):
     def get(self, request, pk, format=None):
         rows = list_employee_history(pk)
         return Response(SalaryHistoryItemSerializer(rows, many=True).data)
+
+
+class EmployeeDeactivateView(APIView):
+    """Soft-delete an employee."""
+
+    @extend_schema(
+        operation_id="employees-deactivate",
+        tags=["employees"],
+        request=None,
+        responses={200: EmployeeDetailSerializer},
+    )
+    def post(self, request, pk, format=None):
+        employee = deactivate_employee(pk)
+        return Response(EmployeeDetailSerializer(get_employee_detail(employee.id)).data)
+
+
+class EmployeeReactivateView(APIView):
+    """Restore a soft-deleted employee."""
+
+    @extend_schema(
+        operation_id="employees-reactivate",
+        tags=["employees"],
+        request=None,
+        responses={200: EmployeeDetailSerializer},
+    )
+    def post(self, request, pk, format=None):
+        employee = reactivate_employee(pk)
+        return Response(EmployeeDetailSerializer(get_employee_detail(employee.id)).data)

@@ -3,10 +3,12 @@
 from django.urls import path
 
 from employees.views import (
+    EmployeeDeactivateView,
     EmployeeDetailView,
     EmployeeDirectReportsView,
     EmployeeHistoryView,
     EmployeeListView,
+    EmployeeReactivateView,
 )
 
 urlpatterns = [
@@ -21,5 +23,15 @@ urlpatterns = [
         "employees/<int:pk>/history",
         EmployeeHistoryView.as_view(),
         name="employees-history",
+    ),
+    path(
+        "employees/<int:pk>/deactivate",
+        EmployeeDeactivateView.as_view(),
+        name="employees-deactivate",
+    ),
+    path(
+        "employees/<int:pk>/reactivate",
+        EmployeeReactivateView.as_view(),
+        name="employees-reactivate",
     ),
 ]

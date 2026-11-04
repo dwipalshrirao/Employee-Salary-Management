@@ -330,6 +330,42 @@
                 }
             }
         },
+        "/api/employees/{id}/deactivate": {
+            "post": {
+                "operationId": "employees-deactivate",
+                "description": "Soft-delete an employee.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "employees"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmployeeDetail"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/employees/{id}/direct-reports": {
             "get": {
                 "operationId": "employees-direct-reports",
@@ -416,6 +452,42 @@
                                     "items": {
                                         "$ref": "#/components/schemas/SalaryHistoryItem"
                                     }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/employees/{id}/reactivate": {
+            "post": {
+                "operationId": "employees-reactivate",
+                "description": "Restore a soft-deleted employee.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "employees"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmployeeDetail"
                                 }
                             }
                         },

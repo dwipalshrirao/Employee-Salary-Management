@@ -30,3 +30,11 @@ def validate_manager(employee_id, manager_id):
             raise ValidationError({"manager_id": ["Manager cannot be self or a report."]})
 
     return manager
+
+
+def active_report_count(manager_id):
+    """Count active employees whose direct manager is ``manager_id``."""
+    return Employee.objects.filter(
+        manager_id=manager_id,
+        status=Employee.Status.ACTIVE,
+    ).count()
