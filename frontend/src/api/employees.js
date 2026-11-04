@@ -16,6 +16,14 @@ export function updateEmployee(id, body) {
   return request("PATCH", `/employees/${id}`, { body });
 }
 
+export function deactivateEmployee(id) {
+  return request("POST", `/employees/${id}/deactivate`);
+}
+
+export function reactivateEmployee(id) {
+  return request("POST", `/employees/${id}/reactivate`);
+}
+
 export function getEmployeeHistory(id) {
   return request("GET", `/employees/${id}/history`);
 }

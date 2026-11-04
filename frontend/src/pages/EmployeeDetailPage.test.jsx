@@ -1,10 +1,10 @@
-import { screen, waitFor } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { http, HttpResponse } from "msw";
 import { Route, Routes } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 
-import { notFoundResponse, testDirectReports } from "../test/handlers";
+import { notFoundResponse, testDirectReports, testEmployeeDetail } from "../test/handlers";
 import { renderWithProviders } from "../test/render";
 import { server } from "../test/server";
 import EmployeeDetailPage from "./EmployeeDetailPage";
@@ -95,5 +95,134 @@ describe("EmployeeDetailPage", () => {
       "href",
       "/employees",
     );
+  });
+
+  it("deactivates the employee through the confirmation dialog", async () => {
+    const user = userEvent.setup();
+    let calls = 0;
+    server.use(
+      http.post("/api/employees/:id/deactivate", () => {
+        calls += 1;
+        return HttpResponse.json({ ...testEmployeeDetail, status: "inactive" });
+      }),
+    );
+
+    renderDetail();
+    await screen.findByRole("heading", { name: "Asha Patel" });
+    await user.click(screen.getByRole("button", { name: "Deactivate" }));
+
+    const dialog = screen.getByRole("dialog");
+    expect(within(dialog).getByText("Deactivate employee?")).toBeInTheDocument();
+    await user.click(within(dialog).getByRole("button", { name: "Deactivate" }));
+
+    await waitFor(() => expect(calls).toBe(1));
+    expect(await screen.findByRole("button", { name: "Reactivate" })).toBeInTheDocument();
+  });
+
+  it("keeps the deactivate dialog open on a 409", async () => {
+    const user = userEvent.setup();
+    server.use(
+      http.post("/api/employees/:id/deactivate", () =>
+        HttpResponse.json(
+          {
+            error: {
+              code: "conflict",
+              message: "This employee has 4 active direct reports. Reassign them first.",
+              details: {},
+            },
+          },
+          { status: 409 },
+        ),
+      ),
+    );
+
+    renderDetail();
+    await screen.findByRole("heading", { name: "Asha Patel" });
+    await user.click(screen.getByRole("button", { name: "Deactivate" }));
+    const dialog = screen.getByRole("dialog");
+    await user.click(within(dialog).getByRole("button", { name: "Deactivate" }));
+
+    expect(
+      await within(dialog).findByText(
+        "This employee has 4 active direct reports. Reassign them first.",
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+  });
+
+  it("reactivates an inactive employee", async () => {
+    const user = userEvent.setup();
+    let calls = 0;
+    server.use(
+      http.get("/api/employees/1", () =>
+        HttpResponse.json({ ...testEmployeeDetail, status: "inactive" }),
+      ),
+      http.post("/api/employees/:id/reactivate", () => {
+        calls += 1;
+        return HttpResponse.json({ ...testEmployeeDetail, status: "active" });
+      }),
+    );
+
+    renderDetail();
+    await screen.findByRole("heading", { name: "Asha Patel" });
+    await user.click(screen.getByRole("button", { name: "Reactivate" }));
+    const dialog = screen.getByRole("dialog");
+    expect(within(dialog).getByText("Reactivate employee?")).toBeInTheDocument();
+    await user.click(within(dialog).getByRole("button", { name: "Reactivate" }));
+
+    expect(await screen.findByRole("button", { name: "Deactivate" })).toBeInTheDocument();
+    expect(calls).toBe(1);
+  });
+
+  it("keeps the reactivate dialog open when the manager is inactive", async () => {
+    const user = userEvent.setup();
+    server.use(
+      http.get("/api/employees/1", () =>
+        HttpResponse.json({ ...testEmployeeDetail, status: "inactive" }),
+      ),
+      http.post("/api/employees/:id/reactivate", () =>
+        HttpResponse.json(
+          {
+            error: {
+              code: "conflict",
+              message: "Cannot reactivate while the manager is inactive.",
+              details: {},
+            },
+          },
+          { status: 409 },
+        ),
+      ),
+    );
+
+    renderDetail();
+    await screen.findByRole("heading", { name: "Asha Patel" });
+    await user.click(screen.getByRole("button", { name: "Reactivate" }));
+    const dialog = screen.getByRole("dialog");
+    await user.click(within(dialog).getByRole("button", { name: "Reactivate" }));
+
+    expect(
+      await within(dialog).findByText("Cannot reactivate while the manager is inactive."),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+  });
+
+  it("cancels a status change without calling the API", async () => {
+    const user = userEvent.setup();
+    let calls = 0;
+    server.use(
+      http.post("/api/employees/:id/deactivate", () => {
+        calls += 1;
+        return HttpResponse.json({ ...testEmployeeDetail, status: "inactive" });
+      }),
+    );
+
+    renderDetail();
+    await screen.findByRole("heading", { name: "Asha Patel" });
+    await user.click(screen.getByRole("button", { name: "Deactivate" }));
+    const dialog = screen.getByRole("dialog");
+    await user.click(within(dialog).getByRole("button", { name: "Cancel" }));
+
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    expect(calls).toBe(0);
   });
 });

@@ -7,6 +7,11 @@ import {
   CardContent,
   Chip,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Link as MuiLink,
   Table,
   TableBody,
@@ -16,10 +21,16 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link as RouterLink, useParams } from "react-router-dom";
 
-import { getEmployee, getEmployeeDirectReports, getEmployeeHistory } from "../api/employees";
+import {
+  deactivateEmployee,
+  getEmployee,
+  getEmployeeDirectReports,
+  getEmployeeHistory,
+  reactivateEmployee,
+} from "../api/employees";
 import { ApiError } from "../api/client";
 import StatusChip from "../components/StatusChip";
 import { useLookups } from "../hooks/useLookups";
@@ -140,7 +151,18 @@ function NotFoundState() {
 export default function EmployeeDetailPage() {
   const { id } = useParams();
   const [reportsPage, setReportsPage] = useState(1);
+  const [statusAction, setStatusAction] = useState(null);
+  const queryClient = useQueryClient();
   const lookups = useLookups();
+  const statusMutation = useMutation({
+    mutationFn: (action) =>
+      action === "deactivate" ? deactivateEmployee(id) : reactivateEmployee(id),
+    onSuccess: (updated) => {
+      queryClient.setQueryData(["employee", id], updated);
+      setStatusAction(null);
+      queryClient.invalidateQueries({ queryKey: ["employees"] });
+    },
+  });
   const employeeQuery = useQuery({
     queryKey: ["employee", id],
     queryFn: () => getEmployee(id),
@@ -224,9 +246,33 @@ export default function EmployeeDetailPage() {
           </Typography>
           <StatusChip status={employee.status} />
         </Box>
-        <Button component={RouterLink} to={`/employees/${employee.id}/edit`} variant="outlined">
-          Edit
-        </Button>
+        <Box sx={{ display: "flex", gap: 1.5 }}>
+          <Button component={RouterLink} to={`/employees/${employee.id}/edit`} variant="outlined">
+            Edit
+          </Button>
+          {employee.status === "active" ? (
+            <Button
+              color="error"
+              variant="outlined"
+              onClick={() => {
+                statusMutation.reset();
+                setStatusAction("deactivate");
+              }}
+            >
+              Deactivate
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              onClick={() => {
+                statusMutation.reset();
+                setStatusAction("reactivate");
+              }}
+            >
+              Reactivate
+            </Button>
+          )}
+        </Box>
       </Box>
 
       <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: 3 }}>
@@ -412,6 +458,57 @@ export default function EmployeeDetailPage() {
           )}
         </CardContent>
       </Card>
+
+      <Dialog
+        open={Boolean(statusAction)}
+        onClose={() => {
+          if (!statusMutation.isPending) {
+            statusMutation.reset();
+            setStatusAction(null);
+          }
+        }}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>
+          {statusAction === "deactivate" ? "Deactivate employee?" : "Reactivate employee?"}
+        </DialogTitle>
+        <DialogContent>
+          {statusMutation.isError ? (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {statusMutation.error.message}
+            </Alert>
+          ) : null}
+          <DialogContentText>
+            {statusAction === "deactivate"
+              ? `Are you sure you want to deactivate ${employee.full_name}? They will no longer have access to institutional systems and will be marked as inactive in payroll records.`
+              : `Are you sure you want to reactivate ${employee.full_name}? They will be marked as active and regain access to institutional systems.`}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              statusMutation.reset();
+              setStatusAction(null);
+            }}
+            disabled={statusMutation.isPending}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            color={statusAction === "deactivate" ? "error" : "primary"}
+            onClick={() => statusMutation.mutate(statusAction)}
+            disabled={statusMutation.isPending}
+          >
+            {statusMutation.isPending
+              ? "Saving…"
+              : statusAction === "deactivate"
+                ? "Deactivate"
+                : "Reactivate"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

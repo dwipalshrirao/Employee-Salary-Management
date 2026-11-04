@@ -207,6 +207,16 @@ export const detailHandlers = [
     const body = await request.json();
     return HttpResponse.json({ ...testEmployeeDetail, ...body });
   }),
+  http.post("/api/employees/:id/deactivate", ({ params }) =>
+    params.id === "1"
+      ? HttpResponse.json({ ...testEmployeeDetail, status: "inactive" })
+      : notFoundResponse(),
+  ),
+  http.post("/api/employees/:id/reactivate", ({ params }) =>
+    params.id === "1"
+      ? HttpResponse.json({ ...testEmployeeDetail, status: "active" })
+      : notFoundResponse(),
+  ),
 ];
 
 export function employeeListHandler(items = testEmployees, overrides = {}) {
