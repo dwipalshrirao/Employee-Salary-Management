@@ -73,4 +73,5 @@ export const employeeFormSchema = z.object({
   base_salary: baseSalary,
   bonus_cents: optionalAmount("Bonus"),
   allowances_cents: optionalAmount("Allowances"),
+  change_reason: z.string().max(200, "Reason must be 200 characters or fewer").optional(),
 });

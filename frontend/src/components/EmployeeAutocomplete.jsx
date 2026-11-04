@@ -5,7 +5,12 @@ import { useQuery } from "@tanstack/react-query";
 import { listEmployees } from "../api/employees";
 import { useDebounce } from "../hooks/useDebounce";
 
-export default function EmployeeAutocomplete({ value, onChange, label = "Manager" }) {
+export default function EmployeeAutocomplete({
+  value,
+  onChange,
+  label = "Manager",
+  initialOption = null,
+}) {
   const [input, setInput] = useState("");
   const search = useDebounce(input, 300);
   const { data, isFetching } = useQuery({
@@ -13,7 +18,11 @@ export default function EmployeeAutocomplete({ value, onChange, label = "Manager
     queryFn: () => listEmployees({ q: search, page_size: 10 }),
     enabled: search.length > 0,
   });
-  const options = data?.items ?? [];
+  const fetchedOptions = data?.items ?? [];
+  const options =
+    initialOption && !fetchedOptions.some((option) => option.id === initialOption.id)
+      ? [initialOption, ...fetchedOptions]
+      : fetchedOptions;
   const selected = options.find((option) => String(option.id) === String(value)) ?? null;
 
   return (

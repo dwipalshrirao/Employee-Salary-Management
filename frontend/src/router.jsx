@@ -18,7 +18,7 @@ export default function AppRoutes() {
           <Route path="employees" element={<EmployeesPage />} />
           <Route path="employees/new" element={<EmployeeFormPage />} />
           <Route path="employees/:id" element={<EmployeeDetailPage />} />
-          <Route path="employees/:id/edit" element={<PlaceholderPage title="Edit employee" />} />
+          <Route path="employees/:id/edit" element={<EmployeeFormPage />} />
           <Route path="history" element={<PlaceholderPage title="Salary history" />} />
           <Route path="bulk-update" element={<PlaceholderPage title="Bulk update" />} />
         </Route>

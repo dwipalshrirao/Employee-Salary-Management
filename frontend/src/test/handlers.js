@@ -200,6 +200,13 @@ export const detailHandlers = [
   http.get("/api/employees/:id/history", ({ params }) =>
     params.id === "1" ? HttpResponse.json(testHistory) : notFoundResponse(),
   ),
+  http.patch("/api/employees/:id", async ({ request, params }) => {
+    if (params.id !== "1") {
+      return notFoundResponse();
+    }
+    const body = await request.json();
+    return HttpResponse.json({ ...testEmployeeDetail, ...body });
+  }),
 ];
 
 export function employeeListHandler(items = testEmployees, overrides = {}) {

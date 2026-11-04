@@ -12,6 +12,10 @@ export function getEmployee(id) {
   return request("GET", `/employees/${id}`);
 }
 
+export function updateEmployee(id, body) {
+  return request("PATCH", `/employees/${id}`, { body });
+}
+
 export function getEmployeeHistory(id) {
   return request("GET", `/employees/${id}/history`);
 }

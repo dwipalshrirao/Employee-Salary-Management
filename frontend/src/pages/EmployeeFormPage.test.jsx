@@ -145,3 +145,90 @@ describe("EmployeeFormPage", () => {
     expect(await screen.findByText("Employee detail destination")).toBeInTheDocument();
   });
 });
+
+function renderEdit() {
+  return renderWithProviders(
+    <Routes>
+      <Route path="/employees/:id/edit" element={<EmployeeFormPage />} />
+      <Route path="/employees/:id" element={<div>Employee detail destination</div>} />
+      <Route path="/employees" element={<div>Employees list</div>} />
+    </Routes>,
+    { route: "/employees/1/edit" },
+  );
+}
+
+describe("EmployeeFormPage edit mode", () => {
+  it("prefills the employee and disables save until something changes", async () => {
+    renderEdit();
+
+    expect(await screen.findByLabelText("Full name")).toHaveValue("Asha Patel");
+    expect(screen.getByLabelText("Email")).toHaveValue("asha.patel@acme.example");
+    expect(screen.getByLabelText("Base salary")).toHaveValue("45000.00");
+    expect(screen.getByRole("button", { name: "Save employee" })).toBeDisabled();
+  });
+
+  it("sends only the changed fields", async () => {
+    const user = userEvent.setup();
+    let body;
+    server.use(
+      http.patch("/api/employees/:id", async ({ request }) => {
+        body = await request.json();
+        return HttpResponse.json({ ...testEmployeeDetail, ...body });
+      }),
+    );
+
+    renderEdit();
+    await user.clear(await screen.findByLabelText("Full name"));
+    await user.type(screen.getByLabelText("Full name"), "Asha Rao");
+    await user.click(screen.getByRole("button", { name: "Save employee" }));
+
+    expect(await screen.findByText("Employee detail destination")).toBeInTheDocument();
+    expect(body).toEqual({ full_name: "Asha Rao" });
+  });
+
+  it("shows a reason field for a pay change and sends it", async () => {
+    const user = userEvent.setup();
+    let body;
+    server.use(
+      http.patch("/api/employees/:id", async ({ request }) => {
+        body = await request.json();
+        return HttpResponse.json({ ...testEmployeeDetail, ...body });
+      }),
+    );
+
+    renderEdit();
+    const baseSalary = await screen.findByLabelText("Base salary");
+    await user.clear(baseSalary);
+    await user.type(baseSalary, "50000");
+    await user.type(screen.getByLabelText("Reason for change"), "Annual review");
+    await user.click(screen.getByRole("button", { name: "Save employee" }));
+
+    expect(await screen.findByText("Employee detail destination")).toBeInTheDocument();
+    expect(body).toEqual({
+      base_salary_cents: 5_000_000,
+      change_reason: "Annual review",
+    });
+  });
+
+  it("prompts before discarding changes", async () => {
+    const user = userEvent.setup();
+    let patchCalls = 0;
+    server.use(
+      http.patch("/api/employees/:id", () => {
+        patchCalls += 1;
+        return HttpResponse.json(testEmployeeDetail);
+      }),
+    );
+
+    renderEdit();
+    await user.clear(await screen.findByLabelText("Full name"));
+    await user.type(screen.getByLabelText("Full name"), "Asha Rao");
+    await user.click(screen.getByRole("button", { name: "Cancel" }));
+
+    expect(screen.getByText("Discard changes?")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Discard" }));
+
+    expect(await screen.findByText("Employee detail destination")).toBeInTheDocument();
+    expect(patchCalls).toBe(0);
+  });
+});

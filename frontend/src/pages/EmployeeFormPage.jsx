@@ -1,26 +1,32 @@
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Box,
   Button,
   Card,
   CardContent,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   InputAdornment,
   MenuItem,
   TextField,
   Typography,
 } from "@mui/material";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
 
 import { ApiError } from "../api/client";
-import { createEmployee } from "../api/employees";
+import { createEmployee, getEmployee, updateEmployee } from "../api/employees";
 import EmployeeAutocomplete from "../components/EmployeeAutocomplete";
 import { useLookups } from "../hooks/useLookups";
 import { employeeFormSchema } from "../lib/schemas";
-import { formatLocal, formatUsd, parseDollarsToCents } from "../lib/money";
+import { centsToDollarsString, formatLocal, formatUsd, parseDollarsToCents } from "../lib/money";
 
 const DEFAULT_VALUES = {
   full_name: "",
@@ -33,7 +39,66 @@ const DEFAULT_VALUES = {
   base_salary: "",
   bonus_cents: "",
   allowances_cents: "",
+  change_reason: "",
 };
+
+function formValuesFor(employee) {
+  return {
+    full_name: employee.full_name,
+    email: employee.email,
+    department_id: String(employee.department.id),
+    job_title_id: String(employee.job_title.id),
+    country_code: employee.country.code,
+    manager_id: employee.manager ? String(employee.manager.id) : "",
+    hire_date: employee.hire_date,
+    base_salary: centsToDollarsString(employee.base_salary_cents),
+    bonus_cents: centsToDollarsString(employee.bonus_cents),
+    allowances_cents: centsToDollarsString(employee.allowances_cents),
+    change_reason: "",
+  };
+}
+
+function editPatchFor(values, employee) {
+  const patch = {};
+  if (values.full_name.trim() !== employee.full_name) {
+    patch.full_name = values.full_name.trim();
+  }
+  if (values.email.trim() !== employee.email) {
+    patch.email = values.email.trim();
+  }
+  if (Number(values.department_id) !== employee.department.id) {
+    patch.department_id = Number(values.department_id);
+  }
+  if (Number(values.job_title_id) !== employee.job_title.id) {
+    patch.job_title_id = Number(values.job_title_id);
+  }
+  if (values.country_code !== employee.country.code) {
+    patch.country_code = values.country_code;
+  }
+  const managerId = values.manager_id ? Number(values.manager_id) : null;
+  if (managerId !== (employee.manager?.id ?? null)) {
+    patch.manager_id = managerId;
+  }
+  if (values.hire_date !== employee.hire_date) {
+    patch.hire_date = values.hire_date;
+  }
+  if (amountCents(values.base_salary) !== employee.base_salary_cents) {
+    patch.base_salary_cents = amountCents(values.base_salary);
+  }
+  if (amountCents(values.bonus_cents) !== employee.bonus_cents) {
+    patch.bonus_cents = amountCents(values.bonus_cents);
+  }
+  if (amountCents(values.allowances_cents) !== employee.allowances_cents) {
+    patch.allowances_cents = amountCents(values.allowances_cents);
+  }
+  const payChanged = ["base_salary_cents", "bonus_cents", "allowances_cents"].some(
+    (field) => field in patch,
+  );
+  if (payChanged && values.change_reason.trim()) {
+    patch.change_reason = values.change_reason.trim();
+  }
+  return { patch, payChanged };
+}
 
 function amountCents(value) {
   if (!value?.trim()) {
@@ -55,23 +120,40 @@ function FieldError({ message }) {
 }
 
 export default function EmployeeFormPage() {
+  const { id } = useParams();
+  const isEdit = Boolean(id);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const lookups = useLookups();
   const [serverError, setServerError] = useState("");
+  const [discardOpen, setDiscardOpen] = useState(false);
+  const pendingPath = useRef(null);
+  const employeeQuery = useQuery({
+    queryKey: ["employee", id],
+    queryFn: () => getEmployee(id),
+    retry: false,
+    enabled: isEdit,
+  });
+  const employee = employeeQuery.data;
+  const editValues = useMemo(() => (employee ? formValuesFor(employee) : undefined), [employee]);
   const {
     control,
     register,
     handleSubmit,
     watch,
     setError,
-    formState: { errors, isSubmitting },
+    formState: { errors, isDirty, isSubmitting },
   } = useForm({
     resolver: zodResolver(employeeFormSchema),
     defaultValues: DEFAULT_VALUES,
+    values: isEdit ? editValues : undefined,
   });
 
   const watched = watch();
+  const editState =
+    isEdit && employee ? editPatchFor(watched, employee) : { patch: {}, payChanged: false };
+  const hasChanges = isEdit ? Object.keys(editState.patch).length > 0 : isDirty;
+  const cancelPath = isEdit ? `/employees/${id}` : "/employees";
   const countries = lookups.data?.countries ?? [];
   const departments = lookups.data?.departments ?? [];
   const jobTitles = lookups.data?.job_titles ?? [];
@@ -88,6 +170,23 @@ export default function EmployeeFormPage() {
 
   async function onSubmit(values) {
     setServerError("");
+    if (isEdit) {
+      const { patch } = editPatchFor(values, employee);
+      if (Object.keys(patch).length === 0) {
+        return;
+      }
+      try {
+        await updateEmployee(id, patch);
+        await queryClient.invalidateQueries({ queryKey: ["employee", id] });
+        await queryClient.invalidateQueries({ queryKey: ["employee", id, "history"] });
+        await queryClient.invalidateQueries({ queryKey: ["employees"] });
+        navigate(`/employees/${id}`);
+      } catch (caught) {
+        handleSubmitError(caught);
+      }
+      return;
+    }
+
     const body = {
       full_name: values.full_name.trim(),
       email: values.email.trim(),
@@ -108,43 +207,100 @@ export default function EmployeeFormPage() {
       await queryClient.invalidateQueries({ queryKey: ["employees"] });
       navigate(`/employees/${created.id}`);
     } catch (caught) {
-      if (caught instanceof ApiError && caught.status === 409) {
-        setError("email", {
-          type: "server",
-          message: caught.message || "Email already exists",
-        });
+      handleSubmitError(caught);
+    }
+  }
+
+  function handleSubmitError(caught) {
+    if (caught instanceof ApiError && caught.status === 409) {
+      setError("email", {
+        type: "server",
+        message: caught.message || "Email already exists",
+      });
+      return;
+    }
+    if (caught instanceof ApiError && caught.status === 422) {
+      let mapped = false;
+      for (const [field, messages] of Object.entries(caught.details ?? {})) {
+        if (field in DEFAULT_VALUES) {
+          setError(field, {
+            type: "server",
+            message: Array.isArray(messages) ? messages[0] : String(messages),
+          });
+          mapped = true;
+        }
+      }
+      if (mapped) {
         return;
       }
-      if (caught instanceof ApiError && caught.status === 422) {
-        let mapped = false;
-        for (const [field, messages] of Object.entries(caught.details ?? {})) {
-          if (field in DEFAULT_VALUES) {
-            setError(field, {
-              type: "server",
-              message: Array.isArray(messages) ? messages[0] : String(messages),
-            });
-            mapped = true;
-          }
-        }
-        if (mapped) {
-          return;
-        }
-      }
-      setServerError(caught.message || "Could not save employee");
     }
+    setServerError(caught.message || "Could not save employee");
+  }
+
+  function requestLeave(path) {
+    if (hasChanges) {
+      pendingPath.current = path;
+      setDiscardOpen(true);
+    } else {
+      navigate(path);
+    }
+  }
+
+  function discardChanges() {
+    setDiscardOpen(false);
+    navigate(pendingPath.current ?? cancelPath);
+  }
+
+  useEffect(() => {
+    if (!hasChanges) {
+      return undefined;
+    }
+    const handler = (event) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [hasChanges]);
+
+  if (isEdit && employeeQuery.isLoading) {
+    return (
+      <Box sx={{ minHeight: 320, display: "grid", placeItems: "center" }}>
+        <CircularProgress aria-label="Loading employee" />
+      </Box>
+    );
+  }
+
+  if (isEdit && employeeQuery.isError) {
+    return (
+      <Alert severity="error" sx={{ maxWidth: 960, mx: "auto" }}>
+        Could not load employee
+      </Alert>
+    );
   }
 
   return (
     <Box sx={{ maxWidth: 960, mx: "auto" }}>
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <RouterLink to="/employees" style={{ color: "inherit", textDecoration: "none" }}>
+        <RouterLink
+          to="/employees"
+          style={{ color: "inherit", textDecoration: "none" }}
+          onClick={(event) => {
+            if (hasChanges) {
+              event.preventDefault();
+              requestLeave("/employees");
+            }
+          }}
+        >
           Employees
         </RouterLink>
         <Typography color="text.disabled">/</Typography>
-        <Typography sx={{ fontWeight: 600 }}>New employee</Typography>
+        <Typography sx={{ fontWeight: 600 }}>
+          {isEdit ? (employee?.full_name ?? "Edit employee") : "New employee"}
+        </Typography>
       </Box>
       <Typography variant="h1" component="h1" sx={{ mt: 1, mb: 3 }}>
-        Add employee
+        {isEdit ? "Edit employee" : "Add employee"}
       </Typography>
 
       {serverError ? (
@@ -264,6 +420,7 @@ export default function EmployeeFormPage() {
                       label="Manager (optional)"
                       value={field.value}
                       onChange={field.onChange}
+                      initialOption={employee?.manager ?? null}
                     />
                   )}
                 />
@@ -332,6 +489,18 @@ export default function EmployeeFormPage() {
                 />
               </Box>
             </Box>
+            {isEdit && editState.payChanged ? (
+              <Box sx={{ mt: 2.5, maxWidth: 480 }}>
+                <TextField
+                  label="Reason for change"
+                  fullWidth
+                  helperText="Optional. Defaults to Manual edit."
+                  {...register("change_reason")}
+                />
+                <FieldError message={errors.change_reason?.message} />
+              </Box>
+            ) : null}
+
             <Typography color="text.secondary" sx={{ mt: 2 }}>
               {`Total: ${formatUsd(totalCents)}${
                 localTotalCents !== null && selectedCountry
@@ -344,16 +513,35 @@ export default function EmployeeFormPage() {
             </Typography>
 
             <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: 4 }}>
-              <Button component={RouterLink} to="/employees" variant="outlined">
+              <Button variant="outlined" onClick={() => requestLeave(cancelPath)}>
                 Cancel
               </Button>
-              <Button type="submit" variant="contained" disabled={isSubmitting}>
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={isSubmitting || (isEdit && !hasChanges)}
+              >
                 {isSubmitting ? "Saving…" : "Save employee"}
               </Button>
             </Box>
           </Box>
         </CardContent>
       </Card>
+
+      <Dialog open={discardOpen} onClose={() => setDiscardOpen(false)}>
+        <DialogTitle>Discard changes?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            You have unsaved changes. Discard them and leave this page?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDiscardOpen(false)}>Keep editing</Button>
+          <Button color="error" onClick={discardChanges}>
+            Discard
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
