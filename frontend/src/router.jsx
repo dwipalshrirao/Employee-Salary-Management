@@ -6,6 +6,7 @@ import BulkUpdatePage from "./pages/BulkUpdatePage";
 import EmployeeDetailPage from "./pages/EmployeeDetailPage";
 import EmployeeFormPage from "./pages/EmployeeFormPage";
 import EmployeesPage from "./pages/EmployeesPage";
+import HistoryPage from "./pages/HistoryPage";
 import LoginPage from "./pages/LoginPage";
 import PlaceholderPage from "./pages/PlaceholderPage";
 
@@ -20,7 +21,7 @@ export default function AppRoutes() {
           <Route path="employees/new" element={<EmployeeFormPage />} />
           <Route path="employees/:id" element={<EmployeeDetailPage />} />
           <Route path="employees/:id/edit" element={<EmployeeFormPage />} />
-          <Route path="history" element={<PlaceholderPage title="Salary history" />} />
+          <Route path="history" element={<HistoryPage />} />
           <Route path="bulk-update" element={<BulkUpdatePage />} />
         </Route>
       </Route>

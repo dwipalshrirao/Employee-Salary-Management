@@ -102,3 +102,5 @@ Add a row whenever the built UI differs from the Stitch screen or the spec.
 | 2026-11-04 | `03 Employees` | Filter fields use MUI outlined labels and the DataGrid footer instead of Stitch's custom label/table chrome. | MUI and MUI X DataGrid are required by the spec; spacing and hierarchy follow the screen. |
 | 2026-11-04 | `04 Employee detail` | The analytics team summary is deferred; Edit links to the employee form. | Detail, local currency, direct reports, history, deactivate and reactivate are implemented; the team summary belongs to S12. |
 | 2026-11-04 | `04 Employee detail` | Direct reports are in a separate card; Reporting shows only the manager link. | Clarified requirement: direct reports deserve their own section. |
+| 2026-11-04 | `08 History` | Filters apply immediately; Stitch's `Apply filters` button is omitted. | Spec 04 sec 6.9 defines immediate URL-synced filtering and does not include an apply step. |
+| 2026-11-04 | `08 History` | Batch chip reads `Batch 6f1c8a` instead of Stitch's `Batch: 6f1c8a`. | Spec 04 sec 6.9 copy wins. |

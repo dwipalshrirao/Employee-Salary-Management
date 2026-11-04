@@ -11,10 +11,16 @@ from employees.views import (
     EmployeeHistoryView,
     EmployeeListView,
     EmployeeReactivateView,
+    SalaryHistoryListView,
 )
 
 urlpatterns = [
     path("employees", EmployeeListView.as_view(), name="employees-list"),
+    path(
+        "salary-history",
+        SalaryHistoryListView.as_view(),
+        name="salary-history-list",
+    ),
     path("employees/<int:pk>", EmployeeDetailView.as_view(), name="employees-detail"),
     path(
         "employees/<int:pk>/direct-reports",

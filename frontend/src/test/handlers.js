@@ -219,6 +219,95 @@ export const detailHandlers = [
   ),
 ];
 
+export const testSalaryHistoryPage = {
+  items: [
+    {
+      id: 31,
+      employee: {
+        id: 1,
+        full_name: "Asha Patel",
+        email: "asha.patel@acme.example",
+      },
+      effective_date: "2026-10-31",
+      change_type: "bulk_update",
+      reason: "FY27 raise",
+      batch_id: "6f1c8a00-0000-0000-0000-000000000000",
+      created_at: "2026-10-31T12:00:00Z",
+      new: {
+        base_salary_cents: 4_500_000,
+        bonus_cents: 450_000,
+        allowances_cents: 180_000,
+        total_comp_cents: 5_130_000,
+      },
+      previous: {
+        base_salary_cents: 4_285_700,
+        bonus_cents: 450_000,
+        allowances_cents: 180_000,
+        total_comp_cents: 4_915_700,
+      },
+    },
+    {
+      id: 30,
+      employee: {
+        id: 4,
+        full_name: "Priya Nair",
+        email: "priya.nair@acme.example",
+      },
+      effective_date: "2026-10-15",
+      change_type: "manual_edit",
+      reason: "Promotion",
+      batch_id: null,
+      created_at: "2026-10-15T12:00:00Z",
+      new: {
+        base_salary_cents: 7_200_000,
+        bonus_cents: 800_000,
+        allowances_cents: 0,
+        total_comp_cents: 8_000_000,
+      },
+      previous: {
+        base_salary_cents: 6_500_000,
+        bonus_cents: 650_000,
+        allowances_cents: 0,
+        total_comp_cents: 7_150_000,
+      },
+    },
+    {
+      id: 1,
+      employee: {
+        id: 5,
+        full_name: "Sophie Turner",
+        email: "sophie.turner@acme.example",
+      },
+      effective_date: "2021-04-12",
+      change_type: "hire",
+      reason: "New hire",
+      batch_id: null,
+      created_at: "2021-04-12T12:00:00Z",
+      new: {
+        base_salary_cents: 11_500_000,
+        bonus_cents: 1_200_000,
+        allowances_cents: 500_000,
+        total_comp_cents: 13_200_000,
+      },
+      previous: null,
+    },
+  ],
+  total: 3,
+  page: 1,
+  page_size: 25,
+};
+
+export function salaryHistoryHandler(items = testSalaryHistoryPage.items, overrides = {}) {
+  return http.get("/api/salary-history", () =>
+    HttpResponse.json({
+      ...testSalaryHistoryPage,
+      items,
+      total: items.length,
+      ...overrides,
+    }),
+  );
+}
+
 export const testBulkPreview = {
   component: "base",
   mode: "percent",
@@ -273,4 +362,10 @@ export const dataHandlers = [
   }),
 ];
 
-export const handlers = [...authHandlers, ...dataHandlers, ...detailHandlers, ...bulkHandlers];
+export const handlers = [
+  ...authHandlers,
+  ...dataHandlers,
+  ...detailHandlers,
+  ...bulkHandlers,
+  salaryHistoryHandler(),
+];

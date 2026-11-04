@@ -11,6 +11,7 @@ from employees.selectors import (
     list_direct_reports,
     list_employee_history,
     list_employees,
+    list_salary_history,
 )
 from employees.serializers import (
     BulkUpdateApplyResponseSerializer,
@@ -23,6 +24,8 @@ from employees.serializers import (
     EmployeeListResponseSerializer,
     EmployeeUpdateSerializer,
     SalaryHistoryItemSerializer,
+    SalaryHistoryListResponseSerializer,
+    SalaryHistoryQuerySerializer,
 )
 from employees.services.bulk_updates import apply_bulk_update, preview_bulk_update
 from employees.services.employees import (
@@ -118,6 +121,22 @@ class EmployeeHistoryView(APIView):
     def get(self, request, pk, format=None):
         rows = list_employee_history(pk)
         return Response(SalaryHistoryItemSerializer(rows, many=True).data)
+
+
+class SalaryHistoryListView(APIView):
+    """Search salary history across every employee."""
+
+    @extend_schema(
+        operation_id="salary-history-list",
+        tags=["history"],
+        parameters=[SalaryHistoryQuerySerializer],
+        responses={200: SalaryHistoryListResponseSerializer},
+    )
+    def get(self, request, format=None):
+        query = SalaryHistoryQuerySerializer(data=request.query_params)
+        query.is_valid(raise_exception=True)
+        result = list_salary_history(**query.validated_data)
+        return Response(SalaryHistoryListResponseSerializer(result).data)
 
 
 class EmployeeDeactivateView(APIView):

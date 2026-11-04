@@ -624,6 +624,139 @@
                     }
                 }
             }
+        },
+        "/api/salary-history": {
+            "get": {
+                "operationId": "salary-history-list",
+                "description": "Search salary history across every employee.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "batch_id",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "change_type",
+                        "schema": {
+                            "enum": [
+                                "hire",
+                                "manual_edit",
+                                "bulk_update",
+                                ""
+                            ],
+                            "type": "string"
+                        },
+                        "description": "* `hire` - hire\n* `manual_edit` - manual_edit\n* `bulk_update` - bulk_update"
+                    },
+                    {
+                        "in": "query",
+                        "name": "date_from",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "date_to",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "employee",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 100
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "default": 1
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "page_size",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 1,
+                            "default": 25
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "reason",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 100
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "sort_by",
+                        "schema": {
+                            "enum": [
+                                "effective_date",
+                                "employee",
+                                "change_type"
+                            ],
+                            "type": "string",
+                            "default": "effective_date",
+                            "minLength": 1
+                        },
+                        "description": "* `effective_date` - effective_date\n* `employee` - employee\n* `change_type` - change_type"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sort_dir",
+                        "schema": {
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "type": "string",
+                            "default": "desc",
+                            "minLength": 1
+                        },
+                        "description": "* `asc` - asc\n* `desc` - desc"
+                    }
+                ],
+                "tags": [
+                    "history"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SalaryHistoryListResponse"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -1439,6 +1572,26 @@
                     "total_comp_cents"
                 ]
             },
+            "SalaryHistoryEmployee": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "full_name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    }
+                },
+                "required": [
+                    "email",
+                    "full_name",
+                    "id"
+                ]
+            },
             "SalaryHistoryItem": {
                 "type": "object",
                 "properties": {
@@ -1491,6 +1644,94 @@
                     "change_type",
                     "created_at",
                     "effective_date",
+                    "id",
+                    "new",
+                    "previous",
+                    "reason"
+                ]
+            },
+            "SalaryHistoryListResponse": {
+                "type": "object",
+                "properties": {
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SalaryHistorySearchItem"
+                        }
+                    },
+                    "total": {
+                        "type": "integer"
+                    },
+                    "page": {
+                        "type": "integer"
+                    },
+                    "page_size": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "items",
+                    "page",
+                    "page_size",
+                    "total"
+                ]
+            },
+            "SalaryHistorySearchItem": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "effective_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "change_type": {
+                        "type": "string"
+                    },
+                    "reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "batch_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "new": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/SalaryAmounts"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "previous": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/SalaryAmounts"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "employee": {
+                        "$ref": "#/components/schemas/SalaryHistoryEmployee"
+                    }
+                },
+                "required": [
+                    "batch_id",
+                    "change_type",
+                    "created_at",
+                    "effective_date",
+                    "employee",
                     "id",
                     "new",
                     "previous",

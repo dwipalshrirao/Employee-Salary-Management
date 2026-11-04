@@ -10,7 +10,7 @@ from catalog.models import Country, Department, JobTitle
 from common.clock import get_clock
 from common.serializers import PageQuerySerializer, StrictSerializer
 from employees.local_currency import local_amounts
-from employees.models import Employee
+from employees.models import Employee, SalaryHistory
 
 MAX_AMOUNT_CENTS = 1_000_000_000
 
@@ -24,6 +24,8 @@ SORT_BY_CHOICES = (
     "job_title",
     "country",
 )
+
+HISTORY_SORT_BY_CHOICES = ("effective_date", "employee", "change_type")
 
 
 class EmployeeListQuerySerializer(PageQuerySerializer):
@@ -42,6 +44,33 @@ class EmployeeListQuerySerializer(PageQuerySerializer):
     )
     sort_by = serializers.ChoiceField(choices=SORT_BY_CHOICES, default="full_name")
     sort_dir = serializers.ChoiceField(choices=("asc", "desc"), default="asc")
+
+
+class SalaryHistoryQuerySerializer(PageQuerySerializer):
+    employee = serializers.CharField(max_length=100, required=False, allow_blank=True)
+    reason = serializers.CharField(max_length=100, required=False, allow_blank=True)
+    change_type = serializers.ChoiceField(
+        choices=SalaryHistory.ChangeType.values,
+        required=False,
+        allow_blank=True,
+    )
+    date_from = serializers.DateField(required=False)
+    date_to = serializers.DateField(required=False)
+    batch_id = serializers.UUIDField(required=False, allow_null=True)
+    sort_by = serializers.ChoiceField(
+        choices=HISTORY_SORT_BY_CHOICES,
+        default="effective_date",
+    )
+    sort_dir = serializers.ChoiceField(choices=("asc", "desc"), default="desc")
+
+    def validate(self, attrs):
+        date_from = attrs.get("date_from")
+        date_to = attrs.get("date_to")
+        if date_from is not None and date_to is not None and date_from > date_to:
+            raise serializers.ValidationError(
+                {"date_from": ["date_from cannot be after date_to."]}
+            )
+        return attrs
 
 
 class EmployeeManagerSerializer(serializers.Serializer):
@@ -114,6 +143,37 @@ class SalaryAmountsSerializer(serializers.Serializer):
     total_comp_cents = serializers.IntegerField()
 
 
+def _salary_amounts(base_salary_cents, bonus_cents, allowances_cents):
+    return {
+        "base_salary_cents": base_salary_cents,
+        "bonus_cents": bonus_cents,
+        "allowances_cents": allowances_cents,
+        "total_comp_cents": base_salary_cents + bonus_cents + allowances_cents,
+    }
+
+
+def _new_amounts(row):
+    return _salary_amounts(
+        row.base_salary_cents,
+        row.bonus_cents,
+        row.allowances_cents,
+    )
+
+
+def _previous_amounts(row):
+    if row.change_type == "hire" or (
+        row.prev_base_salary_cents is None
+        and row.prev_bonus_cents is None
+        and row.prev_allowances_cents is None
+    ):
+        return None
+    return _salary_amounts(
+        row.prev_base_salary_cents,
+        row.prev_bonus_cents,
+        row.prev_allowances_cents,
+    )
+
+
 class SalaryHistoryItemSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     effective_date = serializers.DateField()
@@ -126,33 +186,28 @@ class SalaryHistoryItemSerializer(serializers.Serializer):
 
     @extend_schema_field(SalaryAmountsSerializer)
     def get_new(self, row):
-        return {
-            "base_salary_cents": row.base_salary_cents,
-            "bonus_cents": row.bonus_cents,
-            "allowances_cents": row.allowances_cents,
-            "total_comp_cents": (
-                row.base_salary_cents + row.bonus_cents + row.allowances_cents
-            ),
-        }
+        return _new_amounts(row)
 
     @extend_schema_field(SalaryAmountsSerializer)
     def get_previous(self, row):
-        if row.change_type == "hire" or (
-            row.prev_base_salary_cents is None
-            and row.prev_bonus_cents is None
-            and row.prev_allowances_cents is None
-        ):
-            return None
-        return {
-            "base_salary_cents": row.prev_base_salary_cents,
-            "bonus_cents": row.prev_bonus_cents,
-            "allowances_cents": row.prev_allowances_cents,
-            "total_comp_cents": (
-                row.prev_base_salary_cents
-                + row.prev_bonus_cents
-                + row.prev_allowances_cents
-            ),
-        }
+        return _previous_amounts(row)
+
+
+class SalaryHistoryEmployeeSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    full_name = serializers.CharField()
+    email = serializers.EmailField()
+
+
+class SalaryHistorySearchItemSerializer(SalaryHistoryItemSerializer):
+    employee = SalaryHistoryEmployeeSerializer()
+
+
+class SalaryHistoryListResponseSerializer(serializers.Serializer):
+    items = SalaryHistorySearchItemSerializer(many=True)
+    total = serializers.IntegerField()
+    page = serializers.IntegerField()
+    page_size = serializers.IntegerField()
 
 
 class EmployeeCreateSerializer(StrictSerializer):

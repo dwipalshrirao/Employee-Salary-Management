@@ -19,6 +19,12 @@ SORT_FIELDS = {
     "country": Lower("country__name"),
 }
 
+HISTORY_SORT_FIELDS = {
+    "effective_date": F("effective_date"),
+    "employee": Lower("employee__full_name"),
+    "change_type": F("change_type"),
+}
+
 
 def filter_employees(
     queryset,
@@ -138,3 +144,48 @@ def list_employee_history(employee_id):
             "-id",
         )
     )
+
+
+def list_salary_history(
+    *,
+    employee=None,
+    reason=None,
+    change_type=None,
+    date_from=None,
+    date_to=None,
+    batch_id=None,
+    sort_by="effective_date",
+    sort_dir="desc",
+    page=1,
+    page_size=25,
+):
+    """Return a filtered, sorted page of salary history and its total count."""
+    queryset = SalaryHistory.objects.select_related("employee")
+    if employee:
+        queryset = queryset.filter(
+            Q(employee__full_name__icontains=employee)
+            | Q(employee__email__icontains=employee)
+        )
+    if reason:
+        queryset = queryset.filter(reason__icontains=reason)
+    if change_type:
+        queryset = queryset.filter(change_type=change_type)
+    if date_from is not None:
+        queryset = queryset.filter(effective_date__gte=date_from)
+    if date_to is not None:
+        queryset = queryset.filter(effective_date__lte=date_to)
+    if batch_id is not None:
+        queryset = queryset.filter(batch_id=batch_id)
+
+    descending = sort_dir == "desc"
+    queryset = queryset.order_by(
+        OrderBy(HISTORY_SORT_FIELDS[sort_by], descending=descending),
+        OrderBy(F("id"), descending=descending),
+    )
+    items, total = paginate_queryset(queryset, page, page_size)
+    return {
+        "items": items,
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+    }
