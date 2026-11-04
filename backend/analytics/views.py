@@ -7,10 +7,12 @@ from rest_framework.views import APIView
 from analytics.serializers import (
     BreakdownQuerySerializer,
     BreakdownResponseSerializer,
+    DistributionQuerySerializer,
+    DistributionResponseSerializer,
     SummaryQuerySerializer,
     SummaryResponseSerializer,
 )
-from analytics.services import get_breakdown, get_summary
+from analytics.services import get_breakdown, get_distribution, get_summary
 
 
 class AnalyticsSummaryView(APIView):
@@ -43,3 +45,19 @@ class AnalyticsBreakdownView(APIView):
         query.is_valid(raise_exception=True)
         result = get_breakdown(**query.validated_data)
         return Response(BreakdownResponseSerializer(result).data)
+
+
+class AnalyticsDistributionView(APIView):
+    """Return salary-band counts across the selected population."""
+
+    @extend_schema(
+        operation_id="analytics-distribution",
+        tags=["analytics"],
+        parameters=[DistributionQuerySerializer],
+        responses={200: DistributionResponseSerializer},
+    )
+    def get(self, request, format=None):
+        query = DistributionQuerySerializer(data=request.query_params)
+        query.is_valid(raise_exception=True)
+        result = get_distribution(**query.validated_data)
+        return Response(DistributionResponseSerializer(result).data)

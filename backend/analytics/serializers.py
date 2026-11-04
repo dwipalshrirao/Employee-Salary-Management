@@ -34,6 +34,13 @@ class BreakdownQuerySerializer(AnalyticsQuerySerializer):
     limit = serializers.IntegerField(min_value=1, max_value=100, required=False)
 
 
+class DistributionQuerySerializer(AnalyticsQuerySerializer):
+    group_by = serializers.ChoiceField(
+        choices=("none", "department", "country"),
+        default="none",
+    )
+
+
 class SummaryComponentsSerializer(serializers.Serializer):
     base_cents = serializers.IntegerField()
     bonus_cents = serializers.IntegerField()
@@ -65,3 +72,21 @@ class BreakdownResponseSerializer(serializers.Serializer):
     group_by = serializers.CharField()
     measure = serializers.CharField()
     rows = BreakdownRowSerializer(many=True)
+
+
+class DistributionBandSerializer(serializers.Serializer):
+    index = serializers.IntegerField()
+    label = serializers.CharField()
+
+
+class DistributionGroupSerializer(serializers.Serializer):
+    key = serializers.CharField()
+    name = serializers.CharField()
+    headcount = serializers.IntegerField()
+    counts = serializers.ListField(child=serializers.IntegerField())
+
+
+class DistributionResponseSerializer(serializers.Serializer):
+    measure = serializers.CharField()
+    bands = DistributionBandSerializer(many=True)
+    groups = DistributionGroupSerializer(many=True)

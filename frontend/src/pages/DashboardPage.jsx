@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Alert,
   Box,
@@ -14,9 +15,15 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
-import { getAnalyticsBreakdown, getAnalyticsSummary } from "../api/analytics";
+import {
+  getAnalyticsBreakdown,
+  getAnalyticsDistribution,
+  getAnalyticsSummary,
+} from "../api/analytics";
+import JobTitlePayTable from "../components/JobTitlePayTable";
 import StatCard from "../components/StatCard";
 import AverageBarChart from "../components/charts/AverageBarChart";
+import DistributionChart from "../components/charts/DistributionChart";
 import { useLookups } from "../hooks/useLookups";
 import { useUrlState } from "../hooks/useUrlState";
 import { formatUsd, formatUsdCompact } from "../lib/money";
@@ -121,6 +128,7 @@ function PayMix({ summary, loading }) {
 export default function DashboardPage() {
   const navigate = useNavigate();
   const { values, update } = useUrlState(DEFAULT_STATE);
+  const [distributionGroup, setDistributionGroup] = useState("department");
   const lookups = useLookups();
   const filters = filtersFor(values);
   const summaryQuery = useQuery({
@@ -138,19 +146,37 @@ export default function DashboardPage() {
     queryFn: () => getAnalyticsBreakdown({ ...filters, group_by: "department" }),
     staleTime: 60_000,
   });
+  const jobTitleQuery = useQuery({
+    queryKey: ["analytics", "breakdown", "job_title", filters],
+    queryFn: () => getAnalyticsBreakdown({ ...filters, group_by: "job_title" }),
+    staleTime: 60_000,
+  });
+  const distributionQuery = useQuery({
+    queryKey: ["analytics", "distribution", distributionGroup, filters],
+    queryFn: () => getAnalyticsDistribution({ ...filters, group_by: distributionGroup }),
+    staleTime: 60_000,
+  });
 
   const retry = () => {
     summaryQuery.refetch();
     countryQuery.refetch();
     departmentQuery.refetch();
+    jobTitleQuery.refetch();
+    distributionQuery.refetch();
   };
 
   const measure = filters.measure;
   const summary = summaryQuery.data;
   const countryRows = countryQuery.data?.rows ?? [];
   const departmentRows = departmentQuery.data?.rows ?? [];
+  const jobTitleRows = jobTitleQuery.data?.rows ?? [];
   const topCountry = highestCountry(countryRows);
-  const hasError = summaryQuery.isError || countryQuery.isError || departmentQuery.isError;
+  const hasError =
+    summaryQuery.isError ||
+    countryQuery.isError ||
+    departmentQuery.isError ||
+    jobTitleQuery.isError ||
+    distributionQuery.isError;
   const countries = lookups.data?.countries ?? [];
   const departments = lookups.data?.departments ?? [];
 
@@ -304,6 +330,16 @@ export default function DashboardPage() {
               onSelect={(key) => navigate(`/employees?department_id=${encodeURIComponent(key)}`)}
             />
           </Box>
+
+          <DistributionChart
+            bands={distributionQuery.data?.bands ?? []}
+            groups={distributionQuery.data?.groups ?? []}
+            groupBy={distributionGroup}
+            onGroupByChange={setDistributionGroup}
+            loading={distributionQuery.isLoading}
+          />
+
+          <JobTitlePayTable rows={jobTitleRows} loading={jobTitleQuery.isLoading} />
         </Box>
       )}
     </Box>

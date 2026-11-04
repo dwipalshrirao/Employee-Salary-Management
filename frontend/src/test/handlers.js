@@ -378,6 +378,103 @@ export const testAnalyticsCountryBreakdown = {
   rows: analyticsCountryRows,
 };
 
+export const testAnalyticsJobTitleBreakdown = {
+  group_by: "job_title",
+  measure: "total",
+  rows: [
+    {
+      key: "7",
+      name: "Engineering Manager",
+      headcount: 215,
+      total_cents: 3_693_700_000,
+      avg_cents: 17_180_000,
+      min_cents: 12_800_000,
+      max_cents: 23_000_000,
+    },
+    {
+      key: "2",
+      name: "Senior Software Engineer",
+      headcount: 1142,
+      total_cents: 15_359_900_000,
+      avg_cents: 13_450_000,
+      min_cents: 8_800_000,
+      max_cents: 19_200_000,
+    },
+    {
+      key: "1",
+      name: "Software Engineer",
+      headcount: 1620,
+      total_cents: 15_908_400_000,
+      avg_cents: 9_820_000,
+      min_cents: 6_400_000,
+      max_cents: 13_200_000,
+    },
+    {
+      key: "3",
+      name: "Account Executive",
+      headcount: 845,
+      total_cents: 8_145_800_000,
+      avg_cents: 9_640_000,
+      min_cents: 5_200_000,
+      max_cents: 18_500_000,
+    },
+  ],
+};
+
+export const testAnalyticsDistributionBands = [
+  { index: 0, label: "< $30k" },
+  { index: 1, label: "$30k - $50k" },
+  { index: 2, label: "$50k - $75k" },
+  { index: 3, label: "$75k - $100k" },
+  { index: 4, label: "$100k - $150k" },
+  { index: 5, label: "$150k - $200k" },
+  { index: 6, label: "$200k+" },
+];
+
+export const testAnalyticsDistributionDepartment = {
+  measure: "total",
+  bands: testAnalyticsDistributionBands,
+  groups: [
+    {
+      key: "1",
+      name: "Engineering",
+      headcount: 3000,
+      counts: [120, 600, 900, 700, 500, 150, 30],
+    },
+    {
+      key: "3",
+      name: "Sales",
+      headcount: 1800,
+      counts: [100, 300, 500, 400, 300, 150, 50],
+    },
+    {
+      key: "4",
+      name: "Finance",
+      headcount: 700,
+      counts: [20, 100, 200, 180, 120, 60, 20],
+    },
+  ],
+};
+
+export const testAnalyticsDistributionCountry = {
+  measure: "total",
+  bands: testAnalyticsDistributionBands,
+  groups: [
+    {
+      key: "US",
+      name: "United States",
+      headcount: 2700,
+      counts: [40, 300, 700, 800, 600, 200, 60],
+    },
+    {
+      key: "IN",
+      name: "India",
+      headcount: 2500,
+      counts: [300, 900, 800, 350, 120, 25, 5],
+    },
+  ],
+};
+
 export const testAnalyticsDepartmentBreakdown = {
   group_by: "department",
   measure: "total",
@@ -395,6 +492,12 @@ export const analyticsHandlers = [
     const measure = url.searchParams.get("measure") ?? "total";
     const countryCode = url.searchParams.get("country_code");
     const departmentId = url.searchParams.get("department_id");
+    if (groupBy === "job_title") {
+      return HttpResponse.json({
+        ...testAnalyticsJobTitleBreakdown,
+        measure,
+      });
+    }
     if (groupBy === "department") {
       const rows = departmentId
         ? analyticsDepartmentRows.filter((row) => row.key === departmentId)
@@ -412,6 +515,17 @@ export const analyticsHandlers = [
       ...testAnalyticsCountryBreakdown,
       measure,
       rows,
+    });
+  }),
+  http.get("/api/analytics/distribution", ({ request }) => {
+    const url = new URL(request.url);
+    const groupBy = url.searchParams.get("group_by");
+    const measure = url.searchParams.get("measure") ?? "total";
+    return HttpResponse.json({
+      ...(groupBy === "country"
+        ? testAnalyticsDistributionCountry
+        : testAnalyticsDistributionDepartment),
+      measure,
     });
   }),
 ];

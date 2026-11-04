@@ -79,6 +79,45 @@ def test_breakdown_returns_grouped_rows(auth_client):
     assert [row["key"] for row in payload["rows"]] == ["US", "DE", "IN"]
 
 
+def test_distribution_returns_bands_and_zero_filled_groups(auth_client):
+    make_analytics_dataset()
+
+    response = auth_client.get("/api/analytics/distribution")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["measure"] == "total"
+    assert [band["index"] for band in payload["bands"]] == list(range(7))
+    assert payload["groups"] == [
+        {
+            "key": "all",
+            "name": "All employees",
+            "headcount": 12,
+            "counts": [0, 1, 5, 3, 3, 0, 0],
+        }
+    ]
+
+
+def test_distribution_supports_department_grouping(auth_client):
+    make_analytics_dataset()
+
+    response = auth_client.get(
+        "/api/analytics/distribution",
+        {"group_by": "department"},
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert [group["name"] for group in payload["groups"]] == [
+        "Engineering",
+        "Finance",
+        "Sales",
+    ]
+    for group in payload["groups"]:
+        assert len(group["counts"]) == 7
+        assert sum(group["counts"]) == group["headcount"]
+
+
 def test_breakdown_applies_scope_filters(auth_client):
     data = make_analytics_dataset()
 
@@ -113,6 +152,9 @@ def test_breakdown_applies_scope_filters(auth_client):
         ("/api/analytics/breakdown", {"group_by": "country", "sort_dir": "sideways"}),
         ("/api/analytics/breakdown", {"group_by": "country", "limit": "0"}),
         ("/api/analytics/breakdown", {"group_by": "country", "limit": "101"}),
+        ("/api/analytics/distribution", {"group_by": "job_title"}),
+        ("/api/analytics/distribution", {"measure": "median"}),
+        ("/api/analytics/distribution", {"include_inactive": "sometimes"}),
     ],
 )
 def test_invalid_analytics_query_parameters_return_422(auth_client, path, params):

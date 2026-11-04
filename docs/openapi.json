@@ -133,6 +133,93 @@
                 }
             }
         },
+        "/api/analytics/distribution": {
+            "get": {
+                "operationId": "analytics-distribution",
+                "description": "Return salary-band counts across the selected population.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "country_code",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 2
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "department_id",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "group_by",
+                        "schema": {
+                            "enum": [
+                                "none",
+                                "department",
+                                "country"
+                            ],
+                            "type": "string",
+                            "default": "none",
+                            "minLength": 1
+                        },
+                        "description": "* `none` - none\n* `department` - department\n* `country` - country"
+                    },
+                    {
+                        "in": "query",
+                        "name": "include_inactive",
+                        "schema": {
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "job_title_id",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "measure",
+                        "schema": {
+                            "enum": [
+                                "total",
+                                "base"
+                            ],
+                            "type": "string",
+                            "default": "total",
+                            "minLength": 1
+                        },
+                        "description": "* `total` - total\n* `base` - base"
+                    }
+                ],
+                "tags": [
+                    "analytics"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DistributionResponse"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/analytics/summary": {
             "get": {
                 "operationId": "analytics-summary",
@@ -1321,6 +1408,72 @@
                 "required": [
                     "id",
                     "name"
+                ]
+            },
+            "DistributionBand": {
+                "type": "object",
+                "properties": {
+                    "index": {
+                        "type": "integer"
+                    },
+                    "label": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "index",
+                    "label"
+                ]
+            },
+            "DistributionGroup": {
+                "type": "object",
+                "properties": {
+                    "key": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "headcount": {
+                        "type": "integer"
+                    },
+                    "counts": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "required": [
+                    "counts",
+                    "headcount",
+                    "key",
+                    "name"
+                ]
+            },
+            "DistributionResponse": {
+                "type": "object",
+                "properties": {
+                    "measure": {
+                        "type": "string"
+                    },
+                    "bands": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DistributionBand"
+                        }
+                    },
+                    "groups": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DistributionGroup"
+                        }
+                    }
+                },
+                "required": [
+                    "bands",
+                    "groups",
+                    "measure"
                 ]
             },
             "EmployeeCountry": {

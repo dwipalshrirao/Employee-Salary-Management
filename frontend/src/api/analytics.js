@@ -7,3 +7,7 @@ export function getAnalyticsSummary(params) {
 export function getAnalyticsBreakdown(params) {
   return request("GET", "/analytics/breakdown", { query: params });
 }
+
+export function getAnalyticsDistribution(params) {
+  return request("GET", "/analytics/distribution", { query: params });
+}

@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { http, HttpResponse } from "msw";
 import { Route, Routes, useLocation } from "react-router-dom";
@@ -8,6 +8,9 @@ import {
   testAnalyticsBaseSummary,
   testAnalyticsCountryBreakdown,
   testAnalyticsDepartmentBreakdown,
+  testAnalyticsDistributionCountry,
+  testAnalyticsDistributionDepartment,
+  testAnalyticsJobTitleBreakdown,
   testAnalyticsSummary,
 } from "../test/handlers";
 import { renderWithProviders } from "../test/render";
@@ -83,6 +86,12 @@ function trackAnalyticsRequests() {
       const groupBy = url.searchParams.get("group_by");
       const measure = url.searchParams.get("measure") ?? "total";
       const countryCode = url.searchParams.get("country_code");
+      if (groupBy === "job_title") {
+        return HttpResponse.json({
+          ...testAnalyticsJobTitleBreakdown,
+          measure,
+        });
+      }
       if (groupBy === "department") {
         return HttpResponse.json({
           ...testAnalyticsDepartmentBreakdown,
@@ -97,12 +106,24 @@ function trackAnalyticsRequests() {
           : testAnalyticsCountryBreakdown.rows,
       });
     }),
+    http.get("/api/analytics/distribution", ({ request }) => {
+      const url = new URL(request.url);
+      requests.push(url);
+      const groupBy = url.searchParams.get("group_by");
+      const measure = url.searchParams.get("measure") ?? "total";
+      return HttpResponse.json({
+        ...(groupBy === "country"
+          ? testAnalyticsDistributionCountry
+          : testAnalyticsDistributionDepartment),
+        measure,
+      });
+    }),
   );
   return requests;
 }
 
 describe("DashboardPage", () => {
-  it("loads the three analytics widgets and formats the KPI values", async () => {
+  it("loads all dashboard widgets and formats the KPI values", async () => {
     const requests = trackAnalyticsRequests();
 
     renderDashboard();
@@ -124,17 +145,27 @@ describe("DashboardPage", () => {
     expect(
       screen.getByRole("img", { name: /Average compensation by department/ }),
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", { name: /Salary distribution by department/ }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Pay by job title")).toBeInTheDocument();
+    expect(await screen.findByText("Engineering Manager")).toBeInTheDocument();
+    expect(screen.getByText("$171,800")).toBeInTheDocument();
 
-    await waitFor(() => expect(requests).toHaveLength(3));
+    await waitFor(() => expect(requests).toHaveLength(5));
     const summary = requests.filter((url) => url.pathname === "/api/analytics/summary");
     const breakdowns = requests.filter((url) => url.pathname === "/api/analytics/breakdown");
+    const distributions = requests.filter((url) => url.pathname === "/api/analytics/distribution");
     expect(summary).toHaveLength(1);
-    expect(breakdowns).toHaveLength(2);
+    expect(breakdowns).toHaveLength(3);
+    expect(distributions).toHaveLength(1);
     expect(summary[0].searchParams.get("measure")).toBe("total");
     expect(breakdowns.map((url) => url.searchParams.get("group_by")).sort()).toEqual([
       "country",
       "department",
+      "job_title",
     ]);
+    expect(distributions[0].searchParams.get("group_by")).toBe("department");
   });
 
   it("refetches every widget when the measure changes and writes the URL", async () => {
@@ -143,14 +174,17 @@ describe("DashboardPage", () => {
 
     renderDashboard();
     await screen.findByText("$812.3M");
-    await waitFor(() => expect(requests).toHaveLength(3));
+    await waitFor(() => expect(requests).toHaveLength(5));
+    const initialCount = requests.length;
 
     await user.click(screen.getByRole("button", { name: "Base salary" }));
 
     expect(await screen.findByText("$666.1M")).toBeInTheDocument();
     expect(screen.getByText("$68,670")).toBeInTheDocument();
-    await waitFor(() => expect(requests).toHaveLength(6));
-    expect(requests.slice(3).every((url) => url.searchParams.get("measure") === "base")).toBe(true);
+    await waitFor(() => expect(requests).toHaveLength(initialCount + 5));
+    expect(
+      requests.slice(initialCount).every((url) => url.searchParams.get("measure") === "base"),
+    ).toBe(true);
     expect(screen.getByTestId("location")).toHaveTextContent("measure=base");
   });
 
@@ -160,25 +194,27 @@ describe("DashboardPage", () => {
 
     renderDashboard();
     await screen.findByText("$812.3M");
-    await waitFor(() => expect(requests).toHaveLength(3));
+    await waitFor(() => expect(requests).toHaveLength(5));
+    const initialCount = requests.length;
 
     await user.click(screen.getByRole("combobox", { name: "Country" }));
     await user.click(await screen.findByRole("option", { name: "India" }));
 
     expect(await screen.findByText("$42,600 average")).toBeInTheDocument();
-    await waitFor(() => expect(requests).toHaveLength(6));
-    expect(requests.slice(3).every((url) => url.searchParams.get("country_code") === "IN")).toBe(
-      true,
-    );
+    await waitFor(() => expect(requests).toHaveLength(initialCount + 5));
+    expect(
+      requests.slice(initialCount).every((url) => url.searchParams.get("country_code") === "IN"),
+    ).toBe(true);
     expect(screen.getByTestId("location")).toHaveTextContent("country_code=IN");
+    const countryCount = requests.length;
 
     await user.click(screen.getByRole("combobox", { name: "Department" }));
     await user.click(await screen.findByRole("option", { name: "Engineering" }));
 
-    await waitFor(() => expect(requests).toHaveLength(9));
-    expect(requests.slice(6).every((url) => url.searchParams.get("department_id") === "1")).toBe(
-      true,
-    );
+    await waitFor(() => expect(requests).toHaveLength(countryCount + 5));
+    expect(
+      requests.slice(countryCount).every((url) => url.searchParams.get("department_id") === "1"),
+    ).toBe(true);
     expect(screen.getByTestId("location")).toHaveTextContent("department_id=1");
   });
 
@@ -193,7 +229,7 @@ describe("DashboardPage", () => {
       "true",
     );
     expect(screen.getByText("$42,600 average")).toBeInTheDocument();
-    await waitFor(() => expect(requests).toHaveLength(3));
+    await waitFor(() => expect(requests).toHaveLength(5));
     for (const url of requests) {
       expect(url.searchParams.get("measure")).toBe("base");
       expect(url.searchParams.get("country_code")).toBe("IN");
@@ -208,6 +244,13 @@ describe("DashboardPage", () => {
         const groupBy = new URL(request.url).searchParams.get("group_by");
         return HttpResponse.json({ group_by: groupBy, measure: "total", rows: [] });
       }),
+      http.get("/api/analytics/distribution", () =>
+        HttpResponse.json({
+          measure: "total",
+          bands: testAnalyticsDistributionDepartment.bands,
+          groups: [],
+        }),
+      ),
     );
 
     renderDashboard();
@@ -217,7 +260,48 @@ describe("DashboardPage", () => {
     expect(screen.getByText("No data")).toBeInTheDocument();
     expect(screen.getByText("No compensation data for these filters")).toBeInTheDocument();
     expect(screen.getAllByText("No data for these filters")).toHaveLength(2);
+    expect(screen.getByText("No distribution data for these filters")).toBeInTheDocument();
+    expect(screen.getByText("No job-title data for these filters")).toBeInTheDocument();
     expect(document.body).not.toHaveTextContent("NaN");
+  });
+
+  it("switches the salary distribution between department and country", async () => {
+    const user = userEvent.setup();
+    const requests = trackAnalyticsRequests();
+
+    renderDashboard();
+    await screen.findByText("$812.3M");
+    await waitFor(() => expect(requests).toHaveLength(5));
+    const initialCount = requests.length;
+
+    await user.click(screen.getByRole("button", { name: "By country" }));
+
+    expect(
+      await screen.findByRole("img", { name: /Salary distribution by country/ }),
+    ).toBeInTheDocument();
+    await waitFor(() => expect(requests).toHaveLength(initialCount + 1));
+    const distribution = requests
+      .slice(initialCount)
+      .find((url) => url.pathname === "/api/analytics/distribution");
+    expect(distribution.searchParams.get("group_by")).toBe("country");
+    expect(
+      screen.getByRole("img", { name: /Salary distribution by country/ }),
+    ).toHaveAccessibleName(/United States/);
+  });
+
+  it("sorts the job-title table on the client", async () => {
+    const user = userEvent.setup();
+
+    renderDashboard();
+    expect(await screen.findByText("Engineering Manager")).toBeInTheDocument();
+    expect(screen.getByText("Pay by job title")).toBeInTheDocument();
+
+    await user.click(screen.getByText("Job title"));
+
+    await waitFor(() => {
+      const dataRows = screen.getAllByRole("row").slice(1);
+      expect(within(dataRows[0]).getByText("Account Executive")).toBeInTheDocument();
+    });
   });
 
   it("opens the employee list filtered by country from the country chart", async () => {

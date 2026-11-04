@@ -104,5 +104,6 @@ Add a row whenever the built UI differs from the Stitch screen or the spec.
 | 2026-11-04 | `04 Employee detail` | Direct reports are in a separate card; Reporting shows only the manager link. | Clarified requirement: direct reports deserve their own section. |
 | 2026-11-04 | `08 History` | Filters apply immediately; Stitch's `Apply filters` button is omitted. | Spec 04 sec 6.9 defines immediate URL-synced filtering and does not include an apply step. |
 | 2026-11-04 | `08 History` | Batch chip reads `Batch 6f1c8a` instead of Stitch's `Batch: 6f1c8a`. | Spec 04 sec 6.9 copy wins. |
-| 2026-11-04 | `02 Dashboard` | Salary distribution, job-title table and outliers are deferred. | S10 covers controls, KPI cards, pay mix and average charts; distribution belongs to S11 and the tables to S12. |
+| 2026-11-04 | `02 Dashboard` | Pay outliers are deferred. | S10/S11 cover controls, KPI cards, pay mix, average charts, distribution and the job-title table; outliers belong to S12. |
 | 2026-11-04 | `02 Dashboard` | Average KPI shows the selected measure label instead of Stitch's median. | Median and percentile statistics are explicitly out of scope; spec 04 sec 6.3 wins. |
+| 2026-11-04 | `02 Dashboard` | Distribution legend uses spec labels (`< $30k`, `$30k - $50k`, `$200k+`) instead of Stitch's `Under $30k`/en-dash copy. | The backend supplies band labels from spec 03 sec 3.3, which wins for data copy. |

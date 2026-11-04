@@ -4,6 +4,7 @@ from decimal import ROUND_HALF_UP, Decimal
 
 from django.db.models import Count, Max, Min, Sum
 
+from analytics.bands import band_case, band_metadata
 from employees.models import Employee
 from employees.selectors import filter_employees
 
@@ -16,6 +17,11 @@ GROUP_FIELDS = {
     "country": ("country_id", "country__name"),
     "department": ("department_id", "department__name"),
     "job_title": ("job_title_id", "job_title__name"),
+}
+
+DISTRIBUTION_GROUP_FIELDS = {
+    "country": ("country_id", "country__name"),
+    "department": ("department_id", "department__name"),
 }
 
 SORT_KEYS = {
@@ -160,4 +166,77 @@ def get_breakdown(
         "group_by": group_by,
         "measure": measure,
         "rows": rows,
+    }
+
+
+def get_distribution(
+    *,
+    group_by="none",
+    measure="total",
+    include_inactive=False,
+    country_code=None,
+    department_id=None,
+    job_title_id=None,
+):
+    """Return salary-band counts for the selected population and grouping."""
+    measure_column = _measure_column(measure)
+    queryset = _scope(
+        _population(include_inactive),
+        country_code=country_code,
+        department_id=department_id,
+        job_title_id=job_title_id,
+    )
+    band_expression = band_case(measure_column)
+    bands = band_metadata()
+
+    if group_by == "none":
+        rows = (
+            queryset.annotate(band=band_expression)
+            .values("band")
+            .annotate(count=Count("id"))
+        )
+        counts = [0] * len(bands)
+        headcount = 0
+        for row in rows:
+            counts[row["band"]] = row["count"]
+            headcount += row["count"]
+        groups = (
+            [
+                {
+                    "key": "all",
+                    "name": "All employees",
+                    "headcount": headcount,
+                    "counts": counts,
+                }
+            ]
+            if headcount
+            else []
+        )
+    else:
+        key_field, name_field = DISTRIBUTION_GROUP_FIELDS[group_by]
+        rows = (
+            queryset.annotate(band=band_expression)
+            .values(key_field, name_field, "band")
+            .annotate(count=Count("id"))
+        )
+        grouped = {}
+        for row in rows:
+            key = str(row[key_field])
+            group = grouped.setdefault(
+                key,
+                {
+                    "key": key,
+                    "name": row[name_field],
+                    "headcount": 0,
+                    "counts": [0] * len(bands),
+                },
+            )
+            group["counts"][row["band"]] += row["count"]
+            group["headcount"] += row["count"]
+        groups = sorted(grouped.values(), key=lambda group: group["name"].casefold())
+
+    return {
+        "measure": measure,
+        "bands": bands,
+        "groups": groups,
     }
