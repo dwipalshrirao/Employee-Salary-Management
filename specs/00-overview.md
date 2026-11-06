@@ -142,7 +142,7 @@ SEED_HR_PASSWORD=             # empty = generate a random one and print it once
 ```
 No default password is committed anywhere.
 
-**Make targets.** `make setup`, `make backend` (Django `runserver` on port 8000), `make frontend` (vite), `make migrate`, `make seed`, `make test` (backend + frontend), `make test-watch` (re-runs tests on change, for the TDD loop), `make lint`, `make openapi` (export the API contract to `docs/openapi.json`).
+**Make targets.** `make setup`, `make backend` (Django `runserver` on port 8000), `make frontend` (vite), `make migrate`, `make seed`, `make test` (backend + frontend), `make test-slow` (10k seed performance checks), `make lint`, `make openapi` (export the API contract to `docs/openapi.json`).
 
 ## 6a. Deployment readiness
 The app will be deployed later. The design keeps that cheap:

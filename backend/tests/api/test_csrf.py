@@ -3,6 +3,9 @@ from rest_framework.test import APIClient
 
 WRITE_ROUTES = [
     ("post", "/api/auth/logout"),
+    ("post", "/api/currency-rates"),
+    ("patch", "/api/currency-rates/USD"),
+    ("delete", "/api/currency-rates/USD"),
     ("post", "/api/employees"),
     ("patch", "/api/employees/1"),
     ("post", "/api/employees/1/deactivate"),

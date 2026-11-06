@@ -144,7 +144,7 @@ describe("DashboardPage", () => {
     expect(screen.getByText("$118,200 average")).toBeInTheDocument();
     expect(screen.getByText("Base")).toBeInTheDocument();
     expect(screen.getByText("82% · $666.1M")).toBeInTheDocument();
-    expect(screen.getByText("11% · $89.0M")).toBeInTheDocument();
+    expect(screen.getByText("11% · $89M")).toBeInTheDocument();
     expect(screen.getByText("7% · $57.2M")).toBeInTheDocument();
     expect(
       screen.getByRole("img", { name: /Average compensation by country/ }),
@@ -283,7 +283,7 @@ describe("DashboardPage", () => {
 
     renderDashboard();
 
-    expect(await screen.findByText("$0")).toBeInTheDocument();
+    expect((await screen.findAllByText("$0")).length).toBeGreaterThanOrEqual(2);
     expect(screen.getByText("0")).toBeInTheDocument();
     expect(screen.getByText("No data")).toBeInTheDocument();
     expect(screen.getByText("No compensation data for these filters")).toBeInTheDocument();

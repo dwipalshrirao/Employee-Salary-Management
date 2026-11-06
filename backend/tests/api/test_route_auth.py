@@ -19,6 +19,8 @@ METHODS = {
     "api/auth/me": ("get",),
     "api/auth/logout": ("post",),
     "api/lookups": ("get",),
+    "api/currency-rates": ("get", "post"),
+    "api/currency-rates/<str:code>": ("get", "patch", "delete"),
     "api/employees": ("get", "post"),
     "api/employees/<int:pk>": ("get", "patch"),
     "api/employees/<int:pk>/direct-reports": ("get",),
@@ -37,7 +39,11 @@ METHODS = {
 
 
 def _sample_path(route):
-    return route.replace("<int:pk>", "1").replace("<int:manager_id>", "1")
+    return (
+        route.replace("<int:pk>", "1")
+        .replace("<int:manager_id>", "1")
+        .replace("<str:code>", "USD")
+    )
 
 
 def _session_required_cases():

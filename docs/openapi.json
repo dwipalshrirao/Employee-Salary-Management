@@ -626,6 +626,175 @@
                 }
             }
         },
+        "/api/currency-rates": {
+            "get": {
+                "operationId": "currency-rates-list",
+                "description": "List and create currency rates.",
+                "tags": [
+                    "catalog"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CurrencyRateItem"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "currency-rates-create",
+                "description": "List and create currency rates.",
+                "tags": [
+                    "catalog"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CurrencyRateCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CurrencyRateItem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/currency-rates/{code}": {
+            "get": {
+                "operationId": "currency-rates-detail",
+                "description": "Read, update or delete one currency rate.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "code",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "catalog"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CurrencyRateItem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "currency-rates-update",
+                "description": "Read, update or delete one currency rate.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "code",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "catalog"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedCurrencyRateUpdate"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CurrencyRateItem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "currency-rates-delete",
+                "description": "Read, update or delete one currency rate.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "code",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "catalog"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
         "/api/employees": {
             "get": {
                 "operationId": "employees-list",
@@ -1555,6 +1724,53 @@
                     "name"
                 ]
             },
+            "CurrencyRateCreate": {
+                "type": "object",
+                "description": "Create a currency rate with an immutable three-letter code.",
+                "properties": {
+                    "currency_code": {
+                        "type": "string",
+                        "pattern": "^[A-Z]{3}$"
+                    },
+                    "rate_per_usd": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                },
+                "required": [
+                    "currency_code",
+                    "rate_per_usd"
+                ]
+            },
+            "CurrencyRateItem": {
+                "type": "object",
+                "description": "Currency rate row with the countries that depend on it.",
+                "properties": {
+                    "currency_code": {
+                        "type": "string"
+                    },
+                    "rate_per_usd": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "country_codes": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "country_codes",
+                    "currency_code",
+                    "rate_per_usd",
+                    "updated_at"
+                ]
+            },
             "CurrencyRateLookup": {
                 "type": "object",
                 "description": "USD conversion rate used for approximate local-currency display.",
@@ -2150,6 +2366,16 @@
                     "page_size",
                     "total"
                 ]
+            },
+            "PatchedCurrencyRateUpdate": {
+                "type": "object",
+                "description": "Update only the conversion rate; the code is URL-addressed.",
+                "properties": {
+                    "rate_per_usd": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                }
             },
             "PatchedEmployeeUpdate": {
                 "type": "object",

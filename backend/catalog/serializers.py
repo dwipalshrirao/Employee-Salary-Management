@@ -1,6 +1,8 @@
-"""Response serializers for the public lookup payload."""
+"""Serializers for lookup data and currency rate maintenance."""
 
 from rest_framework import serializers
+
+from common.serializers import StrictSerializer
 
 
 class CountryLookupSerializer(serializers.Serializer):
@@ -41,3 +43,30 @@ class LookupsResponseSerializer(serializers.Serializer):
     departments = DepartmentLookupSerializer(many=True)
     job_titles = JobTitleLookupSerializer(many=True)
     currency_rates = CurrencyRateLookupSerializer(many=True)
+
+
+class CurrencyRateItemSerializer(serializers.Serializer):
+    """Currency rate row with the countries that depend on it."""
+
+    currency_code = serializers.CharField()
+    rate_per_usd = serializers.FloatField()
+    updated_at = serializers.DateTimeField()
+    country_codes = serializers.ListField(child=serializers.CharField())
+
+
+class CurrencyRateCreateSerializer(StrictSerializer):
+    """Create a currency rate with an immutable three-letter code."""
+
+    currency_code = serializers.RegexField(
+        r"^[A-Z]{3}$",
+        error_messages={
+            "invalid": "Currency code must be three uppercase letters.",
+        },
+    )
+    rate_per_usd = serializers.FloatField()
+
+
+class CurrencyRateUpdateSerializer(StrictSerializer):
+    """Update only the conversion rate; the code is URL-addressed."""
+
+    rate_per_usd = serializers.FloatField()

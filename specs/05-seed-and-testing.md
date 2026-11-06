@@ -75,7 +75,7 @@ Checks and prints: employee count, history count, country and department mix wit
 3. **Refactor.** With everything green, improve names, remove duplication and keep the layering (views, services, selectors). Run the whole fast suite again.
 4. Commit when green.
 
-Use `make test-watch` so each change re-runs the relevant tests in seconds.
+Run the relevant test file after each change; use `npm run test:watch` in `frontend/` for the frontend loop.
 
 ### Order inside a slice (outside-in)
 - **Backend:** (a) write a short test list from the module's rows in sec 2; (b) service tests first (business rules, in-memory database, fixed `Clock`); (c) API tests for the route (status codes, auth, CSRF, validation, response shape); (d) implement service, then repository, then route; (e) run `make openapi`.

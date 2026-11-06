@@ -42,7 +42,7 @@ async function signIn(user, password = "correct-password") {
 
 describe("LoginPage", () => {
   beforeEach(() => {
-    localStorage.clear();
+    window.localStorage.clear();
   });
 
   it("stores auth in memory and redirects to the requested page", async () => {
@@ -55,7 +55,7 @@ describe("LoginPage", () => {
       await screen.findByRole("heading", { name: "Employees destination" }),
     ).toBeInTheDocument();
     expect(screen.getByTestId("auth-probe")).toHaveTextContent("hr@acme.example:test-csrf-token");
-    expect(localStorage.length).toBe(0);
+    expect(window.localStorage.length).toBe(0);
   });
 
   it("shows the generic message for a 401", async () => {

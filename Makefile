@@ -1,10 +1,13 @@
-.PHONY: setup backend frontend migrate seed test test-slow test-watch lint openapi
+.PHONY: setup backend frontend migrate seed test test-slow lint openapi
 
+PYTHON ?= python3.12
 SEED_ARGS ?= --reset --verify
 
 setup:
-	@echo "setup: not implemented yet (scaffold only)"
-	@exit 1
+	$(PYTHON) -m venv backend/.venv
+	backend/.venv/bin/python -m pip install --upgrade pip
+	backend/.venv/bin/python -c 'import tomllib; from pathlib import Path; print(*tomllib.loads(Path("backend/pyproject.toml").read_text())["project"]["dependencies"], sep="\n")' | xargs backend/.venv/bin/python -m pip install
+	cd frontend && npm ci
 
 backend:
 	@set -a; . ./.env; set +a; cd backend && .venv/bin/python manage.py runserver 127.0.0.1:8000
@@ -24,10 +27,6 @@ test:
 
 test-slow:
 	cd backend && SECRET_KEY=test-secret DEBUG=true .venv/bin/python -m pytest -m slow
-
-test-watch:
-	@echo "test-watch: not implemented yet (scaffold only)"
-	@exit 1
 
 lint:
 	cd backend && .venv/bin/python -m ruff check .
